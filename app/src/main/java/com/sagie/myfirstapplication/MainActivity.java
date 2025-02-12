@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -38,6 +40,34 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         initviews();
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        super.onOptionsItemSelected(item);
+
+        int id = item.getItemId(); // השדה שהמשתמש לחץ עליו
+
+        if (id == R.id.loginPage) {
+            Toast.makeText(this, "You selected login", Toast.LENGTH_SHORT).show();
+        }
+        else if (id == R.id.registerPage) {
+            Toast.makeText(this, "You selected register", Toast.LENGTH_SHORT).show();
+        }
+        else if (id == R.id.settingPage) {
+            Toast.makeText(this, "You selected setting", Toast.LENGTH_SHORT).show();
+        }
+        else if (id == R.id.mainPage) {
+            Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
+        }
+
+        return true;
+    }
+
 
     private void initviews() {
         b1 = findViewById(R.id.btn1);
@@ -129,8 +159,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        if (resultCode == RESULT_OK && data != null) {
+        super.onActivityResult(requestCode, resultCode, data);        if (resultCode == RESULT_OK && data != null) {
             int numGuesses = data.getIntExtra("num_guesses", -1);  // מספר הניחושים
             String userName = data.getStringExtra("user_name");   // שם המשתמש
 
