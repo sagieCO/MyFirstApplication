@@ -22,13 +22,13 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
-    private static final int START_GAME = 222,Accept_game=111;
-    Button b1, b2,linerPage,guessGame;
+    private static final int START_GAME = 222, Accept_game = 111;
+    Button b1, b2, linerPage, guessGame;
     TextView tv1;
     Context context;
     Switch s;
     SeekBar sb;
-    ImageView image1,image2;
+    ImageView image1, image2;
     ConstraintLayout mainLayout;
 
     @Override
@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         context = this;
         initviews();
-
     }
 
     @Override
@@ -46,26 +45,31 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        super.onOptionsItemSelected(item);
 
-        int id = item.getItemId(); // השדה שהמשתמש לחץ עליו
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
         if (id == R.id.loginPage) {
             Toast.makeText(this, "You selected login", Toast.LENGTH_SHORT).show();
-        }
-        else if (id == R.id.registerPage) {
+        } else if (id == R.id.registerPage) {
             Toast.makeText(this, "You selected register", Toast.LENGTH_SHORT).show();
-        }
-        else if (id == R.id.settingPage) {
+        } else if (id == R.id.settingPage) {
             Toast.makeText(this, "You selected setting", Toast.LENGTH_SHORT).show();
-        }
-        else if (id == R.id.mainPage) {
+        } else if (id == R.id.mainPage) {
             Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
         }
+        return super.onOptionsItemSelected(item);
+    }
 
-        return true;
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.new_item) {
+            Intent intent = new Intent(this, NewActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
 
@@ -84,98 +88,82 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             public void onClick(View view) {
                 tv1.setText("cohen");
                 tv1.setTextColor(0xFF0000FF);
-                // imageView.setImageResource(R.drawable.image1);
                 Log.d("sagie", "Button 1");
-
             }
         });
+
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 tv1.setText("sagie");
                 tv1.setTextColor(0xFFFF3B4B);
                 Log.d("sagie", "Button 2");
-
             }
         });
-     sb=findViewById(R.id.sb);
-     image1 = findViewById(R.id.image1);
-    image2 = findViewById(R.id.image2);
-     sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-        float alfha = (float)i/100;
-        image1.setAlpha(alfha);
-        float beta=  1 - (float)i/100;
-        image2.setAlpha(beta);
-    }
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+        sb = findViewById(R.id.sb);
+        image1 = findViewById(R.id.image1);
+        image2 = findViewById(R.id.image2);
 
-    }
+        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float alfha = (float) i / 100;
+                image1.setAlpha(alfha);
+                float beta = 1 - (float) i / 100;
+                image2.setAlpha(beta);
+            }
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
-    }
-});
-     linerPage=findViewById(R.id.linerPage);
-     linerPage.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-             Intent intent = new Intent(MainActivity.this,LinearActivity.class);
-         startActivity(intent);
-         finish();
-         }
-     });
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
-        guessGame=findViewById(R.id.GuessGame);
+        linerPage = findViewById(R.id.linerPage);
+        linerPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, LinearActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        guessGame = findViewById(R.id.GuessGame);
         guessGame.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, GuessNumber.class);
-                startActivityForResult(intent,222);
-                
+                startActivityForResult(intent, 222);
             }
         });
     }
 
-
-
-
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if(b){
+        if (b) {
             mainLayout.setBackgroundColor(0xFF6E7191);
-        }
-        else {
+        } else {
             mainLayout.setBackgroundColor(0xFF5E94FD);
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);        if (resultCode == RESULT_OK && data != null) {
-            int numGuesses = data.getIntExtra("num_guesses", -1);  // מספר הניחושים
-            String userName = data.getStringExtra("user_name");   // שם המשתמש
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            int numGuesses = data.getIntExtra("num_guesses", -1);
+            String userName = data.getStringExtra("user_name");
 
-            // הצגת התוצאה ב-toast
             Toast.makeText(this, "Game finished! Number of guesses: " + numGuesses + " , user: " + userName, Toast.LENGTH_SHORT).show();
 
-            // הצגת התוצאה במסך הראשי
             tv1.setText(userName + " won in " + numGuesses + " guesses.");
-
-            // לא צריך לסגור את הפעילות כאן, ה-GuessNumber תיסגר אוטומטית לאחר שקיבלת תוצאה.
         } else {
             Toast.makeText(this, "Game was canceled or didn't finish successfully.", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-    
-
 }
