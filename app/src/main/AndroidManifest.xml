@@ -22,9 +22,6 @@
             android:name=".NewActivity"
             android:exported="false" />
         <activity
-            android:name=".NewActivity1"
-            android:exported="false" />
-        <activity
             android:name=".Regulations"
             android:exported="false" />
         <activity

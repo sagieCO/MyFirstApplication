@@ -23,7 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int START_GAME = 222, Accept_game = 111;
-    Button b1, b2, linerPage, guessGame;
+    Button b1, b2, linerPage, guessGame,spButton;
     TextView tv1;
     Context context;
     Switch s;
@@ -139,6 +139,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, GuessNumber.class);
                 startActivityForResult(intent, 222);
+            }
+        });
+
+
+        spButton = findViewById(R.id.spButton);
+        spButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, sp.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
