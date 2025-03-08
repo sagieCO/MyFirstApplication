@@ -23,7 +23,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int START_GAME = 222, Accept_game = 111;
-    Button b1, b2, linerPage, guessGame,spButton;
+    Button b1, b2, linerPage, guessGame, spButton;
     TextView tv1;
     Context context;
     Switch s;
@@ -58,20 +58,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             Toast.makeText(this, "You selected setting", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.mainPage) {
             Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.sigimItem) {  // כאן התווספה ההתייחסות לאייטם
+            Intent intent = new Intent(this, sigim.class);  // יצירת Intent למעבר לדף sigim
+            startActivity(intent);  // פתיחת דף sigim
+            return true;  // החזרת true כי ה-Intent בוצע בהצלחה
         }
-        return super.onOptionsItemSelected(item);
-    }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.new_item) {
-            Intent intent = new Intent(this, NewActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onContextItemSelected(item);
+        return super.onOptionsItemSelected(item);  // החזרת תוצאה ברירת מחדל
     }
-
 
     private void initviews() {
         b1 = findViewById(R.id.btn1);
@@ -141,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 startActivityForResult(intent, 222);
             }
         });
-
 
         spButton = findViewById(R.id.spButton);
         spButton.setOnClickListener(new View.OnClickListener() {
