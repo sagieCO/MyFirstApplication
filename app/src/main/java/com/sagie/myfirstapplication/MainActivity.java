@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +34,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     ImageView image1, image2;
     ConstraintLayout mainLayout;
 
+    // ה-BroadcastReceiver לקליטת עדכון סוללה
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            tv1.setText("Battery Level: " + level + "%");  // הצגת אחוז הסוללה ב-TextView
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         context = this;
         initviews();
+
+        // רישום ה-BroadcastReceiver לעדכוני סוללה
+        IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(batteryReceiver, batteryIntentFilter);
     }
 
     @Override
@@ -169,5 +185,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         } else {
             Toast.makeText(this, "Game was canceled or didn't finish successfully.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // ביטול רישום ה-BroadcastReceiver כשאקטיביטי נהרסת
+        unregisterReceiver(batteryReceiver);
     }
 }
