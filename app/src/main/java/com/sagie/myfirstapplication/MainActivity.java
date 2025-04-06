@@ -34,12 +34,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     ImageView image1, image2;
     ConstraintLayout mainLayout;
 
-    // ה-BroadcastReceiver לקליטת עדכון סוללה
     private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            tv1.setText("Battery Level: " + level + "%");  // הצגת אחוז הסוללה ב-TextView
+            tv1.setText("Battery Level: " + level + "%");
         }
     };
 
