@@ -1,9 +1,7 @@
 package com.sagie.myfirstapplication;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,8 +19,8 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
+import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int START_GAME = 222, Accept_game = 111;
@@ -50,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         context = this;
         initviews();
 
+        updateMusicButtonState();
+
         // רישום ה-BroadcastReceiver לעדכוני סוללה
         IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, batteryIntentFilter);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             Toast.makeText(this, "You selected setting", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.mainPage) {
             Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.sigimItem) {  // כאן התווספה ההתייחסות לאייטם
+        } else if (id == R.id.sigimItem) {
             Intent intent = new Intent(this, sigim.class);  // יצירת Intent למעבר לדף sigim
             startActivity(intent);  // פתיחת דף sigim
             return true;  // החזרת true כי ה-Intent בוצע בהצלחה
@@ -143,11 +143,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         });
 
         guessGame = findViewById(R.id.GuessGame);
+
+
+
+
         guessGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, GuessNumber.class);
-                startActivityForResult(intent, 222);
+                // שוב, בדיקה אם המוזיקה מאושרת
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+                boolean musicAllowed = pref.getBoolean("music", false);
+
+                if (musicAllowed) {
+                    Intent intent = new Intent(MainActivity.this, GuessNumber.class);
+                    startActivityForResult(intent, 222);
+                } else {
+                    // אם המוזיקה לא מאושרת, הצגת Toast
+                    Toast.makeText(MainActivity.this, "You must approve music first!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -160,6 +173,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 finish();
             }
         });
+    }
+
+    // הוספתי בדיקה אם המוזיקה מאושרת, אם לא הכפתור חסום
+    private void updateMusicButtonState() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        boolean musicAllowed = pref.getBoolean("music", false);
+
+        if (musicAllowed) {
+            guessGame.setEnabled(true);  // אם המוזיקה מאושרת, הכפתור פעיל
+        } else {
+            guessGame.setEnabled(false);  // אם המוזיקה לא מאושרת, הכפתור לא יפעל
+        }
     }
 
     @Override

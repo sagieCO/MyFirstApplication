@@ -1,5 +1,7 @@
 package com.sagie.myfirstapplication;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -12,11 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class sp extends AppCompatActivity {
 
-    Button btnSave, btnRead;
+    Button btnSave, btnRead,SpToHome;
     EditText etName, etAge;
     TextView tvDisplay;
     CheckBox checkBox;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +29,7 @@ public class sp extends AppCompatActivity {
         btnRead = findViewById(R.id.readButton);
         etName = findViewById(R.id.editTextString);
         etAge = findViewById(R.id.editTextInt);
-        tvDisplay = findViewById(R.id.displayTextView);  // Reference to the TextView for displaying the saved data
+        tvDisplay = findViewById(R.id.displayTextView);
         checkBox = findViewById(R.id.boolMusic);
 
         // Save data when the "Submit" button is clicked
@@ -48,7 +51,7 @@ public class sp extends AppCompatActivity {
                 editor.putString("name", name);
                 editor.putInt("age", age);
 
-                // Save the checkbox value
+                // Save the checkbox value for music
                 if (checkBox.isChecked()) {
                     editor.putBoolean("music", true);
                 } else {
@@ -56,7 +59,10 @@ public class sp extends AppCompatActivity {
                 }
 
                 // Apply changes to SharedPreferences
-                editor.apply();  // Only call apply once after all the changes
+                editor.apply();
+
+                // Return to the main activity only after the music has been enabled
+                // Do not navigate until music is enabled
             }
         });
 
@@ -74,5 +80,15 @@ public class sp extends AppCompatActivity {
                 tvDisplay.setText("Name: " + name + "\nAge: " + (age == -1 ? "No age found" : age) + "\nMusic: " + (music ? "Enabled" : "Disabled"));
             }
         });
+
+        SpToHome = findViewById(R.id.SpToHome);
+        SpToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(sp.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }
