@@ -1,95 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".sp"
-    android:background="#cb91f2">
+    android:background="#F0F0F0">
 
-    <EditText
-        android:id="@+id/editTextString"
-        android:layout_width="219dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="468dp"
-        android:hint="name"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextInt"
-        android:layout_width="219dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="20dp"
-        android:hint="age"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextString" />
-
-    <TextView
-        android:layout_width="157dp"
-        android:layout_height="63dp"
-        android:layout_marginTop="128dp"
-        android:hint="music"
-        android:textSize="23sp"
-        app:layout_constraintEnd_toStartOf="@+id/boolMusic"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <CheckBox
-        android:id="@+id/boolMusic"
-        android:layout_width="61dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="96dp"
-        android:text="submit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextInt" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/readButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Read"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submitButton" />
+        <!-- כותרת -->
+        <TextView
+            android:id="@+id/titleSP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Preferences"
+            android:textSize="28sp"
+            android:textColor="#4B0082"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"/>
 
-    <TextView
-        android:id="@+id/displayTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Display"
-        app:layout_constraintTop_toBottomOf="@id/readButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        <!-- כרטיס מידע -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            android:background="#FFFFFF"
+            android:padding="16dp">
 
-    <Button
-        android:id="@+id/SpToHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="156dp"
-        android:text="back home"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.535"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submitButton" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <!-- שדות קלט -->
+                <EditText
+                    android:id="@+id/editTextString"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"
+                    android:inputType="textPersonName"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <EditText
+                    android:id="@+id/editTextInt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Age"
+                    android:inputType="number"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- סוויץ' מוסיקה -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Music"
+                        android:textSize="18sp"
+                        android:textColor="#333333"/>
+
+                    <CheckBox
+                        android:id="@+id/boolMusic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- כפתורי שמירה וקריאה -->
+                <Button
+                    android:id="@+id/submitButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Submit"
+                    android:backgroundTint="#4B0082"
+                    android:textColor="#FFFFFF"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <Button
+                    android:id="@+id/readButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Read"
+                    android:backgroundTint="#9370DB"
+                    android:textColor="#FFFFFF"
+                    android:padding="12dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- תצוגת מידע -->
+        <TextView
+            android:id="@+id/displayTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Display"
+            android:textSize="18sp"
+            android:textColor="#333333"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp"/>
+
+        <!-- כפתור חזרה -->
+        <Button
+            android:id="@+id/SpToHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Back Home"
+            android:backgroundTint="#6A5ACD"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"/>
+        <Button
+            android:id="@+id/spToGuess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go to guess game"
+            android:textSize="20dp"/>
+    </LinearLayout>
+
+</ScrollView>

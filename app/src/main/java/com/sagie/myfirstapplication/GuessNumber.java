@@ -1,12 +1,11 @@
 package com.sagie.myfirstapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,30 +14,23 @@ import android.widget.Toast;
 
 public class GuessNumber extends AppCompatActivity {
 
-    private Context context;
     private LinearLayout guessPart;
-    private Button okBtn, backHome1, btnRange, resetGame;
-    private EditText numMin, numMax, yourGuess, et1, et2;
+    private Button okBtn, btnRange, resetGame,btnHome;
+    private EditText et1, et2, yourGuess;
     private TextView result;
-    private int numGuesses = 1, rand;
+    private int numGuesses = 0, rand;
     private MediaPlayer mediaPlayer;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_number);
-        context = this;
+        userName = getIntent().getStringExtra("user_name"); // קבלת שם המשתמש מ-MainActivity
 
-        initviews();
-        startGame();
-
-        mediaPlayer = MediaPlayer.create(this, R.raw.brazil);  // יש לשים את השם הזה לפי השם שלך ב־raw
-        mediaPlayer.setLooping(true);  // אם אתה רוצה שהמוזיקה תחזור בלולאה
-        mediaPlayer.start();
-    }
-
-    private void initviews() {
         okBtn = findViewById(R.id.okBtn);
+        okBtn.setVisibility(View.GONE);
+
         et1 = findViewById(R.id.etGuess1);
         et2 = findViewById(R.id.etGuess2);
         yourGuess = findViewById(R.id.guessYour);
@@ -46,56 +38,36 @@ public class GuessNumber extends AppCompatActivity {
         btnRange = findViewById(R.id.btnRange);
         guessPart = findViewById(R.id.guessPartLinear);
         resetGame = findViewById(R.id.resetGame);
-        backHome1 = findViewById(R.id.backHome1);
+        btnHome=findViewById(R.id.backHome1);
 
-        btnRange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (validateRange()) {
-                    startGuessing();
-                } else {
-                    Toast.makeText(context, "Please fill the fields", Toast.LENGTH_SHORT).show();
-                }
-            }
+        //mediaPlayer = MediaPlayer.create(this, R.raw.brazil);
+        //mediaPlayer.setLooping(true);
+        //mediaPlayer.start();
+
+        btnRange.setOnClickListener(v -> {
+            if (validateRange()) startGuessing();
+            else Toast.makeText(this, "Please fill the fields correctly", Toast.LENGTH_SHORT).show();
         });
 
-        backHome1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // הוספת Intent לחזרה לפעילות הראשית (MainActivity)
-                Intent intent = new Intent(GuessNumber.this, MainActivity.class);
-
-                // התחלת פעילות עם startActivityForResult והעברת קוד בקשה (למשל 100)
-                startActivityForResult(intent, 222);
-            }
+        okBtn.setOnClickListener(v -> {
+            int guess = Integer.parseInt(yourGuess.getText().toString());
+            checkGuess(guess);
         });
 
-        okBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String guessText = yourGuess.getText().toString();
-                int guess = Integer.parseInt(guessText);
+        resetGame.setOnClickListener(v -> startGame());
 
-                checkGuess(guess);
-            }
-        });
+     btnHome.setOnClickListener(v -> {
+       Intent intent = new Intent(GuessNumber.this, MainActivity.class);
+       startActivity(intent);});
 
-        resetGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startGame();
-            }
-        });
     }
 
     private boolean validateRange() {
-        String minText = et1.getText().toString();
-        String maxText = et2.getText().toString();
-        if (!minText.isEmpty() && !maxText.isEmpty()) {
-            int min = Integer.parseInt(minText);
-            int max = Integer.parseInt(maxText);
+        if (!et1.getText().toString().isEmpty() && !et2.getText().toString().isEmpty()) {
+            int min = Integer.parseInt(et1.getText().toString());
+            int max = Integer.parseInt(et2.getText().toString());
             if (max > min) {
-                rand = min + (int) ((max - min + 1) * Math.random());
+                rand = min + (int)((max - min + 1) * Math.random());
                 numGuesses = 1;
                 return true;
             }
@@ -103,39 +75,23 @@ public class GuessNumber extends AppCompatActivity {
         return false;
     }
 
-    private void checkGuess(int yourGuess) {
-        if (yourGuess == rand) {
-            result.setText("Correct. You won in: " + numGuesses + " tries");
+    private void checkGuess(int guess) {
+        if (guess == rand) {
+            result.setText("Correct! You won in " + numGuesses + " tries");
 
-            // יצירת Intent עם המידע
+            // מחזיר את התוצאה ל-MainActivity
             Intent resultIntent = new Intent();
-            resultIntent.putExtra("num_guesses", numGuesses);  // מספר הניחושים
-            resultIntent.putExtra("user_name", "bbb");  // שם המשתמש (או כל שם אחר שתרצה לשלוח)
-
-            // מחזיר את התוצאה לפעילות הקוראת (MainActivity)
+            resultIntent.putExtra("num_guesses", numGuesses);
+            resultIntent.putExtra("user_name", userName);
             setResult(RESULT_OK, resultIntent);
             finish();
-            // אל נסיים את הפעילות עדיין – Activity הראשית תסיים אותה לאחר קבלת התוצאה
-        } else if (yourGuess > rand) {
+        } else if (guess > rand) {
             numGuesses++;
-            result.setText("Wrong. The answer is smaller than your guess");
+            result.setText("Wrong. Answer is smaller.");
         } else {
             numGuesses++;
-            result.setText("Wrong. The answer is bigger than your guess");
+            result.setText("Wrong. Answer is bigger.");
         }
-    }
-
-    private void startGame() {
-        et1.setText("");
-        et2.setText("");
-        yourGuess.setText("");
-
-        numGuesses = 0;
-        guessPart.setVisibility(View.GONE);
-
-        et1.setEnabled(true);
-        et2.setEnabled(true);
-        btnRange.setEnabled(true);
     }
 
     private void startGuessing() {
@@ -143,24 +99,36 @@ public class GuessNumber extends AppCompatActivity {
         et2.setEnabled(false);
         btnRange.setEnabled(false);
         guessPart.setVisibility(View.VISIBLE);
+
+        okBtn.setOnClickListener(v -> {
+            String guessText = yourGuess.getText().toString();
+            if (!guessText.isEmpty()) {
+                int guess = Integer.parseInt(guessText);
+                checkGuess(guess);
+            } else {
+                Toast.makeText(this, "enter the inputs", Toast.LENGTH_LONG).show();
+            }
+        });
+        okBtn.setVisibility(View.VISIBLE);
     }
 
-    // עצירת המוזיקה כשהפעילות יוצאת מהמצב הפעיל
+    private void startGame() {
+        et1.setText("");
+        et2.setText("");
+        yourGuess.setText("");
+        numGuesses = 0;
+        guessPart.setVisibility(View.GONE);
+        et1.setEnabled(true);
+        et2.setEnabled(true);
+        btnRange.setEnabled(true);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();  // עוצר את המוזיקה
-            mediaPlayer.release();  // משחרר את המשאבים של המוזיקה
-        }
-    }
-
-    // הפעלת המוזיקה מחדש אם היא לא מנוגנת
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();  // מתחיל את המוזיקה אם היא לא מנוגנת
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
         }
     }
 }

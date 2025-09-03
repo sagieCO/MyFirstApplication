@@ -32,7 +32,7 @@ public class sigim extends AppCompatActivity {
         Dialog d = new Dialog(this);
 
         // ניתן לדיאלוג את ה-layout שיצרנו
-        d.setContentView(R.layout.activity_custom);  // כאן אתה משתמש ב-XML של הדיאלוג
+        //d.setContentView(R.layout.activity_custom);  // כאן אתה משתמש ב-XML של הדיאלוג
 
         // כותרת הדיאלוג
         d.setTitle("Login");

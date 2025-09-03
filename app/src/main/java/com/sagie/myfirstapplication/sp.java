@@ -9,12 +9,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class sp extends AppCompatActivity {
 
-    Button btnSave, btnRead,SpToHome;
+    Button btnSave, btnRead, SpToHome,spToGuess;
     EditText etName, etAge;
     TextView tvDisplay;
     CheckBox checkBox;
@@ -31,64 +30,54 @@ public class sp extends AppCompatActivity {
         etAge = findViewById(R.id.editTextInt);
         tvDisplay = findViewById(R.id.displayTextView);
         checkBox = findViewById(R.id.boolMusic);
-
-        // Save data when the "Submit" button is clicked
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = etName.getText().toString();
-                String ageStr = etAge.getText().toString();
-                int age = -1;
-
-                if (!ageStr.isEmpty()) {
-                    age = Integer.parseInt(ageStr);
-                }
-
-                // Save data to SharedPreferences
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                SharedPreferences.Editor editor = pref.edit();
-
-                editor.putString("name", name);
-                editor.putInt("age", age);
-
-                // Save the checkbox value for music
-                if (checkBox.isChecked()) {
-                    editor.putBoolean("music", true);
-                } else {
-                    editor.putBoolean("music", false);
-                }
-
-                // Apply changes to SharedPreferences
-                editor.apply();
-
-                // Return to the main activity only after the music has been enabled
-                // Do not navigate until music is enabled
-            }
-        });
-
-        // Read data when the "Read" button is clicked
-        btnRead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Read data from SharedPreferences
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                String name = pref.getString("name", "No name found");
-                int age = pref.getInt("age", -1);
-                boolean music = pref.getBoolean("music", false);  // Read the music preference
-
-                // Display the data
-                tvDisplay.setText("Name: " + name + "\nAge: " + (age == -1 ? "No age found" : age) + "\nMusic: " + (music ? "Enabled" : "Disabled"));
-            }
-        });
-
         SpToHome = findViewById(R.id.SpToHome);
-        SpToHome.setOnClickListener(new View.OnClickListener() {
+        spToGuess=findViewById(R.id.spToGuess);
+        spToGuess.setEnabled(false);
+        spToGuess.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(sp.this,MainActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(sp.this,GuessNumber.class);
                 startActivity(intent);
+                finish();
             }
         });
+        // שמירה ב-SharedPreferences
+        btnSave.setOnClickListener(v -> {
+            String name = etName.getText().toString();
+            int age = etAge.getText().toString().isEmpty() ? -1 : Integer.parseInt(etAge.getText().toString());
 
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("name", name);
+            editor.putInt("age", age);
+            editor.putBoolean("music", checkBox.isChecked());
+            editor.apply();
+            spToGuess.setEnabled(true);
+
+            etName.setEnabled(false);
+            etAge.setEnabled(false);
+            checkBox.setEnabled(false);
+            btnSave.setEnabled(false);
+        });
+
+        // קריאה מ-SharedPreferences
+        btnRead.setOnClickListener(v -> {
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            String name = pref.getString("name", "No name found");
+            int age = pref.getInt("age", -1);
+            boolean music = pref.getBoolean("music", false);
+            tvDisplay.setText("Name: " + name + "\nAge: " + (age == -1 ? "No age found" : age) +
+                    "\nMusic: " + (music ? "Enabled" : "Disabled"));
+        });
+
+        // חזרה ל-MainActivity
+        SpToHome.setOnClickListener(v -> {
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            String name = pref.getString("name", "NoName");
+
+            Intent intent = new Intent(sp.this, MainActivity.class);
+            intent.putExtra("user_name", name); // שולח את שם המשתמש
+            startActivity(intent);
+        });
     }
 }

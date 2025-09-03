@@ -25,18 +25,29 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/output"
-        android:layout_width="171dp"
-        android:layout_height="102dp"
-        android:layout_marginTop="384dp"
+        android:id="@+id/playerScore"
+        android:layout_width="205dp"
+        android:layout_height="197dp"
         android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:text="Sagie cohen or"
-        android:textSize="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.933"
+        android:textSize="45dp"
+        app:layout_constraintBottom_toTopOf="@+id/GuessGame"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/image1"
+        app:layout_constraintVertical_bias="0.556" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="180dp"
+        android:layout_height="97dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:textSize="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spButton"
+        app:layout_constraintVertical_bias="0.646" />
 
     <Button
         android:id="@+id/btn1"
@@ -72,30 +83,42 @@
         android:layout_height="67dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.784"
+        app:layout_constraintHorizontal_bias="0.799"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.463" />
+        app:layout_constraintVertical_bias="0.581" />
 
     <TextView
-        android:layout_width="179dp"
-        android:layout_height="46dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="88dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="12dp"
+        android:textSize="14sp"
+        android:text="play music"
+        app:layout_constraintBottom_toTopOf="@+id/musicBtn"
+        app:layout_constraintStart_toEndOf="@+id/playerScore"
+        app:layout_constraintTop_toBottomOf="@+id/linerPage"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:layout_width="141dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="28dp"
+        android:textSize="12sp"
         android:gravity="center"
         android:text="change background"
         app:layout_constraintBottom_toTopOf="@+id/switch1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linerPage"
-        app:layout_constraintVertical_bias="0.388" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <SeekBar
         android:id="@+id/sb"
         android:layout_width="222dp"
         android:layout_height="106dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/btn1"
         app:layout_constraintEnd_toStartOf="@+id/output"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"></SeekBar>
 
     <ImageView
@@ -125,15 +148,13 @@
 
     <Button
         android:id="@+id/GuessGame"
-        android:layout_width="224dp"
-        android:layout_height="95dp"
-        android:layout_marginStart="28dp"
-
+        android:layout_width="200dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
         android:text="go to guess the number"
         app:layout_constraintBottom_toTopOf="@+id/sb"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image1"
-        app:layout_constraintVertical_bias="0.806" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/linerPage"
@@ -145,17 +166,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+    <Switch
+        android:id="@+id/musicBtn"
+        android:layout_width="67dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="48dp"
+        app:layout_constraintEnd_toStartOf="@+id/framePage"
+        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintStart_toEndOf="@+id/playerScore"
+        app:layout_constraintTop_toBottomOf="@+id/linerPage" />
+
+    <Button
+        android:id="@+id/framePage"
+        android:layout_width="106dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="16dp"
+        android:text="Frame"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toEndOf="@+id/playerScore"
+        app:layout_constraintTop_toBottomOf="@+id/linerPage" />
 
     <Button
         android:id="@+id/spButton"
         android:layout_width="133dp"
         android:layout_height="82dp"
-        android:layout_marginTop="256dp"
+        android:layout_marginEnd="36dp"
         android:text="sp page"
-        app:layout_constraintBottom_toTopOf="@+id/output"
+        app:layout_constraintBottom_toTopOf="@+id/btn2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.692"
-        app:layout_constraintStart_toEndOf="@+id/GuessGame"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.478" />
+        app:layout_constraintTop_toBottomOf="@+id/switch1"
+        app:layout_constraintVertical_bias="0.133" />
 </androidx.constraintlayout.widget.ConstraintLayout>

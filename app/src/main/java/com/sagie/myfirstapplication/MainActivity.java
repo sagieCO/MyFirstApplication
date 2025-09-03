@@ -24,10 +24,11 @@ import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int START_GAME = 222, Accept_game = 111;
-    Button b1, b2, linerPage, guessGame, spButton;
-    TextView tv1;
+    Button b1, b2, linerPage, guessGame, spButton,btnFarme;
+    TextView output,playerScore;
     Context context;
-    Switch s;
+    Boolean isPlaying;
+    Switch s , musicBtn;
     SeekBar sb;
     ImageView image1, image2;
     ConstraintLayout mainLayout;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         @Override
         public void onReceive(Context context, Intent intent) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            tv1.setText("Battery Level: " + level + "%");
+            output.setText("Battery Level: " + level + "%");
         }
     };
 
@@ -48,11 +49,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         context = this;
         initviews();
 
-        updateMusicButtonState();
+        guessGame.setEnabled(false); // נעול כברירת מחדל
 
         // רישום ה-BroadcastReceiver לעדכוני סוללה
         IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, batteryIntentFilter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // מעדכן את מצב הכפתור בכל פעם שה-Activity חוזר למסך
+        updateMusicButtonState();
     }
 
     @Override
@@ -74,29 +82,38 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         } else if (id == R.id.mainPage) {
             Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.sigimItem) {
-            Intent intent = new Intent(this, sigim.class);  // יצירת Intent למעבר לדף sigim
-            startActivity(intent);  // פתיחת דף sigim
-            return true;  // החזרת true כי ה-Intent בוצע בהצלחה
+            Intent intent = new Intent(this, sigim.class);
+            startActivity(intent);
+            return true;
         }
 
-        return super.onOptionsItemSelected(item);  // החזרת תוצאה ברירת מחדל
+        return super.onOptionsItemSelected(item);
     }
 
     private void initviews() {
         b1 = findViewById(R.id.btn1);
         b2 = findViewById(R.id.btn2);
-        tv1 = findViewById(R.id.output);
-
+        output = findViewById(R.id.output);
+        musicBtn=findViewById(R.id.musicBtn);
+        playerScore=findViewById(R.id.playerScore);
+        btnFarme=findViewById(R.id.framePage);
         mainLayout = findViewById(R.id.mainLayout);
-
+        btnFarme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,FrameActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         s = findViewById(R.id.switch1);
         s.setOnCheckedChangeListener(this);
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tv1.setText("cohen");
-                tv1.setTextColor(0xFF0000FF);
+                output.setText("cohen");
+                output.setTextColor(0xFF0000FF);
                 Log.d("sagie", "Button 1");
             }
         });
@@ -104,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tv1.setText("sagie");
-                tv1.setTextColor(0xFFFF3B4B);
+                output.setText("sagie");
+                output.setTextColor(0xFFFF3B4B);
                 Log.d("sagie", "Button 2");
             }
         });
@@ -124,12 +141,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         linerPage = findViewById(R.id.linerPage);
@@ -141,24 +156,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 finish();
             }
         });
-
+        Intent intentFromSP = getIntent();
+        String userName = intentFromSP.getStringExtra("user_name");
         guessGame = findViewById(R.id.GuessGame);
-
-
-
-
         guessGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // שוב, בדיקה אם המוזיקה מאושרת
                 SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
                 boolean musicAllowed = pref.getBoolean("music", false);
 
                 if (musicAllowed) {
+                    // שליחה ל-GuessNumber עם שם המשתמש
                     Intent intent = new Intent(MainActivity.this, GuessNumber.class);
+                    if (userName != null) {
+                        intent.putExtra("user_name", userName); // שולח את השם ל-GuessNumber
+                    }
                     startActivityForResult(intent, 222);
                 } else {
-                    // אם המוזיקה לא מאושרת, הצגת Toast
                     Toast.makeText(MainActivity.this, "You must approve music first!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -170,21 +184,25 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, sp.class);
                 startActivity(intent);
-                finish();
             }
         });
+        musicBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Intent intent = new Intent(MainActivity.this, MusicService.class);
+            if (isChecked) {
+                intent.putExtra("action", "start");
+            } else {
+                intent.putExtra("action", "stop");
+            }
+            startService(intent);
+        });
+
     }
 
-    // הוספתי בדיקה אם המוזיקה מאושרת, אם לא הכפתור חסום
+
     private void updateMusicButtonState() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         boolean musicAllowed = pref.getBoolean("music", false);
-
-        if (musicAllowed) {
-            guessGame.setEnabled(true);  // אם המוזיקה מאושרת, הכפתור פעיל
-        } else {
-            guessGame.setEnabled(false);  // אם המוזיקה לא מאושרת, הכפתור לא יפעל
-        }
+        guessGame.setEnabled(musicAllowed);
     }
 
     @Override
@@ -204,8 +222,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             String userName = data.getStringExtra("user_name");
 
             Toast.makeText(this, "Game finished! Number of guesses: " + numGuesses + " , user: " + userName, Toast.LENGTH_SHORT).show();
-
-            tv1.setText(userName + " won in " + numGuesses + " guesses.");
+            playerScore.setText(userName + " won in " + numGuesses + " guesses.");
         } else {
             Toast.makeText(this, "Game was canceled or didn't finish successfully.", Toast.LENGTH_SHORT).show();
         }
@@ -214,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // ביטול רישום ה-BroadcastReceiver כשאקטיביטי נהרסת
         unregisterReceiver(batteryReceiver);
     }
 }
