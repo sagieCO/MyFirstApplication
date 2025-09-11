@@ -22,6 +22,8 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.SharedPreferences;
 
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private static final int START_GAME = 222, Accept_game = 111;
     Button b1, b2, linerPage, guessGame, spButton,btnFarme;
@@ -40,6 +42,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             output.setText("Battery Level: " + level + "%");
         }
     };
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser currentUser) {
+
+        Toast.makeText(context, "Hello !", Toast.LENGTH_LONG).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

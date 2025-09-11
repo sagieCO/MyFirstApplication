@@ -6,33 +6,76 @@
     android:layout_height="match_parent"
     tools:context=".FrameActivity"
     android:orientation="vertical"
-    android:background="#3f8c50">
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#3F848C">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="אימייל"
+        android:textSize="18sp"
+        android:textColor="@android:color/white" />
 
     <EditText
+        android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="282dp"
-        android:layout_weight="1"
-        android:height="20dp"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="הכנס אימייל"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="סיסמה"
+        android:textSize="18sp"
+        android:textColor="@android:color/white" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="הכנס סיסמה"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="התחבר" />
+
+    <!-- שדה מוסתר להצגת שגיאות/Exceptions -->
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:text="FrameActivity" />
-  <Button
-      android:id="@+id/btnHome"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="back to home page"
-    android:height="200dp"
-    android:layout_weight="1"
-    />
-<FrameLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_weight="1"/>
+        android:text="Error placeholder" />
 
-    <ImageView
-        android:layout_width="400dp"
-        android:layout_height="167dp"
-        android:layout_marginTop="36dp"
-        android:src="@drawable/img_7" />
+    <TextView
+        android:id="@+id/tVMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="16dp" />
 
+    <!-- כפתור התנתקות -->
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="התנתק"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

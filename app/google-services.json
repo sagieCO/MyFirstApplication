@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "234009422444",
+    "project_id": "sagiefirebase",
+    "storage_bucket": "sagiefirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:234009422444:android:07367f9b323c46412f0649",
+        "android_client_info": {
+          "package_name": "com.sagie.myfirstapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ5gRgJwksq1We2rOwDAwQmDO2YwlGVok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
