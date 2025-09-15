@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         // רישום ה-BroadcastReceiver לעדכוני סוללה
         IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, batteryIntentFilter);
+
+        Student student1 = new Student(67, 3, "Sagie Cohen", "1");
+        student1.saveToFirebase();
+        Student student2 = new Student(80, 4, "Ori sivlem", "2");
+        student2.saveToFirebase();
+        Student student3 = new Student(99, 1, "Sagie Cohen", "3");
+        student3.saveToFirebase();
+
     }
 
     @Override

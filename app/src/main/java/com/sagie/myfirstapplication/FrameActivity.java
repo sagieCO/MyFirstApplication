@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FrameActivity extends AppCompatActivity {
 
-    Button btnLogin, btnRegister, btnLogout;
+    Button btnLogin, btnRegister, btnLogout,btnHome;
     TextView tVMsg, tVStatus;
     EditText etEmail, etPassword;
 
@@ -33,7 +35,15 @@ public class FrameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_frame);
 
         auth = FirebaseAuth.getInstance();
-
+        btnHome=findViewById(R.id.btnHome);
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FrameActivity.this,MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         // Init views
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
@@ -58,6 +68,9 @@ public class FrameActivity extends AppCompatActivity {
                 tVStatus.setText("משתמש לא מחובר");
             }
         };
+
+
+
     }
 
     @Override

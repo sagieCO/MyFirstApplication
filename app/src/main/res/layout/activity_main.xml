@@ -10,19 +10,19 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="205dp"
-        android:layout_height="110dp"
+        android:layout_width="161dp"
+        android:layout_height="53dp"
         android:layout_marginTop="36dp"
         android:background="#E46A6A"
         android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:text="My First Application"
+        android:gravity="right"
+        android:text="שלום "
         android:textColor="#000000"
-        android:textSize="40sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/playerScore"
