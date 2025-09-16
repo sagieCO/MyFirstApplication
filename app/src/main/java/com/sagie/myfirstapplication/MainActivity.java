@@ -1,11 +1,15 @@
 package com.sagie.myfirstapplication;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,22 +23,29 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import android.content.SharedPreferences;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+
     private static final int START_GAME = 222, Accept_game = 111;
-    Button b1, b2, linerPage, guessGame, spButton,btnFarme;
-    TextView output,playerScore;
-    Context context;
-    Boolean isPlaying;
-    Switch s , musicBtn;
+
+    // Views
+    Button b1, b2, linerPage, guessGame, spButton, btnFarme;
+    TextView output, playerScore, welomeUser;
+    Switch s, musicBtn;
     SeekBar sb;
     ImageView image1, image2;
     ConstraintLayout mainLayout;
 
+    // Others
+    Context context;
+    Boolean isPlaying;
+
+    // Battery receiver
     private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -42,18 +53,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             output.setText("Battery Level: " + level + "%");
         }
     };
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
 
-    private void updateUI(FirebaseUser currentUser) {
-
-        Toast.makeText(context, "Hello !", Toast.LENGTH_LONG).show();
-    }
+    // -------- Lifecycle Methods --------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         setContentView(R.layout.activity_main);
 
         context = this;
-        initviews();
+        initViews();
 
         guessGame.setEnabled(false); // נעול כברירת מחדל
 
@@ -69,21 +70,35 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, batteryIntentFilter);
 
+        // שמירת תלמידים לדוגמה
         Student student1 = new Student(67, 3, "Sagie Cohen", "1");
         student1.saveToFirebase();
         Student student2 = new Student(80, 4, "Ori sivlem", "2");
         student2.saveToFirebase();
         Student student3 = new Student(99, 1, "Sagie Cohen", "3");
         student3.saveToFirebase();
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // מעדכן את מצב הכפתור בכל פעם שה-Activity חוזר למסך
         updateMusicButtonState();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(batteryReceiver);
+    }
+
+    // -------- Menu Methods --------
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,102 +127,94 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         return super.onOptionsItemSelected(item);
     }
 
-    private void initviews() {
+    // -------- Init Views & Listeners --------
+
+    private void initViews() {
+        // חיבור ל־XML
         b1 = findViewById(R.id.btn1);
         b2 = findViewById(R.id.btn2);
         output = findViewById(R.id.output);
-        musicBtn=findViewById(R.id.musicBtn);
-        playerScore=findViewById(R.id.playerScore);
-        btnFarme=findViewById(R.id.framePage);
+        musicBtn = findViewById(R.id.musicBtn);
+        playerScore = findViewById(R.id.playerScore);
+        btnFarme = findViewById(R.id.framePage);
         mainLayout = findViewById(R.id.mainLayout);
-        btnFarme.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,FrameActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
         s = findViewById(R.id.switch1);
-        s.setOnCheckedChangeListener(this);
-
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                output.setText("cohen");
-                output.setTextColor(0xFF0000FF);
-                Log.d("sagie", "Button 1");
-            }
-        });
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                output.setText("sagie");
-                output.setTextColor(0xFFFF3B4B);
-                Log.d("sagie", "Button 2");
-            }
-        });
-
         sb = findViewById(R.id.sb);
         image1 = findViewById(R.id.image1);
         image2 = findViewById(R.id.image2);
+        linerPage = findViewById(R.id.linerPage);
+        guessGame = findViewById(R.id.GuessGame);
+        spButton = findViewById(R.id.spButton);
+        welomeUser = findViewById(R.id.welomeUser);
+
+        // מאזינים
+        s.setOnCheckedChangeListener(this);
+
+        b1.setOnClickListener(v -> {
+            output.setText("cohen");
+            output.setTextColor(0xFF0000FF);
+            Log.d("sagie", "Button 1");
+        });
+
+        b2.setOnClickListener(v -> {
+            output.setText("sagie");
+            output.setTextColor(0xFFFF3B4B);
+            Log.d("sagie", "Button 2");
+        });
 
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                float alfha = (float) i / 100;
-                image1.setAlpha(alfha);
+                float alpha = (float) i / 100;
+                image1.setAlpha(alpha);
                 float beta = 1 - (float) i / 100;
                 image2.setAlpha(beta);
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        linerPage = findViewById(R.id.linerPage);
-        linerPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, LinearActivity.class);
-                startActivity(intent);
-                finish();
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        btnFarme.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, FrameActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        linerPage.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, LinearActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
         Intent intentFromSP = getIntent();
         String userName = intentFromSP.getStringExtra("user_name");
-        guessGame = findViewById(R.id.GuessGame);
-        guessGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                boolean musicAllowed = pref.getBoolean("music", false);
 
-                if (musicAllowed) {
-                    // שליחה ל-GuessNumber עם שם המשתמש
-                    Intent intent = new Intent(MainActivity.this, GuessNumber.class);
-                    if (userName != null) {
-                        intent.putExtra("user_name", userName); // שולח את השם ל-GuessNumber
-                    }
-                    startActivityForResult(intent, 222);
-                } else {
-                    Toast.makeText(MainActivity.this, "You must approve music first!", Toast.LENGTH_SHORT).show();
+        guessGame.setOnClickListener(v -> {
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+            boolean musicAllowed = pref.getBoolean("music", false);
+
+            if (musicAllowed) {
+                Intent intent = new Intent(MainActivity.this, GuessNumber.class);
+                if (userName != null) {
+                    intent.putExtra("user_name", userName);
                 }
+                startActivityForResult(intent, START_GAME);
+            } else {
+                Toast.makeText(MainActivity.this, "You must approve music first!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        spButton = findViewById(R.id.spButton);
-        spButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, sp.class);
-                startActivity(intent);
-            }
+        spButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, sp.class);
+            startActivity(intent);
         });
+
         musicBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Intent intent = new Intent(MainActivity.this, MusicService.class);
             if (isChecked) {
@@ -217,9 +224,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
             startService(intent);
         });
-
     }
 
+    // -------- Logic Methods --------
+
+    private void updateUI(FirebaseUser currentUser) {
+        Toast.makeText(context, "Hello !", Toast.LENGTH_LONG).show();
+    }
 
     private void updateMusicButtonState() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -236,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
+    // -------- Activity Result --------
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -250,9 +263,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(batteryReceiver);
-    }
+
+
+
 }
+
+

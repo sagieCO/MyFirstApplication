@@ -1,6 +1,7 @@
 package com.sagie.myfirstapplication;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -13,4 +14,5 @@ public class FBRef {
 
     // מצביע לשורש "Students" במסד הנתונים
     public static DatabaseReference refStudents = FBDB.getReference("Students");
+    public static DataSnapshot refUsers;
 }
