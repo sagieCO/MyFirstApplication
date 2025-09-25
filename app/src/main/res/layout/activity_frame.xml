@@ -49,34 +49,95 @@
         android:layout_marginBottom="24dp"
         android:padding="10dp" />
 
-    <!-- כפתור Login -->
-    <Button
-        android:id="@+id/btnLogin"
+    <!-- שורה 1: Login + Register -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:textSize="18sp"
-        android:layout_marginBottom="12dp" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
 
-    <!-- כפתור Register -->
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textSize="18sp"
-        android:layout_marginBottom="12dp" />
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Login"
+            android:textSize="14sp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white" />
 
-    <!-- כפתור Logout -->
-    <Button
-        android:id="@+id/btnLogout"
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Register"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <!-- שורה 2: Logout + Read -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Logout"
-        android:textSize="18sp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@android:color/holo_red_light"
-        android:textColor="@android:color/white" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Logout"
+            android:textSize="14sp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnRead"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Read"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <!-- שורה 3: Update + Remove -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp">
+
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Update"
+            android:textSize="14sp"
+            android:layout_marginEnd="5dp"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnRemove"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Remove"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="@android:color/holo_purple"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
     <!-- TextView להצגת שגיאות או הודעות -->
     <TextView
@@ -99,13 +160,20 @@
         android:textColor="@android:color/white"
         android:gravity="center" />
 
+    <!-- כפתור חזרה לדף ראשי -->
     <Button
         android:id="@+id/btnHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
         android:text="חזרה לדף ראשי"
-        android:textSize="18sp"
-        android:layout_marginTop="24dp"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="@android:color/holo_blue_light"
         android:textColor="@android:color/white" />
+
+    <ListView
+        android:id="@+id/ls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>
