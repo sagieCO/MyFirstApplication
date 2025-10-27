@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private static final int START_GAME = 222, Accept_game = 111;
 
     // Views
-    Button b1, b2, linerPage, guessGame, spButton, btnFarme;
+    Button b1, b2, linerPage, guessGame, spButton, btnFarme,RegisterPage;
     TextView output, playerScore, welomeUser;
     Switch s, musicBtn;
     SeekBar sb;
@@ -146,7 +146,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         guessGame = findViewById(R.id.GuessGame);
         spButton = findViewById(R.id.spButton);
         welomeUser = findViewById(R.id.welomeUser);
-
+    RegisterPage=findViewById(R.id.RegisterPage);
+    RegisterPage.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(MainActivity.this, Register.class);
+            startActivity(intent);
+        }
+    });
         // מאזינים
         s.setOnCheckedChangeListener(this);
 

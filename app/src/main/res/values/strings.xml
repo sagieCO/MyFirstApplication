@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">My First Application</string>
-</resources>
+    <string-array name="military_profiles">
+        <item>97</item>
+        <item>82</item>
+        <item>72</item>
+        <item>64</item>
+        <item>52</item>
+    </string-array>
+
+    <!-- דפר -->
+    <string-array name="dapar_values">
+        <item>90</item>
+        <item>80</item>
+        <item>70</item>
+        <item>60</item>
+        <item>50</item>
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+    </string-array>
+
+
+
+    </resources>
