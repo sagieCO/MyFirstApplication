@@ -26,12 +26,24 @@
         android:id="@+id/RegisterPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginBottom="104dp"
         android:text="Register"
         app:layout_constraintBottom_toTopOf="@+id/playerScore"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image2"
-        app:layout_constraintVertical_bias="0.521" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btnCalender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="36dp"
+        android:text="calender"
+        app:layout_constraintBottom_toTopOf="@+id/RegisterPage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/playerScore"
@@ -42,7 +54,6 @@
         android:textSize="45dp"
         app:layout_constraintBottom_toTopOf="@+id/GuessGame"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image1"
         app:layout_constraintVertical_bias="0.556" />
 
     <TextView
@@ -128,29 +139,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"></SeekBar>
 
-    <ImageView
-        android:id="@+id/image1"
-        android:layout_width="167dp"
-        android:layout_height="167dp"
-        android:layout_marginTop="36dp"
-        android:alpha="0"
-        android:src="@drawable/img"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ImageView>
 
-    <ImageView
-        android:id="@+id/image2"
-        android:layout_width="162dp"
-        android:layout_height="170dp"
-        android:alpha="1"
-        android:src="@drawable/img_1"
-        app:layout_constraintBottom_toTopOf="@+id/sb"
-        app:layout_constraintHorizontal_bias="0.4"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+
+
 
     <Button
         android:id="@+id/GuessGame"

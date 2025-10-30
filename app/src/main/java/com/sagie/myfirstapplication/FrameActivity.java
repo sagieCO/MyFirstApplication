@@ -33,9 +33,7 @@ public class FrameActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener authListener;
 
-    ArrayList<String> stuList = new ArrayList<>();
-    ArrayList<Student> stuValues = new ArrayList<>();
-    ArrayList<String> studentKeys = new ArrayList<>(); // לשמור את המפתחות של התלמידים
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,50 +64,9 @@ public class FrameActivity extends AppCompatActivity {
             }
         };
 
-        // כפתור Read
-        btnRead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                refStudents.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot ds) {
-                        stuList.clear();
-                        stuValues.clear();
-                        studentKeys.clear(); // לא לשכוח לנקות את המפתחות
 
-                        for (DataSnapshot data : ds.getChildren()) {
-                            String key = data.getKey(); // שמור את המפתח
-                            Student stuTmp = data.getValue(Student.class);
-                            stuValues.add(stuTmp);
-                            studentKeys.add(key); // שמור את המפתח ברשימה
-                            String str2 = stuTmp.getStuName();
-                            stuList.add(str2); // הצג רק את שם התלמיד
-                        }
-                        ArrayAdapter<String> adp = new ArrayAdapter<>(FrameActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, stuList);
-                        ls.setAdapter(adp);
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        tVMsg.setText("שגיאה בטעינת התלמידים");
-                    }
-                });
-            }
-        });
 
-        // כפתור Remove
-        btnRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = ls.getCheckedItemPosition(); // קבל את המיקום של התלמיד שנבחר
-                if (position != -1) { // אם יש תלמיד שנבחר
-                    String studentKey = studentKeys.get(position); // קבל את המפתח של התלמיד
-                    deleteStudentFromDatabase(studentKey); // מחוק את התלמיד מ-Firebase
-                } else {
-                    tVMsg.setText("אנא בחר תלמיד למחוק");
-                }
-            }
-        });
     }
 
     public void init() {
@@ -205,40 +162,10 @@ public class FrameActivity extends AppCompatActivity {
     }
 
     // פונקציה למחיקת תלמיד מ-Firebase
-    private void deleteStudentFromDatabase(String studentKey) {
-        refStudents.child(studentKey).removeValue()
-                .addOnSuccessListener(aVoid -> {
-                    tVMsg.setText("התלמיד נמחק בהצלחה.");
-                    refreshStudentList(); // ריענון הרשימה לאחר מחיקה
-                })
-                .addOnFailureListener(e -> {
-                    tVMsg.setText("שגיאה במחיקת התלמיד: " + e.getMessage());
-                });
-    }
+
+
 
     // פונקציה לריענון רשימת התלמידים
-    private void refreshStudentList() {
-        refStudents.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot ds) {
-                stuList.clear();
-                stuValues.clear();
-                studentKeys.clear();
-                for (DataSnapshot data : ds.getChildren()) {
-                    String key = data.getKey();
-                    Student stuTmp = data.getValue(Student.class);
-                    stuValues.add(stuTmp);
-                    studentKeys.add(key);
-                    stuList.add(stuTmp.getStuName());
-                }
-                ArrayAdapter<String> adp = new ArrayAdapter<>(FrameActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, stuList);
-                ls.setAdapter(adp);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                tVMsg.setText("שגיאה בטעינת התלמידים");
-            }
-        });
-    }
+
 }

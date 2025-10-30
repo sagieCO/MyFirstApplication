@@ -34,11 +34,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private static final int START_GAME = 222, Accept_game = 111;
 
     // Views
-    Button b1, b2, linerPage, guessGame, spButton, btnFarme,RegisterPage;
+    Button b1, b2, linerPage, guessGame, spButton, btnFarme,RegisterPage,btnCalender;
     TextView output, playerScore, welomeUser;
     Switch s, musicBtn;
-    SeekBar sb;
-    ImageView image1, image2;
     ConstraintLayout mainLayout;
 
     // Others
@@ -139,14 +137,22 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         btnFarme = findViewById(R.id.framePage);
         mainLayout = findViewById(R.id.mainLayout);
         s = findViewById(R.id.switch1);
-        sb = findViewById(R.id.sb);
-        image1 = findViewById(R.id.image1);
-        image2 = findViewById(R.id.image2);
         linerPage = findViewById(R.id.linerPage);
         guessGame = findViewById(R.id.GuessGame);
         spButton = findViewById(R.id.spButton);
+        btnCalender=findViewById(R.id.btnCalender);
         welomeUser = findViewById(R.id.welomeUser);
     RegisterPage=findViewById(R.id.RegisterPage);
+
+    btnCalender.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(MainActivity.this, calender.class);
+            startActivity(intent);
+        }
+    });
+
+
     RegisterPage.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -169,23 +175,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             Log.d("sagie", "Button 2");
         });
 
-        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                float alpha = (float) i / 100;
-                image1.setAlpha(alpha);
-                float beta = 1 - (float) i / 100;
-                image2.setAlpha(beta);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
 
         btnFarme.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FrameActivity.class);
