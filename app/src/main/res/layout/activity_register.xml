@@ -1,141 +1,85 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="24dp"
-    android:background="#F2F2F2"
-    tools:context=".Register">
+    android:gravity="top|center_horizontal"
+    android:background="#B14B8040">
 
-    <!-- תווית מייל -->
+    <!-- כותרת עליונה -->
     <TextView
-        android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="מייל"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:text="הרשמה"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"/>
 
-    <!-- EditText למייל -->
+    <!-- שדות אימייל וסיסמה -->
     <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="הכנס מייל"
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="מייל"
         android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:backgroundTint="#CCCCCC"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/emailLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginBottom="16dp"/>
 
-    <!-- תווית סיסמה -->
-    <TextView
-        android:id="@+id/passwordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="סיסמה"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/emailEditText"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"/>
-
-    <!-- EditText לסיסמה -->
     <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="הכנס סיסמה"
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="סיסמה"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:backgroundTint="#CCCCCC"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/passwordLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:layout_marginBottom="16dp"/>
 
-    <!-- תווית פרופיל צבאי -->
-    <TextView
-        android:id="@+id/militaryLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="פרופיל צבאי"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Spinner לפרופיל צבאי -->
-    <Spinner
-        android:id="@+id/militaryProfileSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:backgroundTint="#CCCCCC"
-        android:popupBackground="#FFFFFF"
-        android:spinnerMode="dropdown"
-        app:layout_constraintTop_toBottomOf="@id/militaryLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/deferSpinner"
-        android:entries="@array/military_profiles"/>
-
-    <!-- תווית דפר -->
-    <TextView
-        android:id="@+id/deferLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="דפר"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-        app:layout_constraintStart_toEndOf="@id/militaryProfileSpinner"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Spinner לדפר -->
-    <Spinner
-        android:id="@+id/deferSpinner"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:backgroundTint="#CCCCCC"
-        android:popupBackground="#FFFFFF"
-        android:spinnerMode="dropdown"
-        app:layout_constraintTop_toBottomOf="@id/deferLabel"
-        app:layout_constraintStart_toEndOf="@id/militaryProfileSpinner"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:entries="@array/dapar_values"/>
-
-    <!-- כפתור הרשמה -->
     <Button
-        android:id="@+id/registerButton"
-        android:layout_width="0dp"
+        android:id="@+id/btnCreateAccount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="הרשם"
-        android:backgroundTint="#4CAF50"
-        android:textColor="#FFFFFF"
-        android:padding="14dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/militaryProfileSpinner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:text="צור חשבון"
+        android:layout_marginBottom="24dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- חלק נמוך – שדות נוספים (ננעלים בהתחלה) -->
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="שם מלא"
+        android:enabled="false"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/etAge"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="גיל"
+        android:inputType="number"
+        android:enabled="false"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="כתובת מגורים"
+        android:enabled="false"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnSaveExtra"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="שמור פרטים"
+        android:enabled="false"/>
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="24dp"/>
+</LinearLayout>

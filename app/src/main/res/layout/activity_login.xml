@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layoutDirection="rtl"
+    android:textDirection="rtl"
+    android:padding="24dp"
+    android:background="#B14B8040"
+    tools:context=".Login">
+
+    <!-- כותרת -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="התחברות"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"/>
+
+    <!-- שדה אימייל -->
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:hint="מייל"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp"
+        android:gravity="end"/>
+
+    <!-- שדה סיסמה -->
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:hint="סיסמה"
+        android:inputType="textPassword"
+        android:layout_marginBottom="24dp"
+        android:gravity="end"/>
+
+    <!-- כפתור התחברות -->
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="התחבר"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- כפתור איפוס -->
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:text="איפוס שדות"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- CheckBox הישאר מחובר -->
+    <CheckBox
+        android:id="@+id/cbStayLoggedIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="הישאר מחובר"
+        android:layout_gravity="center"
+        android:gravity="end"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- טקסט וקישור להרשמה -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:id="@+id/tvNoAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="אין לך חשבון?" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="הירשם"
+            />
+
+
+
+    </LinearLayout>
+
+    <!-- הודעה/שגיאה -->
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        android:gravity="center"
+        android:text=""
+        android:layout_marginTop="8dp"/>
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textSize="14sp"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:textColor="@android:color/white" />
+</LinearLayout>

@@ -13,13 +13,16 @@
         android:theme="@style/Theme.MyFirstApplication"
         tools:targetApi="31">
         <activity
+            android:name=".Register"
+            android:exported="false" />
+        <activity
+            android:name=".Login"
+            android:exported="false" />
+        <activity
             android:name=".calender"
             android:exported="false" />
         <activity
             android:name=".mechinot_info"
-            android:exported="false" />
-        <activity
-            android:name=".Register"
             android:exported="false" />
         <activity
             android:name=".frame"

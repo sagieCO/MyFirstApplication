@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private static final int START_GAME = 222, Accept_game = 111;
 
     // Views
-    Button b1, b2, linerPage, guessGame, spButton, btnFarme,RegisterPage,btnCalender;
+    Button b1, b2, linerPage, guessGame, spButton, btnFarme,btnLogin,btnCalender;
     TextView output, playerScore, welomeUser;
     Switch s, musicBtn;
     ConstraintLayout mainLayout;
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         spButton = findViewById(R.id.spButton);
         btnCalender=findViewById(R.id.btnCalender);
         welomeUser = findViewById(R.id.welomeUser);
-    RegisterPage=findViewById(R.id.RegisterPage);
+        btnLogin=findViewById(R.id.btnLogin);
 
     btnCalender.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -153,10 +153,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     });
 
 
-    RegisterPage.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, Register.class);
+                Intent intent = new Intent(MainActivity.this, Login.class);
             startActivity(intent);
         }
     });
@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             Toast.makeText(this, "Game was canceled or didn't finish successfully.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 
 
