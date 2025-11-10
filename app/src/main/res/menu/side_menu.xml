@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Main">
+        <menu>
+
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/snv_updates"
+        android:title="Updates" />
+
+    <item
+        android:id="@+id/snv_sent"
+        android:title="Sent" />
+
+    <item
+        android:id="@+id/snv_Drafts"
+        android:title="Drafts" />
+
+    <item
+        android:id="@+id/snv_profile"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/snv_spam"
+        android:title="Spam" />
+
+    <item
+        android:id="@+id/snv_trash"
+        android:title="Trash" />
+
+    <item
+        android:id="@+id/snv_settings"
+        android:title="Settings" />
+
+    <item
+        android:id="@+id/snv_logout"
+        android:title="Logout" />
+
+
+</menu>

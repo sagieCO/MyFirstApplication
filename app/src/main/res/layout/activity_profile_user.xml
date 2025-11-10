@@ -27,6 +27,7 @@
             android:layout_height="120dp"
             android:layout_marginBottom="24dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/account_icom"
             android:contentDescription="Profile Image"
             app:shapeAppearanceOverlay="@style/CircleImageView" />
 
