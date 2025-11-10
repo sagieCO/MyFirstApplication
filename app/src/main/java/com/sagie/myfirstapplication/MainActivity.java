@@ -1,58 +1,31 @@
 package com.sagie.myfirstapplication;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.BatteryManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
-
-    private static final int START_GAME = 222, Accept_game = 111;
+public class MainActivity extends AppCompatActivity {
 
     // Views
-    Button b1, b2, linerPage, guessGame, spButton, btnFarme,btnLogin,btnCalender;
-    TextView output, playerScore, welomeUser;
-    Switch s, musicBtn;
-    ConstraintLayout mainLayout;
+    Button linerPage, guessGame, spButton, btnFrame, btnCalender;
+    ImageButton btnProfile;
+    TextView playerScore, welcomeUser,btnLogin;
 
-    // Others
     Context context;
-    Boolean isPlaying;
 
-    // Battery receiver
-    private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            output.setText("Battery Level: " + level + "%");
-        }
-    };
-
-    // -------- Lifecycle Methods --------
+    private static final int START_GAME = 222;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,20 +34,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         context = this;
         initViews();
+        setupListeners();
 
-        guessGame.setEnabled(false); // נעול כברירת מחדל
 
-        // רישום ה-BroadcastReceiver לעדכוני סוללה
-        IntentFilter batteryIntentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(batteryReceiver, batteryIntentFilter);
-
-        // שמירת תלמידים לדוגמה
-        Student student1 = new Student(67, 3, "Sagie Cohen", "1");
-        student1.saveToFirebase();
-        Student student2 = new Student(80, 4, "Ori sivlem", "2");
-        student2.saveToFirebase();
-        Student student3 = new Student(99, 1, "Sagie Cohen", "3");
-        student3.saveToFirebase();
     }
 
     @Override
@@ -84,113 +46,34 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         updateUI(currentUser);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateMusicButtonState();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(batteryReceiver);
-    }
-
-    // -------- Menu Methods --------
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.loginPage) {
-            Toast.makeText(this, "You selected login", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.registerPage) {
-            Toast.makeText(this, "You selected register", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.settingPage) {
-            Toast.makeText(this, "You selected setting", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.mainPage) {
-            Toast.makeText(this, "You selected main", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.sigimItem) {
-            Intent intent = new Intent(this, sigim.class);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    // -------- Init Views & Listeners --------
-
     private void initViews() {
-        // חיבור ל־XML
-        b1 = findViewById(R.id.btn1);
-        b2 = findViewById(R.id.btn2);
-        output = findViewById(R.id.output);
-        musicBtn = findViewById(R.id.musicBtn);
-        playerScore = findViewById(R.id.playerScore);
-        btnFarme = findViewById(R.id.framePage);
-        mainLayout = findViewById(R.id.mainLayout);
-        s = findViewById(R.id.switch1);
         linerPage = findViewById(R.id.linerPage);
         guessGame = findViewById(R.id.GuessGame);
         spButton = findViewById(R.id.spButton);
-        btnCalender=findViewById(R.id.btnCalender);
-        welomeUser = findViewById(R.id.welomeUser);
-        btnLogin=findViewById(R.id.btnLogin);
+        btnFrame = findViewById(R.id.framePage);
+        btnLogin = findViewById(R.id.btnLogin);
+        btnCalender = findViewById(R.id.btnCalender);
+        playerScore = findViewById(R.id.playerScore);
+        welcomeUser = findViewById(R.id.welcomeUser);
+        btnProfile=findViewById(R.id.profileIcon);
+    }
 
-    btnCalender.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(MainActivity.this, calender.class);
-            startActivity(intent);
-        }
-    });
+    private void setupListeners() {
+        btnCalender.setOnClickListener(v ->
+                startActivity(new Intent(this, calender.class)));
+        btnProfile.setOnClickListener(v ->
+                startActivity(new Intent(this, profileUser.class)));
+        btnLogin.setOnClickListener(v ->
+                startActivity(new Intent(this, Login.class)));
 
+        btnFrame.setOnClickListener(v ->
+                startActivity(new Intent(this, FrameActivity.class)));
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivity(intent);
-        }
-    });
-        // מאזינים
-        s.setOnCheckedChangeListener(this);
+        linerPage.setOnClickListener(v ->
+                startActivity(new Intent(this, LinearActivity.class)));
 
-        b1.setOnClickListener(v -> {
-            output.setText("cohen");
-            output.setTextColor(0xFF0000FF);
-            Log.d("sagie", "Button 1");
-        });
-
-        b2.setOnClickListener(v -> {
-            output.setText("sagie");
-            output.setTextColor(0xFFFF3B4B);
-            Log.d("sagie", "Button 2");
-        });
-
-
-
-        btnFarme.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, FrameActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        linerPage.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, LinearActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        Intent intentFromSP = getIntent();
-        String userName = intentFromSP.getStringExtra("user_name");
+        spButton.setOnClickListener(v ->
+                startActivity(new Intent(this, sp.class)));
 
         guessGame.setOnClickListener(v -> {
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -198,72 +81,33 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
             if (musicAllowed) {
                 Intent intent = new Intent(MainActivity.this, GuessNumber.class);
+                String userName = getIntent().getStringExtra("user_name");
                 if (userName != null) {
                     intent.putExtra("user_name", userName);
                 }
                 startActivityForResult(intent, START_GAME);
             } else {
-                Toast.makeText(MainActivity.this, "You must approve music first!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You must approve music first!", Toast.LENGTH_SHORT).show();
             }
-        });
-
-        spButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, sp.class);
-            startActivity(intent);
-        });
-
-        musicBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Intent intent = new Intent(MainActivity.this, MusicService.class);
-            if (isChecked) {
-                intent.putExtra("action", "start");
-            } else {
-                intent.putExtra("action", "stop");
-            }
-            startService(intent);
         });
     }
-
-    // -------- Logic Methods --------
 
     private void updateUI(FirebaseUser currentUser) {
-        Toast.makeText(context, "Hello !", Toast.LENGTH_LONG).show();
-    }
-
-    private void updateMusicButtonState() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-        boolean musicAllowed = pref.getBoolean("music", false);
-        guessGame.setEnabled(musicAllowed);
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-        if (b) {
-            mainLayout.setBackgroundColor(0xFF6E7191);
+        if (currentUser != null) {
+            welcomeUser.setText("Welcome " + currentUser.getEmail());
         } else {
-            mainLayout.setBackgroundColor(0xFF5E94FD);
+            welcomeUser.setText("Welcome Guest");
         }
     }
 
-    // -------- Activity Result --------
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
+        if (requestCode == START_GAME && resultCode == RESULT_OK && data != null) {
             int numGuesses = data.getIntExtra("num_guesses", -1);
             String userName = data.getStringExtra("user_name");
-
-            Toast.makeText(this, "Game finished! Number of guesses: " + numGuesses + " , user: " + userName, Toast.LENGTH_SHORT).show();
             playerScore.setText(userName + " won in " + numGuesses + " guesses.");
-        } else {
-            Toast.makeText(this, "Game was canceled or didn't finish successfully.", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
-
 }
-
 

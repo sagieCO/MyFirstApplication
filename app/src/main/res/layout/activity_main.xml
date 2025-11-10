@@ -3,196 +3,222 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5E94FD"
-    android:id="@+id/mainLayout">
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/welomeUser"
-        android:layout_width="161dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="36dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="right"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginBottom="104dp"
-        android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/playerScore"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/btnCalender"
-        android:layout_width="wrap_content"
+        <!-- כפתור התחברות בצד שמאל -->
+        <TextView
+            android:id="@+id/btnLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="להתחבר"
+            android:textSize="24sp"
+            android:textColor="#0000FF"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="8dp"
+            android:foreground="?attr/selectableItemBackground"/>
+
+        <!-- טקסט שם המשתמש / שלום אורח -->
+        <TextView
+            android:id="@+id/userGreeting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="שלום אורח"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:gravity="start"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"/>
+
+        <!-- תמונת פרופיל עגולה -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/userProfileImage"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/account_icom"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
+            android:contentDescription="User Profile"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- כפתור תפריט שלושה פסים -->
+        <ImageButton
+            android:id="@+id/menuButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/menu_icon"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Menu"/>
+
+
+    </LinearLayout>
+
+
+
+    <!-- הליניאר יושב במרכז הקונסטריינט -->
+    <LinearLayout
+        android:id="@+id/linearContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="36dp"
-        android:text="calender"
-        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/playerScore"
-        android:layout_width="215dp"
-        android:layout_height="113dp"
-        android:fontFamily="sans-serif-light"
         android:gravity="center"
-        android:textSize="45dp"
-        app:layout_constraintBottom_toTopOf="@+id/GuessGame"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.556" />
-
-    <TextView
-        android:id="@+id/output"
-        android:layout_width="180dp"
-        android:layout_height="97dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:textSize="25dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spButton"
-        app:layout_constraintVertical_bias="0.646" />
-
-    <Button
-        android:id="@+id/btn1"
-        android:layout_width="186dp"
-        android:layout_height="74dp"
-        android:backgroundTint="#AAAAAA"
-        android:text="cohen"
-        android:textSize="30sp"
+        android:orientation="vertical"
+        android:padding="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.071"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.968" />
-
-    <Button
-        android:id="@+id/btn2"
-        android:layout_width="193dp"
-        android:layout_height="72dp"
-        android:backgroundTint="#AAAAAA"
-        android:text="sagie"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.968" />
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="72dp"
-        android:layout_height="67dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.799"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.581" />
-
-    <TextView
-        android:layout_width="88dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="12dp"
-        android:textSize="14sp"
-        android:text="play music"
-        app:layout_constraintBottom_toTopOf="@+id/musicBtn"
-        app:layout_constraintStart_toEndOf="@+id/playerScore"
-        app:layout_constraintTop_toBottomOf="@+id/linerPage"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:layout_width="141dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="28dp"
-        android:textSize="12sp"
-        android:gravity="center"
-        android:text="change background"
-        app:layout_constraintBottom_toTopOf="@+id/switch1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linerPage"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <SeekBar
-        android:id="@+id/sb"
-        android:layout_width="222dp"
-        android:layout_height="106dp"
-        android:layout_marginBottom="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn1"
-        app:layout_constraintEnd_toStartOf="@+id/output"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"></SeekBar>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.291">
+
+        <!-- כותרת -->
+        <TextView
+            android:id="@+id/welcomeUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="Welcome User"
+            android:textColor="#000000"
+            android:textSize="22sp" />
+
+        <!-- ניקוד שחקן -->
+        <TextView
+            android:id="@+id/playerScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="#000000"
+            android:textSize="45sp" />
+
+        <!-- שורה ראשונה של כפתורים -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
 
 
+            <Button
+                android:id="@+id/btnCalender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Calendar" />
+        </LinearLayout>
 
+        <!-- שורה שנייה של כפתורים -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/GuessGame"
-        android:layout_width="200dp"
-        android:layout_height="83dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="4dp"
-        android:text="go to guess the number"
-        app:layout_constraintBottom_toTopOf="@+id/sb"
-        app:layout_constraintStart_toStartOf="parent" />
+            <Button
+                android:id="@+id/linerPage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="New Page Liner" />
 
-    <Button
-        android:id="@+id/linerPage"
-        android:layout_width="188dp"
-        android:layout_height="77dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        android:text="new page liner"
+            <Button
+                android:id="@+id/framePage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Frame" />
+        </LinearLayout>
+
+        <!-- כפתורים תחתונים -->
+        <Button
+            android:id="@+id/GuessGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Go to Guess the Number" />
+
+        <Button
+            android:id="@+id/spButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Page" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomMenu"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#2C3E50"
+        android:elevation="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welomeUser" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <Switch
-        android:id="@+id/musicBtn"
-        android:layout_width="67dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintEnd_toStartOf="@+id/framePage"
-        app:layout_constraintHorizontal_bias="0.629"
-        app:layout_constraintStart_toEndOf="@+id/playerScore"
-        app:layout_constraintTop_toBottomOf="@+id/linerPage" />
+        <ImageButton
+            android:id="@+id/homeIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Home"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/home_icon" />
 
-    <Button
-        android:id="@+id/framePage"
-        android:layout_width="106dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="16dp"
-        android:text="Frame"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.895"
-        app:layout_constraintStart_toEndOf="@+id/playerScore"
-        app:layout_constraintTop_toBottomOf="@+id/linerPage" />
+        <ImageButton
+            android:id="@+id/notificationsIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Settings"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/notifications_icon" />
 
-    <Button
-        android:id="@+id/spButton"
-        android:layout_width="133dp"
-        android:layout_height="82dp"
-        android:layout_marginEnd="36dp"
-        android:text="register page"
-        app:layout_constraintBottom_toTopOf="@+id/btn2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1"
-        app:layout_constraintVertical_bias="0.133" />
+        <ImageButton
+            android:id="@+id/profileIcon"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Profile"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/account_icom" />
+
+
+    </LinearLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

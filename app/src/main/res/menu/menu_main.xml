@@ -2,11 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/new_item"
-        android:title="New Item"
-        android:icon="@drawable/img_13"
-        app:showAsAction="always"/>
+
     <item
         android:id="@+id/sigimItem"
         android:title="sigim"
@@ -31,10 +27,5 @@
         app:showAsAction="never"
         android:orderInCategory="50"/>
 
-    <item
-        android:id="@+id/settingPage"
-        android:icon="@drawable/settings_icon_2048x2046_cw28eevx__1_"
-        android:orderInCategory="50"
-        android:title="Setting Page"
-        app:showAsAction="always"/>
+
 </menu>
