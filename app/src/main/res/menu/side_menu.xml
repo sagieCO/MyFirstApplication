@@ -2,37 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item
-        android:id="@+id/snv_updates"
-        android:title="Updates" />
+
+
+
 
     <item
-        android:id="@+id/snv_sent"
-        android:title="Sent" />
+        android:id="@+id/btnLogin"
+        android:title="התחברות" />
 
     <item
-        android:id="@+id/snv_Drafts"
-        android:title="Drafts" />
+        android:id="@+id/btnRegister"
+        android:title="הרשמה" />
 
     <item
-        android:id="@+id/snv_profile"
-        android:title="Profile" />
+        android:id="@+id/brnCalender"
+        android:title="יומן" />
+
 
     <item
-        android:id="@+id/snv_spam"
-        android:title="Spam" />
+        android:id="@+id/btnProfile"
+        android:title="פרופיל" />
 
     <item
-        android:id="@+id/snv_trash"
-        android:title="Trash" />
+        android:id="@+id/btnSetting"
+        android:title="הגדרות" />
 
     <item
-        android:id="@+id/snv_settings"
-        android:title="Settings" />
-
-    <item
-        android:id="@+id/snv_logout"
-        android:title="Logout" />
+        android:id="@+id/btnLogout"
+        android:title="התנתקות" />
 
 
 </menu>

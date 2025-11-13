@@ -2,121 +2,145 @@ package com.sagie.myfirstapplication;
 
 import static com.sagie.myfirstapplication.FBRef.refAuth;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class Register extends AppCompatActivity {
 
     TextView tvStatus;
-    Button btnCreateAccount;
-    EditText etEmail, etPassword;
+    Button btnCreateAccount, btnSaveExtra;
+    EditText etEmail, etPassword, etName, etAge, etAddress;
+    LinearLayout layoutExtraFields;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        // אתחול Views
+        tvStatus = findViewById(R.id.tvStatus);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        etName = findViewById(R.id.etName);
+        etAge = findViewById(R.id.etAge);
+        etAddress = findViewById(R.id.etAddress);
+        btnCreateAccount = findViewById(R.id.btnCreateAccount);
+        btnSaveExtra = findViewById(R.id.btnSaveExtra);
+
+        layoutExtraFields = findViewById(R.id.main); // אפשר להשתמש ב-main או בכל LinearLayout אחר
+
+        // החלק השני נעול בהתחלה
+        etName.setEnabled(false);
+        etAge.setEnabled(false);
+        etAddress.setEnabled(false);
+        btnSaveExtra.setEnabled(false);
+
+        // לחיצה על "צור חשבון" מראה את השדות הנוספים
+        btnCreateAccount.setOnClickListener(v -> {
+            String email = etEmail.getText().toString().trim();
+            String pass = etPassword.getText().toString().trim();
+
+            if (email.isEmpty() || pass.isEmpty()) {
+                tvStatus.setText("Please fill all fields");
+                return;
+            }
+
+            // לא יוצרים עדיין את המשתמש ב-Firebase, רק פותחים את החלק של הפרטים האישיים
+            etName.setEnabled(true);
+            etAge.setEnabled(true);
+            etAddress.setEnabled(true);
+            btnSaveExtra.setEnabled(true);
+            tvStatus.setText("Fill your personal details below");
         });
 
-        initView();
-    }
+        // לחיצה על "שמור פרטים" יוצרת את המשתמש ושומרת את המידע
+        btnSaveExtra.setOnClickListener(v -> {
+            String email = etEmail.getText().toString().trim();
+            String pass = etPassword.getText().toString().trim();
+            String name = etName.getText().toString().trim();
+            String ageStr = etAge.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
 
-    private void initView() {
-        tvStatus = findViewById(R.id.tvStatus);
-        etPassword = findViewById(R.id.etPassword);
-        etEmail = findViewById(R.id.etEmail);
-        btnCreateAccount = findViewById(R.id.btnCreateAccount);
+            if (name.isEmpty() || ageStr.isEmpty() || address.isEmpty()) {
+                tvStatus.setText("Please fill all personal details");
+                return;
+            }
 
-        btnCreateAccount.setOnClickListener(v -> createUser());
-    }
+            Integer age;
+            try {
+                age = Integer.parseInt(ageStr);
+            } catch (NumberFormatException e) {
+                tvStatus.setText("Invalid age");
+                return;
+            }
 
-    private void createUser() {
-        String email = etEmail.getText().toString().trim();
-        String pass = etPassword.getText().toString().trim();
+            ProgressDialog pd = new ProgressDialog(this);
+            pd.setTitle("Connecting");
+            pd.setMessage("Creating user...");
+            pd.show();
 
-        if (email.isEmpty() || pass.isEmpty()) {
-            tvStatus.setText("Please fill all fields");
-            return;
-        }
+            // יצירת משתמש ב-Firebase Auth
+            refAuth.createUserWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            pd.dismiss();
 
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setTitle("Connecting");
-        pd.setMessage("Creating user...");
-        pd.show();
+                            if (task.isSuccessful()) {
+                                FirebaseUser firebaseUser = refAuth.getCurrentUser();
+                                if (firebaseUser != null) {
+                                    String uid = firebaseUser.getUid();
 
-        refAuth.createUserWithEmailAndPassword(email, pass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        pd.dismiss();
+                                    // יצירת משתמש עם השדות האישיים
+                                    User newUser = new User(name, age, address, uid);
+                                    newUser.saveToFirebase();
 
-                        if (task.isSuccessful()) {
-                            FirebaseUser firebaseUser = refAuth.getCurrentUser();
-                            if (firebaseUser != null) {
-                                String uid = firebaseUser.getUid();
-                                tvStatus.setText("User created successfully\nUid: " + uid);
+                                    tvStatus.setText("User created successfully\nUid: " + uid);
 
-                                // יצירת משתמש עם שדות ראשוניים כ-null
-                                User newUser = new User(null, null, null, uid);
+                                    // נעילת השדות כדי למנוע עריכה לאחר השמירה
+                                    etName.setEnabled(false);
+                                    etAge.setEnabled(false);
+                                    etAddress.setEnabled(false);
+                                    btnSaveExtra.setEnabled(false);
 
-                                // שמירה בעץ היררכי ב-Firebase Realtime Database
-                                DatabaseReference refUsers = FirebaseDatabase.getInstance().getReference("users");
-                                refUsers.child(uid).setValue(newUser)
-                                        .addOnCompleteListener(saveTask -> {
-                                            if (saveTask.isSuccessful()) {
-                                                Log.d("Register", "User saved to database successfully");
-                                            } else {
-                                                Log.e("Register", "Failed to save user to database", saveTask.getException());
-                                            }
-                                        });
-                            }
-                        } else {
-                            Exception exp = task.getException();
-                            if (exp instanceof FirebaseAuthInvalidUserException) {
-                                tvStatus.setText("Invalid email address.");
-                            } else if (exp instanceof FirebaseAuthWeakPasswordException) {
-                                tvStatus.setText("Password too weak.");
-                            } else if (exp instanceof FirebaseAuthUserCollisionException) {
-                                tvStatus.setText("User already exists.");
-                            } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
-                                tvStatus.setText("General authentication failure.");
-                            } else if (exp instanceof FirebaseNetworkException) {
-                                tvStatus.setText("Network error. Please check your connection.");
+                                }
                             } else {
-                                tvStatus.setText("An error occurred. Please try again later.");
+                                Exception exp = task.getException();
+                                if (exp instanceof FirebaseAuthWeakPasswordException) {
+                                    tvStatus.setText("Password too weak.");
+                                } else if (exp instanceof FirebaseAuthUserCollisionException) {
+                                    tvStatus.setText("User already exists.");
+                                } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
+                                    tvStatus.setText("Invalid email address.");
+                                } else if (exp instanceof FirebaseNetworkException) {
+                                    tvStatus.setText("Network error. Please check your connection.");
+                                } else {
+                                    tvStatus.setText("An error occurred. Please try again later.");
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        });
     }
 }

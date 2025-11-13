@@ -48,5 +48,4 @@
         android:textSize="16sp"
         android:padding="10dp" />
 
-    <!-- טקסט מידע -->
 </LinearLayout>

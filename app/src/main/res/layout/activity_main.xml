@@ -9,6 +9,7 @@
     android:background="#5E94FD"
     tools:context=".MainActivity">
 
+    <!-- תוכן ראשי -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,218 +29,16 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nv_side"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:paddingTop="58dp"
+        android:fitsSystemWindows="true"
+        android:paddingTop="0dp"
+        app:headerLayout="@layout/nav_header"
         app:itemTextColor="@android:color/holo_blue_dark"
-        app:menu="@menu/side_menu"
-        android:fitsSystemWindows="true"/>
-
-
-    <!--<LinearLayout
-        android:id="@+id/topBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/btnLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="להתחבר"
-            android:textSize="24sp"
-            android:textColor="#0000FF"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="8dp"
-            android:foreground="?attr/selectableItemBackground"/>
-
-        <TextView
-            android:id="@+id/userGreeting"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="שלום אורח"
-            android:textSize="20sp"
-            android:textColor="#000000"
-            android:gravity="start"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:singleLine="true"/>
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/userProfileImage"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/account_icom"
-            app:shapeAppearanceOverlay="@style/CircleImageView"
-            android:contentDescription="User Profile"
-            android:layout_marginEnd="8dp"/>
-
-        <ImageButton
-            android:id="@+id/menuButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/menu_icon"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menu"/>
-
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:id="@+id/linearContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.291">
-
-        <TextView
-            android:id="@+id/welcomeUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center"
-            android:text="Welcome User"
-            android:textColor="#000000"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/playerScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center"
-            android:text="0"
-            android:textColor="#000000"
-            android:textSize="45sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-
-
-            <Button
-                android:id="@+id/btnCalender"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Calendar" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/linerPage"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="New Page Liner" />
-
-            <Button
-                android:id="@+id/framePage"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Frame" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/GuessGame"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Go to Guess the Number" />
-
-        <Button
-            android:id="@+id/spButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register Page" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/bottomMenu"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="#2C3E50"
-        android:elevation="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageButton
-            android:id="@+id/homeIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Home"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/home_icon" />
-
-        <ImageButton
-            android:id="@+id/notificationsIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Settings"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/notifications_icon" />
-
-        <ImageButton
-            android:id="@+id/profileIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Profile"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/account_icom" />
-
-
-    </LinearLayout>
-
--->
-
+        app:menu="@menu/side_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

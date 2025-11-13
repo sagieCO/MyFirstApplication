@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
 
-    private Button btnLogin,btnRegister,btnLogout;
+    private Button btnLogin,btnRegister;
     private TextView tvMessage;
     private CheckBox isCheck;
     private EditText etEmail, etPassword;
@@ -68,16 +68,25 @@ public class Login extends AppCompatActivity {
         super.onStart();
         auth.addAuthStateListener(authListener);
 
-        // בדיקה אם המשתמש כבר מחובר וה־CheckBox מסומן
         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isChecked = sharedPref.getBoolean("stayConnect", false);
 
-        if (refAuth.getCurrentUser() != null && isChecked) {
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // סוגר את מסך ההתחברות
+        FirebaseUser currentUser = refAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            if (isChecked) {
+                // משתמש מחובר והצקבוקס מסומן -> כניסה אוטומטית
+                Intent intent = new Intent(Login.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                // משתמש מחובר אך הצקבוקס לא מסומן -> מתנתק כדי לא להתחבר אוטומטית
+                refAuth.signOut();
+            }
         }
     }
+
+
 
     @Override
     protected void onStop() {
@@ -94,11 +103,8 @@ public class Login extends AppCompatActivity {
         isCheck = findViewById(R.id.cbStayLoggedIn);
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
-        btnLogout=findViewById(R.id.btnLogout);
         // כפתור התחברות – מפעיל loginUser()
         btnLogin.setOnClickListener(v -> loginUser());
-        btnLogout.setOnClickListener(v -> auth.signOut());
-
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
