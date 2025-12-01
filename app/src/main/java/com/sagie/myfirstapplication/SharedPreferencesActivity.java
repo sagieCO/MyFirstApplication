@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class sp extends AppCompatActivity {
+public class SharedPreferencesActivity extends AppCompatActivity {
 
     Button btnSave, btnRead, SpToHome,spToGuess;
     EditText etName, etAge;
@@ -22,7 +22,7 @@ public class sp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sp);
+        setContentView(R.layout.activity_shared_preferences);
 
         btnSave = findViewById(R.id.submitButton);
         btnRead = findViewById(R.id.readButton);
@@ -36,7 +36,7 @@ public class sp extends AppCompatActivity {
         spToGuess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(sp.this,GuessNumber.class);
+                Intent intent = new Intent(SharedPreferencesActivity.this, GuessNumberActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -75,7 +75,7 @@ public class sp extends AppCompatActivity {
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
             String name = pref.getString("name", "NoName");
 
-            Intent intent = new Intent(sp.this, MainActivity.class);
+            Intent intent = new Intent(SharedPreferencesActivity.this, MainActivity.class);
             intent.putExtra("user_name", name); // שולח את שם המשתמש
             startActivity(intent);
         });

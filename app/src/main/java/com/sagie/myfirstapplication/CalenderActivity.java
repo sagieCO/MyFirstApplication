@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class calender extends AppCompatActivity {
+public class CalenderActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private EditText editJournal;
@@ -78,10 +78,10 @@ public class calender extends AppCompatActivity {
             if (!text.isEmpty()) {
                 Event event = new Event(text, System.currentTimeMillis());
                 databaseRef.child(selectedDate).setValue(event)
-                        .addOnSuccessListener(aVoid -> Toast.makeText(calender.this, "נשמר בהצלחה", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> Toast.makeText(calender.this, "שגיאה בשמירה", Toast.LENGTH_SHORT).show());
+                        .addOnSuccessListener(aVoid -> Toast.makeText(CalenderActivity.this, "נשמר בהצלחה", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(CalenderActivity.this, "שגיאה בשמירה", Toast.LENGTH_SHORT).show());
             } else {
-                Toast.makeText(calender.this, "נא להקליד טקסט לפני שמירה", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CalenderActivity.this, "נא להקליד טקסט לפני שמירה", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,7 +104,7 @@ public class calender extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(calender.this, "שגיאה בטעינת האירוע", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CalenderActivity.this, "שגיאה בטעינת האירוע", Toast.LENGTH_SHORT).show();
             }
         };
 

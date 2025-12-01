@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class GuessNumber extends AppCompatActivity {
+public class GuessNumberActivity extends AppCompatActivity {
 
     private LinearLayout guessPart;
     private Button okBtn, btnRange, resetGame,btnHome;
@@ -57,7 +56,7 @@ public class GuessNumber extends AppCompatActivity {
         resetGame.setOnClickListener(v -> startGame());
 
      btnHome.setOnClickListener(v -> {
-       Intent intent = new Intent(GuessNumber.this, MainActivity.class);
+       Intent intent = new Intent(GuessNumberActivity.this, MainActivity.class);
        startActivity(intent);});
 
     }

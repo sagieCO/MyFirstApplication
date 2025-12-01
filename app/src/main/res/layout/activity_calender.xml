@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#FAFAFA"
-    tools:context=".calender">
+    tools:context=".CalenderActivity">
 
     <!-- לוח שנה -->
     <CalendarView

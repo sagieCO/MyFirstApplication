@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:layoutDirection="rtl"
     android:textDirection="rtl"
     android:padding="24dp"
-    android:background="#B14B8040"
-    tools:context=".Login">
+    android:gravity="center_horizontal"
+    android:background="#F2F6F7"
+    tools:context=".LoginActivity">
 
     <!-- כותרת -->
     <TextView
@@ -19,20 +19,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="התחברות"
-        android:textSize="26sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"/>
+        android:textColor="#2C3E50"
+        android:layout_marginBottom="32dp"/>
 
     <!-- שדה אימייל -->
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:minHeight="52dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
         android:hint="מייל"
+        android:textColorHint="#808080"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"
         android:gravity="end"/>
@@ -42,10 +44,12 @@
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:minHeight="52dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
         android:hint="סיסמה"
+        android:textColorHint="#808080"
         android:inputType="textPassword"
         android:layout_marginBottom="24dp"
         android:gravity="end"/>
@@ -55,10 +59,10 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:minHeight="52dp"
         android:text="התחבר"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#3A5F7D"
         android:layout_marginBottom="12dp"/>
 
     <!-- כפתור איפוס -->
@@ -66,55 +70,57 @@
         android:id="@+id/btnReset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:text="איפוס שדות"
-        android:layout_marginBottom="12dp"/>
+        android:minHeight="52dp"
+        android:text="נקה שדות"
+        android:backgroundTint="#95A5A6"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- CheckBox הישאר מחובר -->
+    <!-- הישאר מחובר -->
     <CheckBox
         android:id="@+id/cbStayLoggedIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="הישאר מחובר"
-        android:layout_gravity="center"
-        android:gravity="end"
+        android:textColor="#2C3E50"
         android:layout_marginBottom="24dp"/>
 
-    <!-- טקסט וקישור להרשמה -->
+    <!-- הרשמה -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:layout_marginBottom="24dp">
 
         <TextView
             android:id="@+id/tvNoAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="אין לך חשבון?" />
+            android:text="אין לך חשבון?"
+            android:textColor="#2C3E50"
+            android:textSize="16sp"/>
 
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="הירשם"
-            />
-
-
-
+            android:layout_marginStart="8dp"
+            android:minHeight="40dp"
+            android:text="צור משתמש"
+            android:backgroundTint="#4DB6AC"
+            android:textColor="#000000"/>
     </LinearLayout>
 
-    <!-- הודעה/שגיאה -->
+    <!-- הודעת שגיאה -->
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="#D32F2F"
         android:gravity="center"
         android:text=""
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"/>
 
 </LinearLayout>

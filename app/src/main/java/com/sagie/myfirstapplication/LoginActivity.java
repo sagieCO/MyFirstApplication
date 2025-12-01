@@ -19,7 +19,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -27,9 +26,9 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    private Button btnLogin,btnRegister;
+    private Button btnLogin,btnRegister,btnReset;
     private TextView tvMessage;
     private CheckBox isCheck;
     private EditText etEmail, etPassword;
@@ -76,7 +75,7 @@ public class Login extends AppCompatActivity {
         if (currentUser != null) {
             if (isChecked) {
                 // משתמש מחובר והצקבוקס מסומן -> כניסה אוטומטית
-                Intent intent = new Intent(Login.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             } else {
@@ -102,19 +101,27 @@ public class Login extends AppCompatActivity {
         tvMessage = findViewById(R.id.tvMessage);
         isCheck = findViewById(R.id.cbStayLoggedIn);
         btnLogin = findViewById(R.id.btnLogin);
+        btnReset=findViewById(R.id.btnReset);
         btnRegister = findViewById(R.id.btnRegister);
         // כפתור התחברות – מפעיל loginUser()
         btnLogin.setOnClickListener(v -> loginUser());
+        btnReset.setOnClickListener(v -> resetFields());
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Login.this,Register.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
     }
 
+    private void resetFields() {
+        etEmail.setText("");
+        etPassword.setText("");
+        isCheck.setChecked(false);
+        tvMessage.setText("");
+    }
 
     // פונקציה לקריאה מ־XML (כפתור התחבר)
     public void loginUser() {
@@ -146,7 +153,7 @@ public class Login extends AppCompatActivity {
 
                         // מעבר למסך הראשי
                         // מעבר למסך הראשי עם מידע על המשתמש
-                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("USER_EMAIL", user.getEmail()); // שולח את המייל
                         startActivity(intent);
                         finish();

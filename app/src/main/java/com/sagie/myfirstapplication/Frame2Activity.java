@@ -12,7 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class frame extends AppCompatActivity {
+public class Frame2Activity extends AppCompatActivity {
 
     Button btnHome;
 
@@ -21,7 +21,7 @@ public class frame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_frame);
+        setContentView(R.layout.activity_frame_2);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -31,7 +31,7 @@ public class frame extends AppCompatActivity {
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(frame.this,MainActivity.class);
+                Intent intent=new Intent(Frame2Activity.this,MainActivity.class);
                 startActivity(intent);
                 finish();
             }

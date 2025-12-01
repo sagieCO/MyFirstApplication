@@ -8,11 +8,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     // Views
-    Button linerPage, guessGame, spButton, btnFrame, btnCalender;
     ImageButton btnProfile;
-    TextView playerScore, welcomeUser, btnLogin, tv_snv;
+    TextView tv_snv;
 
     Context context;
     DrawerLayout drawerLayout;
@@ -46,67 +43,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);//right to left
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
+        context = this;
 
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        context = this;
-        initViews();
-        //setupListeners();
+        initViews();       // אתחול Views ו־Drawer
+        setupListeners();  // חיבור כל ההאזנות לכפתורים ול־Navigation Drawer
 
+        // Auth Listener
         authListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             updateHeader(user);
         };
-
     }
-
-
-    private void updateHeader(FirebaseUser user) {
-        if (nv_side.getHeaderCount() > 0) {
-            View headerView = nv_side.getHeaderView(0);
-            TextView userNameText = headerView.findViewById(R.id.tvUsername);
-            TextView userGreeting = headerView.findViewById(R.id.tvGreeting);
-
-            if (user != null) {
-                String uid = user.getUid();
-
-                // 🔹 Fetch user data from Firebase Realtime Database
-                usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            User currentUser = snapshot.getValue(User.class);
-                            if (currentUser != null && currentUser.getName() != null) {
-                                userNameText.setText(currentUser.getName());
-                                userGreeting.setText("שלום " + currentUser.getName());
-                            } else {
-                                userNameText.setText("משתמש");
-                                userGreeting.setText("שלום משתמש");
-                            }
-                        } else {
-                            userNameText.setText("משתמש");
-                            userGreeting.setText("שלום משתמש");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        userNameText.setText("משתמש");
-                        userGreeting.setText("שלום משתמש");
-                    }
-                });
-
-            } else {
-                // 🔹 אין משתמש מחובר
-                userNameText.setText("אורח");
-                userGreeting.setText("שלום אורח");
-            }
-        }
-    }
-
 
     @Override
     protected void onStart() {
@@ -122,66 +74,56 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    // 🔹 אתחול Views, Drawer ו־ActionBar
     private void initViews() {
-    /*linerPage = findViewById(R.id.linerPage);
-    guessGame = findViewById(R.id.GuessGame);
-    spButton = findViewById(R.id.spButton);
-    btnFrame = findViewById(R.id.framePage);
-    btnLogin = findViewById(R.id.btnLogin);
-    btnCalender = findViewById(R.id.btnCalender);
-    playerScore = findViewById(R.id.playerScore);
-    welcomeUser = findViewById(R.id.welcomeUser);*/
         btnProfile = findViewById(R.id.profileIcon);
 
         drawerLayout = findViewById(R.id.main);
         nv_side = findViewById(R.id.nv_side);
         tv_snv = findViewById(R.id.tv_snv);
+
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
-        // 🔹 כאן אנחנו מתחברים ל-header ומעדכנים את שם המשתמש
         if (nv_side.getHeaderCount() > 0) {
             View headerView = nv_side.getHeaderView(0);
-            TextView userNameText = headerView.findViewById(R.id.tvUsername);
             TextView userGreeting = headerView.findViewById(R.id.tvGreeting);
 
-            // כאן תוכל להחליף ב-Firebase או SharedPreferences לפי הצורך
-            String userName = getIntent().getStringExtra("user_name"); // או קבלת שם ממשתמש מחובר
+            String userName = getIntent().getStringExtra("user_name");
             if (userName != null && !userName.isEmpty()) {
-                userNameText.setText(userName);
                 userGreeting.setText("שלום " + userName);
             } else {
-                userNameText.setText("אורח");
                 userGreeting.setText("שלום אורח");
             }
         }
+    }
 
-        // 🔹 Navigation item selection
+    // 🔹 חיבור כל ההאזנות לכפתורים ו־Navigation Items
+    private void setupListeners() {
         nv_side.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             tv_snv.setText(item.getTitle());
 
             if (id == R.id.btnLogin) {
-                startActivity(new Intent(MainActivity.this, Login.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
             } else if (id == R.id.brnCalender) {
-                startActivity(new Intent(MainActivity.this, calender.class));
-            }else if (id == R.id.btnRegister) {
-                startActivity(new Intent(MainActivity.this, Register.class));
+                startActivity(new Intent(MainActivity.this, CalenderActivity.class));
+            } else if (id == R.id.btnRegister) {
+                startActivity(new Intent(MainActivity.this, RegisterActivity.class));
             } else if (id == R.id.btnProfile) {
-                startActivity(new Intent(MainActivity.this, profileUser.class));
+                startActivity(new Intent(MainActivity.this, ProfileUserActivity.class));
             } else if (id == R.id.btnSetting) {
                 Toast.makeText(context, "settings page", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.btnLogout) {
                 Toast.makeText(MainActivity.this, "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
             }
-
             drawerLayout.closeDrawers();
             return true;
         });
@@ -196,53 +138,49 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // כאן ניתן להוסיף גם OnClickListeners נוספים לכפתורים כמו btnProfile וכו'
     }
 
+    // 🔹 עדכון כותרת המשתמש ב־Navigation Header
+    private void updateHeader(FirebaseUser user) {
+        if (nv_side.getHeaderCount() > 0) {
+            View headerView = nv_side.getHeaderView(0);
+            TextView userGreeting = headerView.findViewById(R.id.tvGreeting);
+
+            if (user != null) {
+                String uid = user.getUid();
+                usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            User currentUser = snapshot.getValue(User.class);
+                            if (currentUser != null && currentUser.getName() != null) {
+                                userGreeting.setText("שלום " + currentUser.getName());
+                            } else {
+                                userGreeting.setText("שלום אורח");
+                            }
+                        } else {
+                            userGreeting.setText("שלום אורח");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        userGreeting.setText("שלום אורח");
+                    }
+                });
+            } else {
+                userGreeting.setText("שלום אורח");
+            }
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-    /*private void setupListeners() {
-        btnCalender.setOnClickListener(v ->
-                startActivity(new Intent(this, calender.class)));
-        btnProfile.setOnClickListener(v ->
-                startActivity(new Intent(this, profileUser.class)));
-        btnLogin.setOnClickListener(v ->
-                startActivity(new Intent(this, Login.class)));
-
-        btnFrame.setOnClickListener(v ->
-                startActivity(new Intent(this, FrameActivity.class)));
-
-        linerPage.setOnClickListener(v ->
-                startActivity(new Intent(this, LinearActivity.class)));
-
-        spButton.setOnClickListener(v ->
-                startActivity(new Intent(this, sp.class)));
-
-        guessGame.setOnClickListener(v -> {
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-            boolean musicAllowed = pref.getBoolean("music", false);
-
-            if (musicAllowed) {
-                Intent intent = new Intent(MainActivity.this, GuessNumber.class);
-                String userName = getIntent().getStringExtra("user_name");
-                if (userName != null) {
-                    intent.putExtra("user_name", userName);
-                }
-                startActivityForResult(intent, START_GAME);
-            } else {
-                Toast.makeText(this, "You must approve music first!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
-
-
-
 }

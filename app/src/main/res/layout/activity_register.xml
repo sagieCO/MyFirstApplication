@@ -1,85 +1,128 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="24dp"
-    android:gravity="top|center_horizontal"
-    android:background="#B14B8040">
+    android:background="#F2F6F7"
+    android:layoutDirection="rtl"
+    android:textDirection="rtl">
 
-    <!-- כותרת עליונה -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="הרשמה"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:layout_marginBottom="40dp"
-        android:gravity="center"/>
-
-    <!-- שדות אימייל וסיסמה -->
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="מייל"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="סיסמה"
-        android:inputType="textPassword"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/btnCreateAccount"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="צור חשבון"
-        android:layout_marginBottom="24dp"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-    <!-- חלק נמוך – שדות נוספים (ננעלים בהתחלה) -->
-    <EditText
-        android:id="@+id/etName"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="שם מלא"
-        android:enabled="false"
-        android:layout_marginBottom="16dp"/>
+        <!-- כותרת -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="הרשמה"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="32dp"/>
 
-    <EditText
-        android:id="@+id/etAge"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="גיל"
-        android:inputType="number"
-        android:enabled="false"
-        android:layout_marginBottom="16dp"/>
+        <!-- אימייל -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:hint="מייל"
+            android:textColorHint="#808080"
+            android:layout_marginBottom="16dp"
+            android:inputType="textEmailAddress"
+            android:gravity="end"/>
 
-    <EditText
-        android:id="@+id/etAddress"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="כתובת מגורים"
-        android:enabled="false"
-        android:layout_marginBottom="24dp"/>
+        <!-- סיסמה -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:hint="סיסמה"
+            android:textColorHint="#808080"
+            android:layout_marginBottom="24dp"
+            android:inputType="textPassword"
+            android:gravity="end"/>
 
-    <Button
-        android:id="@+id/btnSaveExtra"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="שמור פרטים"
-        android:enabled="false"/>
+        <!-- כפתור יצירת חשבון -->
+        <Button
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="צור חשבון"
+            android:backgroundTint="#3A5F7D"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="24dp" />
 
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:gravity="center"
-        android:layout_marginTop="24dp"/>
-</LinearLayout>
+        <!-- שדות נוספים (נעולים עד יצירת חשבון) -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:enabled="false"
+            android:hint="שם מלא"
+            android:textColorHint="#808080"
+            android:layout_marginBottom="16dp"
+            android:gravity="end"/>
+
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:enabled="false"
+            android:hint="גיל"
+            android:inputType="number"
+            android:textColorHint="#808080"
+            android:layout_marginBottom="16dp"
+            android:gravity="end"/>
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:elevation="2dp"
+            android:enabled="false"
+            android:hint="כתובת מגורים"
+            android:textColorHint="#808080"
+            android:layout_marginBottom="24dp"
+            android:gravity="end"/>
+
+        <!-- שמירת פרטים נוספים -->
+        <Button
+            android:id="@+id/btnSaveExtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="שמור פרטים"
+            android:backgroundTint="#4DB6AC"
+            android:textColor="#000000"
+            android:enabled="false"/>
+
+        <!-- הודעות מערכת -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#D32F2F"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.BatteryManager;
 import android.widget.TextView;
 
-public class MyReceiver extends BroadcastReceiver {
+public class BatteryReceiver extends BroadcastReceiver {
     private TextView tvBattery; // נוסיף שדה עבור TextView
 
     // נוכל להעביר את ה-TextView מה-Activity דרך Constructor או Setter
-    public MyReceiver(TextView tvBattery) {
+    public BatteryReceiver(TextView tvBattery) {
         this.tvBattery = tvBattery;
     }
 

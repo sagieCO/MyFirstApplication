@@ -12,9 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class open_page extends AppCompatActivity {
+public class OpenPageActivity extends AppCompatActivity {
 
-    Button btnLogin,btnRegister;
+    Button btnLogin,btnRegister,btnGuest;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,18 +33,26 @@ public class open_page extends AppCompatActivity {
     private void initView(){
         btnLogin=findViewById(R.id.btnLogin);
         btnRegister=findViewById(R.id.btnRegister);
+        btnGuest=findViewById(R.id.btnGuest);
+        btnGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(OpenPageActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(open_page.this,Login.class);
+                Intent intent = new Intent(OpenPageActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(open_page.this,Register.class);
+                Intent intent = new Intent(OpenPageActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
