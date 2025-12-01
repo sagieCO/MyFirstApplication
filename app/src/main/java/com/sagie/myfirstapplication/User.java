@@ -5,12 +5,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class User {
     private String name;
-    private Integer age;
+    private String email;
+
+    private String age;
     private String address;
     private String uid; // ניתן להוסיף UID כאן, או להשתמש בו מה-auth
 
     // קונסטרקטור מלא
-    public User(String name, Integer age, String address, String uid) {
+    public User(String name, String age, String address, String uid) {
         this.name = name;
         this.age = age;
         this.address = address;
@@ -42,11 +44,11 @@ public class User {
         this.name = name;
     }
 
-    public Integer getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(String  age) {
         this.age = age;
     }
 
@@ -57,6 +59,8 @@ public class User {
     public void setAddress(String address) {
         this.address = address;
     }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public String getUid() {
         return uid;
