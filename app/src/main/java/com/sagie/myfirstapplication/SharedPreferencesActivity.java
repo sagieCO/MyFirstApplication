@@ -31,16 +31,7 @@ public class SharedPreferencesActivity extends AppCompatActivity {
         tvDisplay = findViewById(R.id.displayTextView);
         checkBox = findViewById(R.id.boolMusic);
         SpToHome = findViewById(R.id.SpToHome);
-        spToGuess=findViewById(R.id.spToGuess);
-        spToGuess.setEnabled(false);
-        spToGuess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SharedPreferencesActivity.this, GuessNumberActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
         // שמירה ב-SharedPreferences
         btnSave.setOnClickListener(v -> {
             String name = etName.getText().toString();

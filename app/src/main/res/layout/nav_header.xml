@@ -1,34 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="140dp"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center_vertical"
-    android:background="#5E94FD">
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:background="#FC4C02"
+    android:gravity="bottom">
 
+    <!-- תמונת פרופיל -->
     <ImageView
-        android:id="@+id/imgUser"
+        android:id="@+id/navHeaderProfileImage"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:src="@drawable/account_icom"
-        android:contentDescription="User Image"
         android:scaleType="centerCrop" />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginStart="16dp"
+    <!-- שם המשתמש -->
+    <TextView
+        android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-
-
-        <TextView
-            android:id="@+id/tvGreeting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="שלום!"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="שלום משתמש"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

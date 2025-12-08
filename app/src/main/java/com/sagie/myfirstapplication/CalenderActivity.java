@@ -1,6 +1,7 @@
 package com.sagie.myfirstapplication;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -24,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class CalenderActivity extends AppCompatActivity {
+public class CalenderActivity extends BaseActivity {
 
     private CalendarView calendarView;
     private EditText editJournal;
@@ -40,13 +41,12 @@ public class CalenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_calender);
+        setContentView(R.layout.base_layout);
+        setupMenu();
+        setContentLayout(R.layout.activity_calender);
 
-        // Edge-to-Edge padding
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
 
         calendarView = findViewById(R.id.calendarView);
         editJournal = findViewById(R.id.editJournal);

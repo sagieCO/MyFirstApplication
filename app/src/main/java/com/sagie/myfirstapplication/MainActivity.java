@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     // Views
     ImageButton btnProfile;
@@ -43,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        setContentView(R.layout.base_layout);
+        setupMenu();
+        setContentLayout(R.layout.activity_main);
 
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         context = this;
 
         mAuth = FirebaseAuth.getInstance();
@@ -156,9 +159,9 @@ public class MainActivity extends AppCompatActivity {
                         if (snapshot.exists()) {
                             User currentUser = snapshot.getValue(User.class);
                             if (currentUser != null && currentUser.getName() != null) {
-                                userGreeting.setText("שלום " + currentUser.getName());
+                                //userGreeting.setText("שלום " + currentUser.getName());
                             } else {
-                                userGreeting.setText("שלום אורח");
+                                //userGreeting.setText("שלום אורח");
                             }
                         } else {
                             userGreeting.setText("שלום אורח");

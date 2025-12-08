@@ -7,12 +7,12 @@ public class User {
     private String name;
     private String email;
 
-    private String age;
+    private int age;
     private String address;
     private String uid; // ניתן להוסיף UID כאן, או להשתמש בו מה-auth
 
     // קונסטרקטור מלא
-    public User(String name, String age, String address, String uid) {
+    public User(String name, int age, String address, String uid) {
         this.name = name;
         this.age = age;
         this.address = address;
@@ -44,11 +44,11 @@ public class User {
         this.name = name;
     }
 
-    public String getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(String  age) {
+    public void setAge(int  age) {
         this.age = age;
     }
 

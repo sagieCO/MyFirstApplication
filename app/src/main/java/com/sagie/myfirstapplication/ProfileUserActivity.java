@@ -2,6 +2,7 @@ package com.sagie.myfirstapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ProfileUserActivity extends AppCompatActivity {
+public class ProfileUserActivity extends BaseActivity {
 
     ImageButton btnHome;
     EditText nameText, ageText, emailText, addressText;
@@ -32,7 +33,11 @@ public class ProfileUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
+        setContentView(R.layout.base_layout);
+        setupMenu();
+        setContentLayout(R.layout.activity_profile_user);
 
+        getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -128,7 +133,7 @@ public class ProfileUserActivity extends AppCompatActivity {
 
             User updatedUser = new User();
             updatedUser.setName(nameText.getText().toString());
-            updatedUser.setAge(ageText.getText().toString());
+            updatedUser.setAge(Integer.parseInt(ageText.getText().toString()));
             updatedUser.setEmail(emailText.getText().toString());
             updatedUser.setAddress(addressText.getText().toString());
 
