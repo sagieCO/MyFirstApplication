@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
@@ -26,10 +27,11 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        WindowCompat.setDecorFitsSystemWindows(getWindow(),false);
         setContentView(R.layout.base_layout);
         setupMenu();
     }
+
 
     protected void setupMenu() {
 
@@ -81,7 +83,10 @@ public class BaseActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.btnLogin) {
+            if (id == R.id.btnHome) {
+                startActivity(new Intent(this, MainActivity.class));
+            }
+            else if (id == R.id.btnLogin) {
                 startActivity(new Intent(this, LoginActivity.class));
             } else if (id == R.id.brnCalender) {
                 startActivity(new Intent(this, CalenderActivity.class));

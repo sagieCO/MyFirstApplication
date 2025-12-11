@@ -8,13 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
@@ -26,16 +26,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 public class RegisterActivity extends BaseActivity {
 
     TextView tvStatus;
-    Button btnCreateAccount, btnSaveExtra;
+    Button btnCreateAccount, btnSaveExtra, btnSkip;
     EditText etEmail, etPassword, etName, etAge, etAddress;
-    LinearLayout layoutExtraFields;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-
         setContentView(R.layout.base_layout);
         setupMenu();
         setContentLayout(R.layout.activity_register);
@@ -49,102 +46,160 @@ public class RegisterActivity extends BaseActivity {
         etName = findViewById(R.id.etName);
         etAge = findViewById(R.id.etAge);
         etAddress = findViewById(R.id.etAddress);
+
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
         btnSaveExtra = findViewById(R.id.btnSaveExtra);
+        btnSkip = findViewById(R.id.btnSkip);
 
-        layoutExtraFields = findViewById(R.id.main); // אפשר להשתמש ב-main או בכל LinearLayout אחר
+        // שדות אישיים נעולים בהתחלה
+        setPersonalFieldsEnabled(false);
 
-        // החלק השני נעול בהתחלה
-        etName.setEnabled(false);
-        etAge.setEnabled(false);
-        etAddress.setEnabled(false);
-        btnSaveExtra.setEnabled(false);
-
-        // לחיצה על "צור חשבון" מראה את השדות הנוספים
+        // ---------------------------------------------------
+        // כפתור 1 — צור חשבון (יוצר משתמש ואז מבקש פרטים אישיים)
+        // ---------------------------------------------------
         btnCreateAccount.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString().trim();
 
             if (email.isEmpty() || pass.isEmpty()) {
-                tvStatus.setText("Please fill all fields");
+                tvStatus.setText("אנא מלא אימייל וסיסמה");
                 return;
             }
 
-            // לא יוצרים עדיין את המשתמש ב-Firebase, רק פותחים את החלק של הפרטים האישיים
-            etName.setEnabled(true);
-            etAge.setEnabled(true);
-            etAddress.setEnabled(true);
-            btnSaveExtra.setEnabled(true);
-            tvStatus.setText("Fill your personal details below");
+            ProgressDialog pd = new ProgressDialog(this);
+            pd.setMessage("יוצר חשבון...");
+            pd.show();
+
+            refAuth.createUserWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener(task -> {
+                        pd.dismiss();
+                        if (task.isSuccessful()) {
+                            tvStatus.setText("החשבון נוצר! השלם פרטים אישיים למטה.");
+
+                            // ⭐ שמירת hasDetails = false
+                            FirebaseUser firebaseUser = refAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                DatabaseReference ref =
+                                        FirebaseDatabase.getInstance()
+                                                .getReference("users")
+                                                .child(firebaseUser.getUid());
+                                ref.child("hasDetails").setValue(false);
+                            }
+
+                            // פותח את השדות האישיים
+                            setPersonalFieldsEnabled(true);
+
+                        } else {
+                            handleError(task.getException());
+                        }
+                    });
         });
 
-        // לחיצה על "שמור פרטים" יוצרת את המשתמש ושומרת את המידע
-        btnSaveExtra.setOnClickListener(v -> {
+        // ---------------------------------------------------
+        // כפתור 2 — Remind Me Later (יוצר משתמש בלי פרטים אישיים)
+        // ---------------------------------------------------
+        btnSkip.setOnClickListener(v -> {
             String email = etEmail.getText().toString().trim();
             String pass = etPassword.getText().toString().trim();
+
+            if (email.isEmpty() || pass.isEmpty()) {
+                tvStatus.setText("אנא מלא אימייל וסיסמה");
+                return;
+            }
+
+            ProgressDialog pd = new ProgressDialog(this);
+            pd.setMessage("יוצר חשבון...");
+            pd.show();
+
+            refAuth.createUserWithEmailAndPassword(email, pass)
+                    .addOnCompleteListener(task -> {
+                        pd.dismiss();
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = refAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+
+                                // ⭐ שמירת hasDetails = false
+                                DatabaseReference ref =
+                                        FirebaseDatabase.getInstance()
+                                                .getReference("users")
+                                                .child(firebaseUser.getUid());
+                                ref.child("hasDetails").setValue(false);
+                            }
+
+                            tvStatus.setText("חשבון נוצר! ניתן למלא פרטים אישיים בהמשך.");
+
+                            // כאן אפשר להעביר למסך הראשי
+                            // startActivity(new Intent(this, MainActivity.class));
+                            // finish();
+                        } else {
+                            handleError(task.getException());
+                        }
+                    });
+        });
+
+        // ---------------------------------------------------
+        // שמירת פרטים אישיים
+        // ---------------------------------------------------
+        btnSaveExtra.setOnClickListener(v -> {
             String name = etName.getText().toString().trim();
             String ageStr = etAge.getText().toString().trim();
             String address = etAddress.getText().toString().trim();
 
             if (name.isEmpty() || ageStr.isEmpty() || address.isEmpty()) {
-                tvStatus.setText("Please fill all personal details");
+                tvStatus.setText("אנא מלא את כל הפרטים האישיים");
                 return;
             }
 
-            Integer age;
+            int age;
             try {
                 age = Integer.parseInt(ageStr);
-            } catch (NumberFormatException e) {
-                tvStatus.setText("Invalid age");
+            } catch (Exception e) {
+                tvStatus.setText("גיל לא תקין");
                 return;
             }
 
-            ProgressDialog pd = new ProgressDialog(this);
-            pd.setTitle("Connecting");
-            pd.setMessage("Creating user...");
-            pd.show();
+            FirebaseUser user = refAuth.getCurrentUser();
+            if (user == null) {
+                tvStatus.setText("שגיאה: אין משתמש מחובר");
+                return;
+            }
 
-            // יצירת משתמש ב-Firebase Auth
-            refAuth.createUserWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            pd.dismiss();
+            // יצירת אובייקט המשתמש
+            User newUser = new User(name, age, address, user.getUid());
+            newUser.saveToFirebase();
 
-                            if (task.isSuccessful()) {
-                                FirebaseUser firebaseUser = refAuth.getCurrentUser();
-                                if (firebaseUser != null) {
-                                    String uid = firebaseUser.getUid();
+            // ⭐ עדכון hasDetails = true
+            DatabaseReference ref =
+                    FirebaseDatabase.getInstance()
+                            .getReference("users")
+                            .child(user.getUid());
+            ref.child("hasDetails").setValue(true);
 
-                                    // יצירת משתמש עם השדות האישיים
-                                    User newUser = new User(name, age, address, uid);
-                                    newUser.saveToFirebase();
-
-                                    tvStatus.setText("User created successfully\nUid: " + uid);
-
-                                    // נעילת השדות כדי למנוע עריכה לאחר השמירה
-                                    etName.setEnabled(false);
-                                    etAge.setEnabled(false);
-                                    etAddress.setEnabled(false);
-                                    btnSaveExtra.setEnabled(false);
-
-                                }
-                            } else {
-                                Exception exp = task.getException();
-                                if (exp instanceof FirebaseAuthWeakPasswordException) {
-                                    tvStatus.setText("Password too weak.");
-                                } else if (exp instanceof FirebaseAuthUserCollisionException) {
-                                    tvStatus.setText("User already exists.");
-                                } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
-                                    tvStatus.setText("Invalid email address.");
-                                } else if (exp instanceof FirebaseNetworkException) {
-                                    tvStatus.setText("Network error. Please check your connection.");
-                                } else {
-                                    tvStatus.setText("An error occurred. Please try again later.");
-                                }
-                            }
-                        }
-                    });
+            tvStatus.setText("הפרטים נשמרו בהצלחה!");
+            setPersonalFieldsEnabled(false);
         });
+    }
+
+    // הפעלה/ניטרול של שדות אישיים
+    private void setPersonalFieldsEnabled(boolean enabled) {
+        etName.setEnabled(enabled);
+        etAge.setEnabled(enabled);
+        etAddress.setEnabled(enabled);
+        btnSaveExtra.setEnabled(enabled);
+    }
+
+    // טיפול בשגיאות
+    private void handleError(Exception exp) {
+        if (exp instanceof FirebaseAuthWeakPasswordException) {
+            tvStatus.setText("הסיסמה חלשה מדי");
+        } else if (exp instanceof FirebaseAuthUserCollisionException) {
+            tvStatus.setText("משתמש קיים כבר");
+        } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
+            tvStatus.setText("כתובת מייל לא תקינה");
+        } else if (exp instanceof FirebaseNetworkException) {
+            tvStatus.setText("בעיה ברשת");
+        } else {
+            tvStatus.setText("שגיאה לא מוכרת: " + exp.getMessage());
+        }
     }
 }

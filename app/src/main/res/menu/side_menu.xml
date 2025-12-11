@@ -4,7 +4,9 @@
 
 
 
-
+    <item
+        android:id="@+id/btnHome"
+        android:title="דף ראשי" />
 
     <item
         android:id="@+id/btnLogin"
