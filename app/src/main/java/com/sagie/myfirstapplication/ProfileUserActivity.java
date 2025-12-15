@@ -1,15 +1,14 @@
 package com.sagie.myfirstapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,11 +18,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfileUserActivity extends BaseActivity {
 
-    ImageButton btnHome;
-    EditText nameText, ageText, emailText, addressText;
-    ImageView editName, editAge, editEmail, editAddress;
+    EditText nameText, ageText, addressText;
+    ImageButton editName, editAge, editAddress;
     Button saveInfo;
 
     FirebaseAuth mAuth;
@@ -32,112 +33,125 @@ public class ProfileUserActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_user);
+
         setContentView(R.layout.base_layout);
         setupMenu();
         setContentLayout(R.layout.activity_profile_user);
 
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
         mAuth = FirebaseAuth.getInstance();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         initView();
-        loadUserData();    // טעינת פרטי המשתמש מהמסד
+        loadUserData();
         setupListeners();
     }
 
     private void initView() {
-        btnHome = findViewById(R.id.homeIcon);
-
         nameText = findViewById(R.id.nameText);
         ageText = findViewById(R.id.ageText);
-        emailText = findViewById(R.id.emailText);
         addressText = findViewById(R.id.addressText);
 
         editName = findViewById(R.id.editName);
         editAge = findViewById(R.id.editAge);
-        editEmail = findViewById(R.id.editEmail);
         editAddress = findViewById(R.id.editAddress);
 
         saveInfo = findViewById(R.id.saveInfo);
 
-        // נעילה ראשונית של כל השדות (משתמש לא יכול לשנות)
         lockAllFields();
     }
 
     private void setupListeners() {
-        // חזרה לעמוד הראשי
-        btnHome.setOnClickListener(v -> startActivity(new Intent(this, MainActivity.class)));
+        editName.setOnClickListener(v -> enableEdit(nameText));
+        editAge.setOnClickListener(v -> enableEdit(ageText));
+        editAddress.setOnClickListener(v -> enableEdit(addressText));
 
-        // לחיצה על אייקון העריכה פותחת את השדה לעריכה
-        editName.setOnClickListener(v -> setEditable(nameText, true));
-        editAge.setOnClickListener(v -> setEditable(ageText, true));
-        editEmail.setOnClickListener(v -> setEditable(emailText, true));
-        editAddress.setOnClickListener(v -> setEditable(addressText, true));
-
-        // שמירה ושחרור נעילה
         saveInfo.setOnClickListener(v -> {
             saveUserData();
-            lockAllFields();  // נעילה אחרי שמירה
+            lockAllFields();
+            Toast.makeText(this, "הפרטים נשמרו בהצלחה", Toast.LENGTH_SHORT).show();
         });
     }
 
-    // נעילה של כל השדות
-    private void lockAllFields() {
-        setEditable(nameText, false);
-        setEditable(ageText, false);
-        setEditable(emailText, false);
-        setEditable(addressText, false);
-    }
-
-    // הפיכת EditText לערוך או נעול
-    private void setEditable(EditText editText, boolean editable) {
-        editText.setEnabled(editable);
-        editText.setFocusable(editable);
-        editText.setFocusableInTouchMode(editable);
-        if (!editable) editText.clearFocus();
-    }
-
-    // טעינת פרטי המשתמש מה־Firebase
+    // ===== טעינת פרטים מה־Firebase =====
     private void loadUserData() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
-            usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        User user = snapshot.getValue(User.class);
-                        if (user != null) {
-                            nameText.setText(user.getName());
-                            ageText.setText(user.getAge());
-                            emailText.setText(user.getEmail());
-                            addressText.setText(user.getAddress());
-                        }
-                    }
+        if (currentUser == null) return;
+
+        String uid = currentUser.getUid();
+        usersRef.child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) return;
+
+                nameText.setText(snapshot.child("name").getValue(String.class));
+
+                Long age = snapshot.child("age").getValue(Long.class);
+                if (age != null) {
+                    ageText.setText(String.valueOf(age));
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    // ניתן להוסיף טיפול בשגיאות כאן
-                }
-            });
+                addressText.setText(snapshot.child("address").getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) { }
+        });
+    }
+
+    // ===== שמירה =====
+    private void saveUserData() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) return;
+
+        String uid = currentUser.getUid();
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name", nameText.getText().toString());
+
+        // שמירה כ-LONG אם אפשר
+        try {
+            updates.put("age", Long.parseLong(ageText.getText().toString()));
+        } catch (NumberFormatException e) {
+            updates.put("age", 0);
+        }
+
+        updates.put("address", addressText.getText().toString());
+
+
+        updates.put("hasDetails", true);
+
+
+        usersRef.child(uid).updateChildren(updates);
+    }
+
+    // ===== הפיכת EditText לערוך =====
+    private void enableEdit(EditText editText) {
+        lockAllFields(); // נעילה של שאר השדות
+        editText.setEnabled(true);
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.setCursorVisible(true);
+        editText.requestFocus();
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
-    // שמירת הנתונים למסד
-    private void saveUserData() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String uid = currentUser.getUid();
+    // ===== נעילה של כל השדות =====
+    private void lockAllFields() {
+        lockField(nameText);
+        lockField(ageText);
+        lockField(addressText);
+    }
 
-            User updatedUser = new User();
-            updatedUser.setName(nameText.getText().toString());
-            updatedUser.setAge(Integer.parseInt(ageText.getText().toString()));
-            updatedUser.setEmail(emailText.getText().toString());
-            updatedUser.setAddress(addressText.getText().toString());
-
-            usersRef.child(uid).setValue(updatedUser);
-        }
+    private void lockField(EditText editText) {
+        editText.setEnabled(false);
+        editText.setFocusable(false);
+        editText.setFocusableInTouchMode(false);
+        editText.setCursorVisible(false);
+        editText.clearFocus();
     }
 }

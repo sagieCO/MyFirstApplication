@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="#5E94FD">
 
-    <!-- תוכן עיקרי בתוך ליניאר -->
     <LinearLayout
         android:id="@+id/contentLayout"
         android:layout_width="0dp"
@@ -16,7 +15,7 @@
         android:padding="16dp"
         android:gravity="center_horizontal"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -28,10 +27,9 @@
             android:layout_marginBottom="24dp"
             android:scaleType="centerCrop"
             android:src="@drawable/account_icom"
-            android:contentDescription="Profile Image"
             app:shapeAppearanceOverlay="@style/CircleImageView" />
 
-        <!-- שם משתמש -->
+        <!-- ===== שם ===== -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,19 +50,23 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
                 android:textSize="18sp"
                 android:textColor="#000000"
-                android:background="#FFFF"/>
+                android:background="#FFFFFF"
+                android:padding="12dp"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/editName"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/pen_icon"
-                android:contentDescription="Edit Name" />
+                android:background="@null"
+                android:contentDescription="Edit Name"/>
         </LinearLayout>
 
-        <!-- גיל -->
+        <!-- ===== גיל ===== -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,52 +87,24 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
+                android:inputType="number"
                 android:textSize="18sp"
                 android:textColor="#000000"
-                android:background="#FFFF"/>
+                android:background="#FFFFFF"
+                android:padding="12dp"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/editAge"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/pen_icon"
-                android:contentDescription="Edit Age" />
+                android:background="@null"
+                android:contentDescription="Edit Age"/>
         </LinearLayout>
 
-        <!-- מייל -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="אימייל"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="4dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
-
-            <EditText
-                android:id="@+id/emailText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="18sp"
-                android:textColor="#000000"
-                android:background="#FFFF"/>
-
-            <ImageView
-                android:id="@+id/editEmail"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/pen_icon"
-                android:contentDescription="Edit Email" />
-        </LinearLayout>
-
-        <!-- כתובת -->
+        <!-- ===== כתובת ===== -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -144,79 +118,37 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="32dp">
 
             <EditText
                 android:id="@+id/addressText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:enabled="false"
                 android:textSize="18sp"
                 android:textColor="#000000"
-                android:background="#FFFF"/>
+                android:background="#FFFFFF"
+                android:padding="12dp"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/editAddress"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/pen_icon"
-                android:contentDescription="Edit Address" />
+                android:background="@null"
+                android:contentDescription="Edit Address"/>
         </LinearLayout>
 
+        <!-- שמירה -->
         <Button
             android:id="@+id/saveInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="שמור"
-            android:layout_marginTop="40dp"/>
-    </LinearLayout>
-
-    <!-- תפריט תחתון -->
-    <LinearLayout
-        android:id="@+id/bottomMenu"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#2C3E50"
-        android:elevation="8dp"
-        android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageButton
-            android:id="@+id/homeIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Home"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/home_icon" />
-
-        <ImageButton
-            android:id="@+id/profileIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Profile"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/account_icom" />
-
-        <ImageButton
-            android:id="@+id/settingsIcon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Settings"
-            android:padding="12dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/settings_icon" />
+            android:backgroundTint="#2C3E50"
+            android:textColor="#FFFFFF"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

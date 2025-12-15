@@ -28,46 +28,87 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:padding="12dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
             android:hint="מייל"
-            android:textColorHint="#808080"
-            android:layout_marginBottom="16dp"
             android:inputType="textEmailAddress"
-            android:gravity="end"/>
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:layout_marginBottom="16dp"/>
 
         <!-- סיסמה -->
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:padding="12dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
             android:hint="סיסמה"
-            android:textColorHint="#808080"
-            android:layout_marginBottom="24dp"
             android:inputType="textPassword"
-            android:gravity="end"/>
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:layout_marginBottom="24dp"/>
 
-        <!-- כפתור יצירת חשבון -->
+        <!-- צור חשבון -->
+        <Button
+            android:id="@+id/btnCreateAccount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="צור חשבון"
+            android:backgroundTint="#3A5F7D"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- פרטים אישיים (אופציונליים) -->
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="שם מלא (אופציונלי)"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:enabled="false"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etAge"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="גיל (אופציונלי)"
+            android:inputType="number"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:enabled="false"
+            android:layout_marginBottom="16dp"/>
+
+        <EditText
+            android:id="@+id/etAddress"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="כתובת (אופציונלי)"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:enabled="false"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- כפתורים תחתונים -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginBottom="24dp">
+            android:weightSum="2">
 
             <Button
-                android:id="@+id/btnCreateAccount"
+                android:id="@+id/btnSaveExtra"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:minHeight="52dp"
-                android:text="צור חשבון"
-                android:backgroundTint="#3A5F7D"
-                android:textColor="#FFFFFF"
+                android:text="שמור פרטים"
+                android:enabled="false"
+                android:backgroundTint="#4DB6AC"
+                android:textColor="#000000"
                 android:layout_marginEnd="8dp"/>
 
             <Button
@@ -75,65 +116,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:minHeight="52dp"
                 android:text="Remind Me Later"
                 android:backgroundTint="#9E9E9E"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
 
-        <!-- שדות נוספים (נעולים עד יצירת חשבון) -->
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:padding="12dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
-            android:enabled="false"
-            android:hint="שם מלא"
-            android:textColorHint="#808080"
-            android:layout_marginBottom="16dp"
-            android:gravity="end"/>
-
-        <EditText
-            android:id="@+id/etAge"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:padding="12dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
-            android:enabled="false"
-            android:hint="גיל"
-            android:inputType="number"
-            android:textColorHint="#808080"
-            android:layout_marginBottom="16dp"
-            android:gravity="end"/>
-
-        <EditText
-            android:id="@+id/etAddress"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:padding="12dp"
-            android:background="#FFFFFF"
-            android:elevation="2dp"
-            android:enabled="false"
-            android:hint="כתובת מגורים"
-            android:textColorHint="#808080"
-            android:layout_marginBottom="24dp"
-            android:gravity="end"/>
-
-        <!-- שמירת פרטים נוספים -->
-        <Button
-            android:id="@+id/btnSaveExtra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="52dp"
-            android:text="שמור פרטים"
-            android:backgroundTint="#4DB6AC"
-            android:textColor="#000000"
-            android:enabled="false"/>
-
-        <!-- הודעות מערכת -->
+        <!-- הודעות -->
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
