@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,16 +44,22 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_layout);
+        //setContentView(R.layout.base_layout);
         setupMenu();
         setContentLayout(R.layout.activity_main);
 
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         context = this;
 
+        Button btnGoToCalendar = findViewById(R.id.btnGoToCalendar); // רק אחרי setContentLayout
+        btnGoToCalendar.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, MonthlyCalendarActivity.class);
+            startActivity(intent);
+        });
 
 
-        };
+
+    };
     }
 
 

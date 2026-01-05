@@ -88,9 +88,10 @@ public class BaseActivity extends AppCompatActivity {
             }
             else if (id == R.id.btnLogin) {
                 startActivity(new Intent(this, LoginActivity.class));
-            } else if (id == R.id.brnCalender) {
-                startActivity(new Intent(this, CalenderActivity.class));
-            } else if (id == R.id.btnRegister) {
+            } //else if (id == R.id.brnCalender) {
+             //   startActivity(new Intent(this, CalenderActivity.class));
+            //}
+            else if (id == R.id.btnRegister) {
                 startActivity(new Intent(this, RegisterActivity.class));
             } else if (id == R.id.btnProfile) {
                 startActivity(new Intent(this, ProfileUserActivity.class));
