@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="${mapsApiKey}" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApplication"
         tools:targetApi="31">
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateMechinaActivity"
+            android:exported="false" />
         <activity
             android:name=".MonthlyCalendarActivity"
             android:exported="false" />
@@ -34,19 +48,10 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".CalenderActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MechinotInfoActivity"
-            android:exported="false" />
-        <activity
             android:name=".Frame2Activity"
             android:exported="false" />
         <activity
             android:name=".SharedPreferencesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".GuessNumberActivity"
             android:exported="false" />
         <activity
             android:name=".FrameActivity"

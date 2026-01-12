@@ -57,6 +57,11 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
         });
 
+        Button btnCreateMechina = findViewById(R.id.btnCreateMechina); // רק אחרי setContentLayout
+        btnCreateMechina.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CreateMechinaActivity.class);
+            startActivity(intent);
+        });
 
 
     };

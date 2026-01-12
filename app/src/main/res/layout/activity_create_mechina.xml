@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".CreateMechinaActivity">
+
+    <EditText android:id="@+id/etMechinaName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="שם המכינה" />
+
+    <EditText android:id="@+id/etBranch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="שלוחה" />
+
+    <EditText android:id="@+id/etAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="כתובת (למשל: הרצל 1, תל אביב)" />
+
+    <Button android:id="@+id/btnPickDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="בחר תאריך" />
+
+    <Button android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="שמור אירוע"
+        android:backgroundTint="@color/design_default_color_primary" />
+</LinearLayout>
