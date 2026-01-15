@@ -1,17 +1,31 @@
 package com.sagie.myfirstapplication;
 
 import android.app.DatePickerDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class CreateMechinaActivity extends BaseActivity {
 
@@ -19,6 +33,8 @@ public class CreateMechinaActivity extends BaseActivity {
     private EditText etMechinaName, etBranch, etAddress;
     private Button btnPickDate, btnSave;
     private String selectedDate = "";
+
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +45,18 @@ public class CreateMechinaActivity extends BaseActivity {
 
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
+        // טעינת המפה
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(@NonNull GoogleMap googleMap) {
+                    mMap = googleMap;
+                }
+            });
+        }
+
         // אתחול רכיבים
         etMechinaName = findViewById(R.id.etMechinaName);
         etBranch = findViewById(R.id.etBranch);
@@ -37,10 +65,20 @@ public class CreateMechinaActivity extends BaseActivity {
         btnSave = findViewById(R.id.btnSave);
 
         // כפתור לבחירת תאריך
-        btnPickDate.setOnClickListener(v -> showDatePicker());
+        btnPickDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateMechinaActivity.this.showDatePicker();
+            }
+        });
 
         // כפתור שמירה
-        btnSave.setOnClickListener(v -> saveEventToFirebase());
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateMechinaActivity.this.saveEventToFirebase();
+            }
+        });
     }
 
     private void showDatePicker() {
@@ -87,6 +125,42 @@ public class CreateMechinaActivity extends BaseActivity {
 
         // 6. יצירת האובייקט (שימוש במחלקה שבנינו)
         MechinaEvent newEvent = new MechinaEvent(eventId, name, branch, selectedDate, address, 0.0, 0.0);
+        getCoordinatesFromAddress(address, new IGeocodeCallback() {
+            @Override
+            public void onFinished(GeoPoint point) {
+                // כאן יש לך את האובייקט ביד!
+                Log.d("Location", "Lat: " + point.latitude + " Lon: " + point.longitude);
+                newEvent.setLat(point.latitude);
+                newEvent.setLng(point.longitude);
+                // מציגים על המפה
+                showLocationOnMap(point);
+            }
+
+            private void showLocationOnMap(GeoPoint geoPoint) {
+                if (mMap == null || geoPoint == null || !geoPoint.isValid()) {
+                    return;
+                }
+
+                // המרת ה-GeoPoint שלנו לאובייקט של Google Maps
+                LatLng location = new LatLng(geoPoint.latitude, geoPoint.longitude);
+
+                // ניקוי סימונים קודמים אם יש
+                mMap.clear();
+
+                // הוספת נעץ
+                mMap.addMarker(new MarkerOptions()
+                        .position(location)
+                        .title("הכתובת שנמצאה"));
+
+                // הזזת המצלמה למיקום עם זום (15 זה זום קרוב וטוב לרמת רחוב)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Toast.makeText(CreateMechinaActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // 7. שמירה ל-Firebase
         if (eventId != null) {
@@ -97,5 +171,45 @@ public class CreateMechinaActivity extends BaseActivity {
                     })
                     .addOnFailureListener(e -> Toast.makeText(this, "שגיאה בשמירה: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         }
+    }
+
+    private void getCoordinatesFromAddress(String addressString, IGeocodeCallback callback) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Address> addresses = geocoder.getFromLocationName(addressString, 1);
+
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address location = addresses.get(0);
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+
+                        // חוזרים ל-UI Thread כדי שהמשתמש יוכל לעדכן רכיבי מסך בבטחה
+                        CreateMechinaActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onFinished(geoPoint);
+                            }
+                        });
+                    } else {
+                        CreateMechinaActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onFailure("כתובת לא נמצאה");
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    CreateMechinaActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onFailure("שגיאת רשת/חיבור");
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 }

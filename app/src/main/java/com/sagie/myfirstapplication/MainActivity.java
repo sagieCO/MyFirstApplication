@@ -30,16 +30,10 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends BaseActivity {
 
     // Views
-    ImageButton btnProfile;
-    TextView tv_snv;
+
 
     Context context;
-    DrawerLayout drawerLayout;
-    NavigationView nv_side;
-    ActionBarDrawerToggle toggle;
-    FirebaseAuth mAuth;
-    FirebaseAuth.AuthStateListener authListener;
-    DatabaseReference usersRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
