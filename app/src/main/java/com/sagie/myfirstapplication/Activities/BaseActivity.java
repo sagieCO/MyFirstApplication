@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.sagie.myfirstapplication.R;
+
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
 public class BaseActivity extends AppCompatActivity {

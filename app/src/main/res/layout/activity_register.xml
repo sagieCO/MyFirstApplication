@@ -126,7 +126,7 @@
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#D32F2F"
+            android:textColor="#F03629"
             android:textSize="16sp"
             android:gravity="center"
             android:layout_marginTop="24dp"/>

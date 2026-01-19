@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.sagie.myfirstapplication.R;
 
 public class OpenPageActivity extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class OpenPageActivity extends AppCompatActivity {
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(OpenPageActivity.this,MainActivity.class);
+                Intent intent=new Intent(OpenPageActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

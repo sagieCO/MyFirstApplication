@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.Activities;
 
 import static com.sagie.myfirstapplication.FBRef.refAuth;
 
@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sagie.myfirstapplication.R;
+import com.sagie.myfirstapplication.User;
 
 public class RegisterActivity extends BaseActivity {
 

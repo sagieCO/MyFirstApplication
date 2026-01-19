@@ -1,25 +1,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".CreateMechinaActivity">
+    android:layoutDirection="rtl">
 
-    <EditText android:id="@+id/etMechinaName"
+    <EditText android:id="@+id/etMechinaName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+    <EditText android:id="@+id/etBranch" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+    <EditText android:id="@+id/etAddress" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="בחר מכינה מהרשימה:"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"/>
+
+    <Spinner
+        android:id="@+id/spMechinot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="שם המכינה" />
+        android:minHeight="48dp" />
 
-    <EditText android:id="@+id/etBranch"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="בחר שלוחה:"
+        android:textStyle="bold"/>
+
+    <Spinner
+        android:id="@+id/spBranches"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="שלוחה" />
+        android:minHeight="48dp" />
 
-    <EditText android:id="@+id/etAddress"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btnManualEntry"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="כתובת (למשל: הרצל 1, תל אביב)" />
+        android:layout_gravity="left"
+        android:background="?android:attr/selectableItemBackground"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:padding="4dp"
+        android:text="המכינה לא ברשימה? לחץ להוספה ידנית"
+        android:textAllCaps="false"
+        android:textColor="#0000EE"
+        android:textSize="12sp"
+        android:stateListAnimator="@null" />
 
     <Button android:id="@+id/btnPickDate"
         android:layout_width="match_parent"
@@ -31,9 +59,12 @@
         android:layout_height="wrap_content"
         android:text="שמור אירוע"
         android:backgroundTint="@color/design_default_color_primary" />
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp" />
 </LinearLayout>

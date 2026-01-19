@@ -6,9 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="${mapsApiKey}" />
+
 
     <application
         android:allowBackup="true"
@@ -20,17 +18,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApplication"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${mapsApiKey}" />
+
+
         <activity
-            android:name=".MapsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CreateMechinaActivity"
+            android:name=".Activities.CreateMechinaActivity"
             android:exported="false" />
         <activity
             android:name=".MonthlyCalendarActivity"
             android:exported="false" />
         <activity
-            android:name=".OpenPageActivity"
+            android:name=".Activities.OpenPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,33 +40,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileUserActivity"
+            android:name=".Activities.ProfileUserActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".Activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:exported="false" />
-        <activity
-            android:name=".Frame2Activity"
-            android:exported="false" />
+
         <activity
             android:name=".SharedPreferencesActivity"
             android:exported="false" />
-        <activity
-            android:name=".FrameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LinearActivity"
-            android:exported="false" />
-
         <service
             android:name=".MusicService"
             android:exported="false" />
-
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="false" />
     </application>
 

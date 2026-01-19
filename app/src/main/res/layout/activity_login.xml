@@ -11,7 +11,7 @@
     android:padding="24dp"
     android:gravity="center_horizontal"
     android:background="#F2F6F7"
-    tools:context=".LoginActivity">
+    tools:context=".Activities.LoginActivity">
 
     <!-- כותרת -->
     <TextView

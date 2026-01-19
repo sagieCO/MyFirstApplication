@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.Activities;
 
 import static com.sagie.myfirstapplication.FBRef.refAuth;
 
@@ -12,12 +12,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -25,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
+import com.sagie.myfirstapplication.FBRef;
+import com.sagie.myfirstapplication.R;
 
 public class LoginActivity extends BaseActivity {
 
@@ -32,7 +28,6 @@ public class LoginActivity extends BaseActivity {
     private TextView tvMessage;
     private CheckBox isCheck;
     private EditText etEmail, etPassword;
-    private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authListener;
 
     @Override
@@ -46,7 +41,6 @@ public class LoginActivity extends BaseActivity {
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
 
-        auth = FirebaseAuth.getInstance();
         initView();
 
         // AuthStateListener – יעדכן את הטקסט בזמן אמת
@@ -63,7 +57,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        auth.addAuthStateListener(authListener);
+        FBRef.refAuth.addAuthStateListener(authListener);
 
         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isChecked = sharedPref.getBoolean("stayConnect", false);
@@ -89,7 +83,7 @@ public class LoginActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         if (authListener != null) {
-            auth.removeAuthStateListener(authListener);
+            FBRef.refAuth.removeAuthStateListener(authListener);
         }
     }
 
