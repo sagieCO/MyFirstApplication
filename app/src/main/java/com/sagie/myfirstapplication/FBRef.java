@@ -11,7 +11,7 @@ public class FBRef {
     // התחברות לחשבון משתמשים
     public static FirebaseAuth refAuth = FirebaseAuth.getInstance();
     public static FirebaseFirestore FBFS = FirebaseFirestore.getInstance();
-
+    public static CollectionReference refImages = FBFS.collection("Images");
     public static FirebaseDatabase fbRef = FirebaseDatabase.getInstance();
     public static DatabaseReference usersRef = fbRef.getReference("users");
     public static DatabaseReference mechinotRef = fbRef.getReference("mechinot");

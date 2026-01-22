@@ -24,11 +24,25 @@
             android:id="@+id/profileImage"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="20dp"
+            android:padding="2dp"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/account_icom"
             app:shapeAppearanceOverlay="@style/CircleImageView" />
 
+        <Button
+            android:id="@+id/btnChangePhoto"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="החלף תמונת פרופיל"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:icon="@android:drawable/ic_menu_camera"
+            app:iconTint="#FFFFFF" />
         <!-- ===== שם ===== -->
         <TextView
             android:layout_width="match_parent"
