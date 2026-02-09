@@ -21,9 +21,6 @@
         android:title="יומן" />
 
 
-    <item
-        android:id="@+id/btnProfile"
-        android:title="פרופיל" />
 
     <item
         android:id="@+id/btnSetting"

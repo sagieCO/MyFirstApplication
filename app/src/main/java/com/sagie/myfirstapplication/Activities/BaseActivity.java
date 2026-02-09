@@ -71,10 +71,8 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
             } else if (id == R.id.btnRegister) {
                 startActivity(new Intent(this, RegisterActivity.class));
-            } else if (id == R.id.btnProfile) {
-                startActivity(new Intent(this, ProfileUserActivity.class));
             } else if (id == R.id.btnSetting) {
-                Toast.makeText(this, "settings page", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, SettingsActivity.class));
             } else if (id == R.id.btnLogout) {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();

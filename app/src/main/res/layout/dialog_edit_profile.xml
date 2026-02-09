@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#5E94FD">
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/profileImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:padding="2dp"
+            app:strokeColor="#FFFFFF"
+            app:strokeWidth="2dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/account_icom"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+        <Button
+            android:id="@+id/btnChangePhoto"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="החלף תמונת פרופיל"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            app:icon="@android:drawable/ic_menu_camera"
+            app:iconTint="#FFFFFF" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שם משתמש"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="4dp"
+            android:gravity="right"/>
+
+        <EditText
+            android:id="@+id/nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:hint="הכנס שם"
+            android:padding="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="גיל"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="4dp"
+            android:gravity="right"/>
+
+        <EditText
+            android:id="@+id/ageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:inputType="number"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:hint="הכנס גיל"
+            android:padding="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="כתובת"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="4dp"
+            android:gravity="right"/>
+
+        <EditText
+            android:id="@+id/addressText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:background="#FFFFFF"
+            android:hint="הכנס כתובת"
+            android:padding="12dp"/>
+
+        <Button
+            android:id="@+id/saveInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שמור שינויים"
+            android:backgroundTint="#2C3E50"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:cornerRadius="8dp"/>
+
+    </LinearLayout>
+</ScrollView>
