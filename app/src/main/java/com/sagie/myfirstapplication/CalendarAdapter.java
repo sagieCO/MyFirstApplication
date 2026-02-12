@@ -31,33 +31,52 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
         Day day = days.get(position);
-        holder.eventsContainer.removeAllViews(); // מניעת כפילויות בגלילה
+
+        // חשוב מאוד: ניקוי ה-Container כדי למנוע כפילויות בזמן גלילה
+        holder.eventsContainer.removeAllViews();
 
         if (day.dayNumber == 0) {
             holder.tvDayNumber.setText("");
             holder.container.setBackgroundColor(Color.parseColor("#F5F5F5"));
+            holder.tvDayNumber.setBackground(null);
         } else {
             holder.tvDayNumber.setText(String.valueOf(day.dayNumber));
             holder.container.setBackgroundColor(day.isCurrentMonth ? Color.WHITE : Color.parseColor("#EEEEEE"));
 
+            // סימון היום הנוכחי בעיגול כחול
+            if (day.isToday) {
+                holder.tvDayNumber.setBackgroundResource(R.drawable.today_circle);
+                holder.tvDayNumber.setTextColor(Color.WHITE);
+            } else {
+                holder.tvDayNumber.setBackground(null);
+                holder.tvDayNumber.setTextColor(Color.BLACK);
+            }
+
+            // --- כאן התיקון: הוספת האירועים לתצוגה ---
             if (day.dayEvents != null && !day.dayEvents.isEmpty()) {
                 for (MechinaEvent event : day.dayEvents) {
                     TextView tvEvent = new TextView(holder.itemView.getContext());
 
-                    // עיצוב הטקסט - הגדלה ל-12sp ומרכוז
+                    // הגדרת הטקסט (שם המכינה)
                     tvEvent.setText(event.mechinaName);
-                    tvEvent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+                    tvEvent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
                     tvEvent.setTextColor(Color.WHITE);
                     tvEvent.setGravity(Gravity.CENTER);
-                    tvEvent.setPadding(8, 4, 8, 4);
+                    tvEvent.setPadding(4, 2, 4, 2);
+
+                    // עיצוב הרקע של האירוע (וודא שיש לך drawable כזה)
                     tvEvent.setBackgroundResource(R.drawable.event_item_bg);
 
-                    tvEvent.setLines(1); // שורה אחת כדי שלא יתפוס יותר מדי מקום
+                    // הגבלה לשורה אחת עם שלוש נקודות אם הטקסט ארוך
+                    tvEvent.setLines(1);
                     tvEvent.setEllipsize(TextUtils.TruncateAt.END);
 
+                    // הגדרת רווחים בין אירוע לאירוע
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0, 4, 0, 4);
+                    params.setMargins(0, 2, 0, 2);
+
+                    // הוספה ל-Layout בתוך ה-Item
                     holder.eventsContainer.addView(tvEvent, params);
                 }
             }
