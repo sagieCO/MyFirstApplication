@@ -1,20 +1,17 @@
 package com.sagie.myfirstapplication;
 
-
 public class MechinaEvent {
-    public String eventId;     // מזהה ייחודי מ-Firebase
-    public String mechinaName; // שם המכינה
-    public String branch;      // שלוחה
-    public String date;        // תאריך המיון (בפורמט DD/MM/YYYY)
-    public String address;     // כתובת
-    public double lat;         // קווי רוחב למפה
-    public double lng;         // קווי אורך למפה
+    public String eventId;
+    public String mechinaName; // אנחנו שומרים על השם הזה כפי שביקשת
+    public String branch;
+    public String date;
+    public String address;
+    public double lat;
+    public double lng;
 
-    // קונסטרקטור ריק - חובה עבור Firebase כדי להמיר JSON לאובייקט Java
     public MechinaEvent() {
     }
 
-    // קונסטרקטור מלא ליצירת אירוע חדש בקוד
     public MechinaEvent(String eventId, String mechinaName, String branch, String date, String address, double lat, double lng) {
         this.eventId = eventId;
         this.mechinaName = mechinaName;
@@ -25,7 +22,26 @@ public class MechinaEvent {
         this.lng = lng;
     }
 
-    // מתודות עזר (אופציונליות) לעדכון ידני של מיקום
+    // --- אלו הפונקציות שחסרו לך כדי שה-Activity יעבוד ---
+
+    // כשמישהו קורא ל-getName, הוא יקבל את mechinaName
+    public String getName() {
+        return mechinaName;
+    }
+    public double getLat(){
+        return this.lat;
+    }
+
+    public double getLng() {
+        return this.lng;
+    }
+
+    // כשמישהו קורא ל-setName, זה יעדכן את mechinaName
+    public void setName(String name) {
+        this.mechinaName = name;
+    }
+
+    // שאר ה-Setters למיקום (כבר היו לך, השארתי אותם)
     public void setLat(double lat) {
         this.lat = lat;
     }
@@ -33,4 +49,8 @@ public class MechinaEvent {
     public void setLng(double lng) {
         this.lng = lng;
     }
+
+    // מומלץ להוסיף גם Getters לשאר השדות כדי שפיירבייס ימשוך אותם בקלות
+    public String getBranch() { return branch; }
+    public String getAddress() { return address; }
 }

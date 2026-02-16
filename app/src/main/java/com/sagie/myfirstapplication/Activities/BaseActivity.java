@@ -71,7 +71,11 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(new Intent(this, LoginActivity.class));
             } else if (id == R.id.btnRegister) {
                 startActivity(new Intent(this, RegisterActivity.class));
-            } else if (id == R.id.btnSetting) {
+            }
+            else if(id == R.id.btnFullMap){
+                startActivity(new Intent(this, FullMapActivity.class));
+            }
+            else if (id == R.id.btnSetting) {
                 startActivity(new Intent(this, SettingsActivity.class));
             } else if (id == R.id.btnLogout) {
                 FirebaseAuth.getInstance().signOut();

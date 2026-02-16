@@ -66,16 +66,7 @@ public class RegisterActivity extends BaseActivity {
                     .addOnCompleteListener(task -> {
                         pd.dismiss();
                         if (task.isSuccessful()) {
-                            FirebaseUser user = refAuth.getCurrentUser();
-
-                            if (user != null) {
-                                DatabaseReference ref =
-                                        FirebaseDatabase.getInstance()
-                                                .getReference("users")
-                                                .child(user.getUid());
-                                ref.child("hasDetails").setValue(false);
-                            }
-
+                            // הסרנו מכאן את הקוד שיצר את הענף hasDetails
                             tvStatus.setText("החשבון נוצר! מילוי פרטים הוא אופציונלי");
                             setPersonalFieldsEnabled(true);
                         } else {
@@ -109,11 +100,7 @@ public class RegisterActivity extends BaseActivity {
             User newUser = new User(name, age, address, user.getUid());
             newUser.saveToFirebase();
 
-            FirebaseDatabase.getInstance()
-                    .getReference("users")
-                    .child(user.getUid())
-                    .child("hasDetails")
-                    .setValue(true);
+            // הסרנו גם מכאן את העדכון של hasDetails ל-true
 
             tvStatus.setText("הפרטים נשמרו בהצלחה");
         });
@@ -138,8 +125,7 @@ public class RegisterActivity extends BaseActivity {
             tvStatus.setText("משתמש כבר קיים");
         } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
             tvStatus.setText("אימייל לא תקין");
-        }
-         else {
+        } else {
             tvStatus.setText("שגיאה: " + exp.getMessage());
         }
     }

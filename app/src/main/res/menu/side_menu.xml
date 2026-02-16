@@ -17,10 +17,12 @@
         android:title="הרשמה" />
 
     <item
+        android:id="@+id/btnFullMap"
+        android:title="כל המכינות שלי" />
+
+    <item
         android:id="@+id/brnCalender"
         android:title="יומן" />
-
-
 
     <item
         android:id="@+id/btnSetting"
