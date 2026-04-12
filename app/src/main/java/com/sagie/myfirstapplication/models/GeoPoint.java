@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.models;
 
 public class GeoPoint {
     public double latitude;

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="#856060">
+
+        <!-- שם המכינה -->
+        <TextView
+            android:id="@+id/tvMechinaNameDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שם המכינה"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="10dp" />
+
+        <!-- מידע קצר על הסניף -->
+        <TextView
+            android:id="@+id/tvBranchInfoDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="כמה מילים על הסניף"
+            android:textSize="16sp"
+            android:paddingBottom="10dp" />
+
+        <!-- מספר ביקורות קצר -->
+        <TextView
+            android:id="@+id/tvReviewsDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ביקורות קצרות..."
+            android:textSize="14sp"
+            android:paddingBottom="15dp" />
+
+        <!-- כפתורים בתחתית הדיאלוג -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnAddReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="הוסף ביקורת"
+                android:layout_marginEnd="10dp"/>
+
+            <Button
+                android:id="@+id/btnViewAllReviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="צפה בכל הביקורות" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -25,9 +25,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sagie.myfirstapplication.FBRef;
-import com.sagie.myfirstapplication.GeoPoint;
+import com.sagie.myfirstapplication.models.GeoPoint;
 import com.sagie.myfirstapplication.IGeocodeCallback;
-import com.sagie.myfirstapplication.MechinaEvent;
+import com.sagie.myfirstapplication.models.MechinaEvent;
 import com.sagie.myfirstapplication.R;
 
 import org.json.JSONArray;

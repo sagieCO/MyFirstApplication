@@ -31,7 +31,7 @@
             android:name=".Activities.CreateMechinaActivity"
             android:exported="false" />
         <activity
-            android:name=".MonthlyCalendarActivity"
+            android:name=".Activities.MonthlyCalendarActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.OpenPageActivity"
@@ -51,10 +51,6 @@
             android:exported="false" />
         <activity
             android:name=".SharedPreferencesActivity"
-            android:exported="false" />
-
-        <service
-            android:name=".MusicService"
             android:exported="false" />
 
         <activity

@@ -1,4 +1,4 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.models;
 
 public class MechinaEvent {
     public String eventId;
@@ -8,6 +8,8 @@ public class MechinaEvent {
     public String address;
     public double lat;
     public double lng;
+    public String region;
+    public String religiousType;
 
     public MechinaEvent() {
     }

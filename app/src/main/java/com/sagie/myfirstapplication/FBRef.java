@@ -8,14 +8,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FBRef {
-    // התחברות לחשבון משתמשים
+    //FirebaseAuth
     public static FirebaseAuth refAuth = FirebaseAuth.getInstance();
+    //Firestore
     public static FirebaseFirestore FBFS = FirebaseFirestore.getInstance();
-    public static CollectionReference refImages = FBFS.collection("Images");
+    public static CollectionReference refImages = FBFS.collection("imageProfile");
+
+    //Realtime Database
     public static FirebaseDatabase fbRef = FirebaseDatabase.getInstance();
     public static DatabaseReference usersRef = fbRef.getReference("users");
     public static DatabaseReference mechinotRef = fbRef.getReference("mechinot");
-    // חיבור למסד נתונים
 
-    // מצביע לשורש "Students" במסד הנתונים
 }

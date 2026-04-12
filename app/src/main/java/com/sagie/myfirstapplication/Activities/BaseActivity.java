@@ -75,12 +75,18 @@ public class BaseActivity extends AppCompatActivity {
             else if(id == R.id.btnFullMap){
                 startActivity(new Intent(this, FullMapActivity.class));
             }
+            else if(id==R.id.btnCreateEvent){
+                startActivity(new Intent(this, CreateMechinaActivity.class));
+            }
+            else if(id==R.id.btnCalender){
+                startActivity(new Intent(this, MonthlyCalendarActivity.class));
+            }
             else if (id == R.id.btnSetting) {
                 startActivity(new Intent(this, SettingsActivity.class));
             } else if (id == R.id.btnLogout) {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();
-                finish(); // סגירת האקטיביטי הנוכחי
+                finish();
             }
 
             drawerLayout.closeDrawers();

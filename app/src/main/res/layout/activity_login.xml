@@ -37,7 +37,7 @@
         android:textColorHint="#808080"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="16dp"
-        android:gravity="end"/>
+        android:textDirection="rtl" />
 
     <!-- שדה סיסמה -->
     <EditText
@@ -76,14 +76,7 @@
         android:textColor="#FFFFFF"
         android:layout_marginBottom="16dp"/>
 
-    <!-- הישאר מחובר -->
-    <CheckBox
-        android:id="@+id/cbStayLoggedIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="הישאר מחובר"
-        android:textColor="#2C3E50"
-        android:layout_marginBottom="24dp"/>
+
 
     <!-- הרשמה -->
     <LinearLayout

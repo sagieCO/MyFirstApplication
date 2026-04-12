@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_mechina_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/tvMechinaName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שם המכינה"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#3A5F7D" />
+
+        <TextView
+            android:id="@+id/tvMechinaDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="תיאור קצר על האופי והדרישות..."
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="4dp" />
+
+        <Button
+            android:id="@+id/btnInfo"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="לפרטים והרשמה" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

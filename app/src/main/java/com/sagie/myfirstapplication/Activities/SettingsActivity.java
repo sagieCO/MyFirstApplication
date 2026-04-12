@@ -33,8 +33,7 @@ import java.util.Map;
 
 public class SettingsActivity extends BaseActivity {
 
-    private Button btnDeleteAccount, btnEditProfile;
-    private FirebaseFirestore firestore;
+    private Button btnEditProfile;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     // משתנה זמני כדי להחזיק את ה-ImageView של הדיאלוג
@@ -48,7 +47,6 @@ public class SettingsActivity extends BaseActivity {
 
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        firestore = FirebaseFirestore.getInstance();
 
         initView();
         setupListeners();
@@ -56,12 +54,10 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void initView() {
-        btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
         btnEditProfile = findViewById(R.id.btnEditProfile);
     }
 
     private void setupListeners() {
-        btnDeleteAccount.setOnClickListener(v -> deleteUserLogic());
         btnEditProfile.setOnClickListener(v -> showEditProfileDialog());
     }
 
@@ -140,7 +136,7 @@ public class SettingsActivity extends BaseActivity {
             imageMap.put("email", user.getEmail());
             imageMap.put("imageData", base64Image);
 
-            firestore.collection("imageProfile").document(user.getUid())
+            FBRef.refImages.document(user.getUid())
                     .set(imageMap)
                     .addOnSuccessListener(aVoid -> {
                         if (dialogProfileImage != null) {
@@ -172,7 +168,7 @@ public class SettingsActivity extends BaseActivity {
         });
 
         // טעינת תמונה מ-Firestore
-        firestore.collection("imageProfile").document(uid).get().addOnSuccessListener(doc -> {
+        FBRef.refImages.document(uid).get().addOnSuccessListener(doc -> {
             if (doc.exists()) {
                 String base64 = doc.getString("imageData");
                 if (base64 != null) {
@@ -224,7 +220,7 @@ public class SettingsActivity extends BaseActivity {
                                 if (taskRTDB.isSuccessful()) {
 
                                     // 2. מחיקת תמונת הפרופיל מ-Firestore (אוסף imageProfile)
-                                    firestore.collection("imageProfile").document(userIdToDelete).delete()
+                                    FBRef.refImages.document(userIdToDelete).delete()
                                             .addOnCompleteListener(taskFirestore -> {
 
                                                 // 3. מחיקת המשתמש מה-Authentication (השלב האחרון)

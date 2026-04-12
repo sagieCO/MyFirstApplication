@@ -5,10 +5,9 @@
     android:id="@+id/main"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFF"
+    android:background="#A7B6AC"
     android:padding="24dp">
 
-    <!-- כותרת למעלה -->
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -21,69 +20,74 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="32dp"/>
 
-    <!-- Spacer כדי לדחוף את הכפתורים למטה -->
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <!-- כפתור התחבר -->
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="התחבר"
-        android:backgroundTint="#3A5F7D"
-        android:textColor="#FFFFFF"
-        android:padding="12dp"/>
-
-    <!-- פס עם "או" -->
     <LinearLayout
+        android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginVertical="16dp">
+        android:orientation="vertical"
+        android:background="@drawable/rounded_container"
+        android:padding="20dp">
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="#B19494"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="או"
+            android:text="התחבר"
+            android:backgroundTint="#3A5F7D"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="16dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#B19494"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="או"
+                android:textColor="#000000"
+                android:layout_marginHorizontal="8dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#B19494"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="הרשם"
+            android:backgroundTint="#4DB6AC"
             android:textColor="#000000"
-            android:layout_marginHorizontal="8dp"/>
+            android:padding="12dp"/>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="#B19494"/>
+        <Button
+            android:id="@+id/btnGuest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="המשך כאורח"
+            android:backgroundTint="#B0BEC5"
+            android:textColor="#000000"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"/>
+
     </LinearLayout>
-
-    <!-- כפתור הירשם -->
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="הרשם"
-        android:backgroundTint="#4DB6AC"
-        android:textColor="#000000"
-        android:padding="12dp"/>
-
-    <!-- כפתור המשך כאורח -->
-    <Button
-        android:id="@+id/btnGuest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="המשך כאורח"
-        android:backgroundTint="#B0BEC5"
-        android:textColor="#000000"
-        android:layout_marginTop="12dp"
-        android:padding="12dp"/>
 
 </LinearLayout>

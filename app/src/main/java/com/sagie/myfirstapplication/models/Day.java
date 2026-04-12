@@ -1,4 +1,5 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.models;
+
 import java.util.ArrayList;
 import java.util.List;
 

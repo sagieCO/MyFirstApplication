@@ -26,7 +26,6 @@ public class LoginActivity extends BaseActivity {
 
     private Button btnLogin,btnRegister,btnReset;
     private TextView tvMessage;
-    private CheckBox isCheck;
     private EditText etEmail, etPassword;
     private FirebaseAuth.AuthStateListener authListener;
 
@@ -43,21 +42,12 @@ public class LoginActivity extends BaseActivity {
 
         initView();
 
-        // AuthStateListener – יעדכן את הטקסט בזמן אמת
-        authListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                tvMessage.setText("משתמש פעיל: " + user.getEmail());
-            } else {
-                tvMessage.setText("משתמש לא מחובר");
-            }
-        };
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FBRef.refAuth.addAuthStateListener(authListener);
 
         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isChecked = sharedPref.getBoolean("stayConnect", false);
@@ -91,7 +81,6 @@ public class LoginActivity extends BaseActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         tvMessage = findViewById(R.id.tvMessage);
-        isCheck = findViewById(R.id.cbStayLoggedIn);
         btnLogin = findViewById(R.id.btnLogin);
         btnReset=findViewById(R.id.btnReset);
         btnRegister = findViewById(R.id.btnRegister);
@@ -111,7 +100,6 @@ public class LoginActivity extends BaseActivity {
     private void resetFields() {
         etEmail.setText("");
         etPassword.setText("");
-        isCheck.setChecked(false);
         tvMessage.setText("");
     }
 
@@ -137,12 +125,12 @@ public class LoginActivity extends BaseActivity {
                         FirebaseUser user = refAuth.getCurrentUser();
                         tvMessage.setText("User logged in successfully");
 
-                        // שמירה של הסטטוס של ה-CheckBox
+                        /* שמירה של הסטטוס של ה-CheckBox
                         SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putBoolean("stayConnect", isCheck.isChecked());
                         editor.apply();
-
+*/
                         // מעבר למסך הראשי
                         // מעבר למסך הראשי עם מידע על המשתמש
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

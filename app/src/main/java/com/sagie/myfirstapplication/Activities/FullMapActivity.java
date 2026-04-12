@@ -25,7 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sagie.myfirstapplication.MechinaEvent;
+import com.sagie.myfirstapplication.models.MechinaEvent;
 import com.sagie.myfirstapplication.R;
 
 public class FullMapActivity extends BaseActivity implements OnMapReadyCallback {
