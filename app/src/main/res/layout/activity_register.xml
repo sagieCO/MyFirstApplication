@@ -23,6 +23,17 @@
             android:textColor="#2C3E50"
             android:layout_marginBottom="32dp"/>
 
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:hint="שם מלא"
+            android:inputType="textPersonName"
+            android:background="#FFFFFF"
+            android:padding="12dp"
+            android:gravity="end"
+            android:enabled="true"  android:layout_marginBottom="16dp"
+            android:textDirection="rtl"/>
         <!-- אימייל -->
         <EditText
             android:id="@+id/etEmail"
@@ -59,16 +70,7 @@
             android:layout_marginBottom="32dp"/>
 
         <!-- פרטים אישיים (אופציונליים) -->
-        <EditText
-            android:id="@+id/etName"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:hint="שם מלא (אופציונלי)"
-            android:background="#FFFFFF"
-            android:padding="12dp"
-            android:gravity="end"
-            android:enabled="false"
-            android:layout_marginBottom="16dp"/>
+
 
         <EditText
             android:id="@+id/etAge"

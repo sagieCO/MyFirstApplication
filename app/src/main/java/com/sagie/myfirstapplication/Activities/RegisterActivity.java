@@ -2,7 +2,6 @@ package com.sagie.myfirstapplication.Activities;
 
 import static com.sagie.myfirstapplication.FBRef.refAuth;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,26 +9,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
+import com.sagie.myfirstapplication.FBRef;
 import com.sagie.myfirstapplication.R;
-import com.sagie.myfirstapplication.models.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends BaseActivity {
 
     private TextView tvStatus;
-    private Button btnCreateAccount, btnSaveExtra, btnSkip;
-    private EditText etEmail, etPassword, etName, etAge, etAddress;
+    private Button btnRegister;
+    private EditText etEmail, etPassword, etName;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // הגדרת ה-Layout דרך ה-BaseActivity כפי שעשינו ב-LoginActivity
+        // הגדרת ה-Layout
         setContentView(R.layout.base_layout);
         setupMenu();
         setContentLayout(R.layout.activity_register);
@@ -40,109 +41,82 @@ public class RegisterActivity extends BaseActivity {
         // אתחול רכיבי ה-UI
         initView();
 
-        // הגדרת מאזינים לכפתורים (Listeners)
-        setupClickListeners();
+        // הגדרת מאזין לכפתור הרישום
+        btnRegister.setOnClickListener(v -> performRegistration());
     }
 
-    /**
-     * קישור משתני ה-Java לרכיבי ה-XML ואתחול מצב ראשוני
-     */
     private void initView() {
         tvStatus = findViewById(R.id.tvStatus);
+        etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        etName = findViewById(R.id.etName);
-        etAge = findViewById(R.id.etAge);
-        etAddress = findViewById(R.id.etAddress);
-
-        btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        btnSaveExtra = findViewById(R.id.btnSaveExtra);
-        btnSkip = findViewById(R.id.btnSkip);
-
-        // כיבוי שדות הפרטים האישיים עד ליצירת המשתמש
-        setPersonalFieldsEnabled(false);
+        btnRegister = findViewById(R.id.btnCreateAccount); // משתמש ב-ID הקיים מה-XML שלך
     }
 
     /**
-     * הגדרת כל הלוגיקה של לחיצות הכפתורים
+     * לוגיקת הרישום המאוחדת
      */
-    private void setupClickListeners() {
+    private void performRegistration() {
+        String name = etName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String pass = etPassword.getText().toString().trim();
 
-        // כפתור יצירת חשבון (שלב 1)
-        btnCreateAccount.setOnClickListener(v -> {
-            String email = etEmail.getText().toString().trim();
-            String pass = etPassword.getText().toString().trim();
+        // 1. בדיקות תקינות קלט
+        if (name.isEmpty() || email.isEmpty() || pass.isEmpty()) {
+            tvStatus.setText("נא למלא את כל השדות (שם, מייל וסיסמה)");
+            return;
+        }
 
-            if (email.isEmpty() || pass.isEmpty()) {
-                tvStatus.setText("אנא מלא אימייל וסיסמה");
-                return;
-            }
+        if (pass.length() < 6) {
+            tvStatus.setText("הסיסמה חייבת להיות לפחות 6 תווים");
+            return;
+        }
 
-            if (pass.length() < 6) {
-                tvStatus.setText("הסיסמה חייבת להכיל לפחות 6 תווים");
-                return;
-            }
+        ProgressDialog pd = new ProgressDialog(this);
+        pd.setMessage("יוצר חשבון ושומר פרטים...");
+        pd.setCancelable(false);
+        pd.show();
 
-            ProgressDialog pd = new ProgressDialog(this);
-            pd.setMessage("יוצר חשבון...");
-            pd.show();
+        // 2. יצירת משתמש ב-Firebase Auth (מייל וסיסמה)
+        refAuth.createUserWithEmailAndPassword(email, pass)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // קבלת ה-UID הייחודי שנוצר ב-Auth
+                        String uid = refAuth.getCurrentUser().getUid();
 
-            refAuth.createUserWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener(task -> {
+                        // 3. שמירת השם המלא ב-Realtime Database תחת users -> UID
+                        saveUserToDatabase(uid, name, email, pd);
+                    } else {
                         pd.dismiss();
-                        if (task.isSuccessful()) {
-                            tvStatus.setText("החשבון נוצר! ניתן למלא פרטים או לדלג");
-                            setPersonalFieldsEnabled(true);
-                        } else {
-                            handleError(task.getException());
-                        }
-                    });
-        });
-
-        // כפתור שמירת פרטים אישיים (שלב 2 - אופציונלי)
-        btnSaveExtra.setOnClickListener(v -> {
-            FirebaseUser user = refAuth.getCurrentUser();
-            if (user == null) {
-                tvStatus.setText("שגיאה: אין משתמש מחובר");
-                return;
-            }
-
-            String name = etName.getText().toString().trim();
-            String ageStr = etAge.getText().toString().trim();
-            String address = etAddress.getText().toString().trim();
-
-            if (name.isEmpty() && ageStr.isEmpty() && address.isEmpty()) {
-                tvStatus.setText("נא למלא לפחות שדה אחד לשמירה");
-                return;
-            }
-
-            int age = 0;
-            if (!ageStr.isEmpty()) {
-                try {
-                    age = Integer.parseInt(ageStr);
-                } catch (Exception e) {
-                    tvStatus.setText("גיל לא תקין");
-                    return;
-                }
-            }
-
-            // שמירה ל-Firebase Database
-            User newUser = new User(name, age, address, user.getUid());
-            newUser.saveToFirebase();
-
-            tvStatus.setText("הפרטים נשמרו! נכנס למערכת...");
-
-            // מעבר אוטומטי למסך הראשי
-            navigateToMain();
-        });
-
-        // כפתור דילוג (Remind Me Later)
-        btnSkip.setOnClickListener(v -> navigateToMain());
+                        handleError(task.getException());
+                    }
+                });
     }
 
     /**
-     * פונקציה למעבר למסך הראשי וסגירת מסך ההרשמה
+     * שמירת הנתונים ב-Realtime Database
      */
+    private void saveUserToDatabase(String uid, String name, String email, ProgressDialog pd) {
+        Map<String, Object> userValues = new HashMap<>();
+        userValues.put("name", name);
+        userValues.put("email", email);
+        userValues.put("uid", uid);
+        userValues.put("age", 0);      // ערך ברירת מחדל
+        userValues.put("address", ""); // ערך ברירת מחדל
+
+        // כתיבה לנתיב users/UID
+        FBRef.usersRef.child(uid).setValue(userValues)
+                .addOnCompleteListener(task -> {
+                    pd.dismiss();
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "נרשמת בהצלחה!", Toast.LENGTH_SHORT).show();
+                        navigateToMain();
+                    } else {
+                        tvStatus.setText("שגיאה בשמירת הנתונים: " + task.getException().getMessage());
+                    }
+                });
+    }
+
     private void navigateToMain() {
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -150,24 +124,11 @@ public class RegisterActivity extends BaseActivity {
         finish();
     }
 
-    /**
-     * הפעלה או כיבוי של שדות הפרטים האופציונליים
-     */
-    private void setPersonalFieldsEnabled(boolean enabled) {
-        etName.setEnabled(enabled);
-        etAge.setEnabled(enabled);
-        etAddress.setEnabled(enabled);
-        btnSaveExtra.setEnabled(enabled);
-    }
-
-    /**
-     * טיפול בשגיאות נפוצות מ-Firebase Auth
-     */
     private void handleError(Exception exp) {
         if (exp instanceof FirebaseAuthWeakPasswordException) {
             tvStatus.setText("הסיסמה חלשה מדי");
         } else if (exp instanceof FirebaseAuthUserCollisionException) {
-            tvStatus.setText("משתמש כבר קיים במערכת");
+            tvStatus.setText("האימייל כבר קיים במערכת");
         } else if (exp instanceof FirebaseAuthInvalidCredentialsException) {
             tvStatus.setText("פורמט אימייל לא תקין");
         } else {

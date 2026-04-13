@@ -63,24 +63,24 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // 1. הגדרת מרכז ישראל (קו רוחב וקו אורך שנותנים מבט מאוזן על המדינה)
+        // 1. הגדרת מרכז ישראל
         LatLng israelCenter = new LatLng(31.4117, 35.0818);
 
-        // 2. פתיחת המפה בזום 7.5 - זה הזום האידיאלי לראות את כל ישראל ברוב המסכים
+        // 2. הצבת המצלמה על ישראל באופן מיידי (בלי אנימציה כדי שזה יהיה ה-Default)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(israelCenter, 7.5f));
 
         // 3. הגדרות UI
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        // 4. בדיקת הרשאות והפעלת הנקודה הכחולה (דרישה 9 ו-5 במחוון)
+        // 4. טעינת המרקרים מהפיירבייס
+        loadMarkersFromFirebase();
+
+        // 5. ניסיון להפעיל מיקום משתמש - רק אם הוא מאושר
         enableUserLocation();
 
-        // 5. הגדרת מאזין לניווט
         mMap.setOnInfoWindowClickListener(marker -> {
             openGoogleMapsNavigation(marker.getPosition().latitude, marker.getPosition().longitude);
         });
-
-        loadMarkersFromFirebase();
     }
 
     private void enableUserLocation() {
@@ -99,13 +99,18 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
             fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
                 if (location != null) {
                     LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    // התמקדות במיקום המשתמש בישראל
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
+
+                    // בדיקה אופציונלית: האם המשתמש בישראל (טווח קווי רוחב של ישראל)
+                    if (userLatLng.latitude > 29.0 && userLatLng.latitude < 33.5) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
+                    } else {
+                        // אם המשתמש לא בישראל (או שזה סימולטור), אל תזיז את המצלמה מהמרכז שקבענו
+                        Toast.makeText(this, "מיקומך נמצא מחוץ לטווח התצוגה", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
     }
-
     private void loadMarkersFromFirebase() {
         if (userEventsRef == null) return;
         userEventsRef.addValueEventListener(new ValueEventListener() {

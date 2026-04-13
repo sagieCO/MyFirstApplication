@@ -29,7 +29,13 @@ public class BaseActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected TextView navName;
     protected ImageView navProfileImage;
-
+    // camera profile image  V
+    //alet maneger notifications
+    //global chat + names
+    //fixing gps and map
+    //mechinot
+    //guest
+    //birth of date
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
