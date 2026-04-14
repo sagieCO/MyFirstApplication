@@ -29,19 +29,41 @@ public class BaseActivity extends AppCompatActivity {
     protected Toolbar toolbar;
     protected TextView navName;
     protected ImageView navProfileImage;
-    // camera profile image  V
-    //alet maneger notifications
-    //global chat + names
-    //fixing gps and map
-    //mechinot
-    //guest
-    //birth of date
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        // הבדיקה חייבת לקרות לפני טעינת ה-Layout כדי למנוע הצגה של מידע חסום
+        if (requiresAuthentication() && FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "עליך להתחבר כדי לגשת לדף זה", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, OpenPageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+        // השארתי את הקריאות שלך בדיוק כפי שביקשת
         setContentView(R.layout.base_layout);
         setupMenu();
+    }
+
+    // הפונקציה שחסרה לך וגורמת לשגיאה ב-Adapter
+    public void startActivityProtected(Intent intent) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(this, "פעולה זו דורשת התחברות", Toast.LENGTH_SHORT).show();
+            Intent loginIntent = new Intent(this, OpenPageActivity.class);
+            loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(loginIntent);
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    protected boolean requiresAuthentication() {
+        return false;
     }
 
     protected void setupMenu() {
@@ -61,7 +83,6 @@ public class BaseActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // גישה ל-Header של התפריט
         View headerView = navigationView.getHeaderView(0);
         navProfileImage = headerView.findViewById(R.id.navHeaderProfileImage);
         navName = headerView.findViewById(R.id.tvGreeting);
@@ -70,29 +91,36 @@ public class BaseActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
+            Intent intent = null;
 
             if (id == R.id.btnHome) {
-                startActivity(new Intent(this, MainActivity.class));
+                intent = new Intent(this, MainActivity.class);
             } else if (id == R.id.btnLogin) {
-                startActivity(new Intent(this, LoginActivity.class));
+                intent = new Intent(this, LoginActivity.class);
             } else if (id == R.id.btnRegister) {
-                startActivity(new Intent(this, RegisterActivity.class));
-            }
-            else if(id == R.id.btnFullMap){
-                startActivity(new Intent(this, FullMapActivity.class));
-            }
-            else if(id==R.id.btnCreateEvent){
-                startActivity(new Intent(this, CreateMechinaActivity.class));
-            }
-            else if(id==R.id.btnCalender){
-                startActivity(new Intent(this, MonthlyCalendarActivity.class));
-            }
-            else if (id == R.id.btnSetting) {
-                startActivity(new Intent(this, SettingsActivity.class));
+                intent = new Intent(this, RegisterActivity.class);
+            } else if (id == R.id.btnFullMap) {
+                intent = new Intent(this, FullMapActivity.class);
+            } else if (id == R.id.btnCreateEvent) {
+                intent = new Intent(this, CreateMechinaActivity.class);
+            } else if (id == R.id.btnCalender) {
+                intent = new Intent(this, MonthlyCalendarActivity.class);
+            } else if (id == R.id.btnSetting) {
+                intent = new Intent(this, SettingsActivity.class);
             } else if (id == R.id.btnLogout) {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();
                 finish();
+                return true;
+            }
+
+            if (intent != null) {
+                // שימוש בפונקציה המגנה גם בתפריט
+                if (id == R.id.btnHome || id == R.id.btnFullMap || id == R.id.btnLogin || id == R.id.btnRegister) {
+                    startActivity(intent);
+                } else {
+                    startActivityProtected(intent);
+                }
             }
 
             drawerLayout.closeDrawers();
@@ -111,9 +139,7 @@ public class BaseActivity extends AppCompatActivity {
         String uid = user.getUid();
         navName.setText(user.getEmail());
 
-        // שימוש ב-post כדי להבטיח שה-UI thread פנוי לעדכון
         navigationView.post(() -> {
-            // משיכת השם מה-Realtime Database
             FirebaseDatabase.getInstance().getReference("users").child(uid).child("name")
                     .get().addOnCompleteListener(task -> {
                         if (task.isSuccessful() && task.getResult().exists()) {
@@ -124,17 +150,14 @@ public class BaseActivity extends AppCompatActivity {
                         }
                     });
 
-            // משיכת התמונה מ-Firestore
             FirebaseFirestore.getInstance().collection("imageProfile").document(uid)
                     .get().addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             String base64Image = documentSnapshot.getString("imageData");
                             if (base64Image != null && !base64Image.isEmpty()) {
                                 try {
-                                    // המרה בטוחה מ-Base64 ל-Bitmap
                                     byte[] decodedString = android.util.Base64.decode(base64Image, android.util.Base64.DEFAULT);
                                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
                                     if (decodedByte != null) {
                                         navProfileImage.setImageBitmap(decodedByte);
                                     }

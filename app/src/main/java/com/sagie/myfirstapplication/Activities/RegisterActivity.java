@@ -11,11 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sagie.myfirstapplication.FBRef;
+import com.sagie.myfirstapplication.R;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.sagie.myfirstapplication.FBRef;
-import com.sagie.myfirstapplication.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,24 +24,20 @@ public class RegisterActivity extends BaseActivity {
 
     private TextView tvStatus;
     private Button btnRegister;
-    private EditText etEmail, etPassword, etName;
+    private EditText etEmail, etPassword, etName, etBirth, etAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // הגדרת ה-Layout
         setContentView(R.layout.base_layout);
         setupMenu();
         setContentLayout(R.layout.activity_register);
 
-        // הגדרת כיוון טקסט לימין (RTL)
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        // אתחול רכיבי ה-UI
         initView();
 
-        // הגדרת מאזין לכפתור הרישום
         btnRegister.setOnClickListener(v -> performRegistration());
     }
 
@@ -50,18 +46,18 @@ public class RegisterActivity extends BaseActivity {
         etName = findViewById(R.id.etName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        btnRegister = findViewById(R.id.btnCreateAccount); // משתמש ב-ID הקיים מה-XML שלך
+        etBirth = findViewById(R.id.etBirth); // שדה תאריך הלידה
+        etAddress = findViewById(R.id.etAddress);
+        btnRegister = findViewById(R.id.btnCreateAccount);
     }
 
-    /**
-     * לוגיקת הרישום המאוחדת
-     */
     private void performRegistration() {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String pass = etPassword.getText().toString().trim();
+        String birthDate = etBirth.getText().toString().trim(); // קבלת תאריך הלידה
+        String address = etAddress.getText().toString().trim();
 
-        // 1. בדיקות תקינות קלט
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty()) {
             tvStatus.setText("נא למלא את כל השדות (שם, מייל וסיסמה)");
             return;
@@ -77,15 +73,12 @@ public class RegisterActivity extends BaseActivity {
         pd.setCancelable(false);
         pd.show();
 
-        // 2. יצירת משתמש ב-Firebase Auth (מייל וסיסמה)
         refAuth.createUserWithEmailAndPassword(email, pass)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // קבלת ה-UID הייחודי שנוצר ב-Auth
                         String uid = refAuth.getCurrentUser().getUid();
-
-                        // 3. שמירת השם המלא ב-Realtime Database תחת users -> UID
-                        saveUserToDatabase(uid, name, email, pd);
+                        // שמירה עם שדה birthDate החדש
+                        saveUserToDatabase(uid, name, email, birthDate, address, pd);
                     } else {
                         pd.dismiss();
                         handleError(task.getException());
@@ -93,18 +86,14 @@ public class RegisterActivity extends BaseActivity {
                 });
     }
 
-    /**
-     * שמירת הנתונים ב-Realtime Database
-     */
-    private void saveUserToDatabase(String uid, String name, String email, ProgressDialog pd) {
+    private void saveUserToDatabase(String uid, String name, String email, String birthDate, String address, ProgressDialog pd) {
         Map<String, Object> userValues = new HashMap<>();
         userValues.put("name", name);
         userValues.put("email", email);
         userValues.put("uid", uid);
-        userValues.put("age", 0);      // ערך ברירת מחדל
-        userValues.put("address", ""); // ערך ברירת מחדל
+        userValues.put("birthDate", birthDate.isEmpty() ? "" : birthDate); // שינוי המפתח ל-birthDate
+        userValues.put("address", address.isEmpty() ? "" : address);
 
-        // כתיבה לנתיב users/UID
         FBRef.usersRef.child(uid).setValue(userValues)
                 .addOnCompleteListener(task -> {
                     pd.dismiss();

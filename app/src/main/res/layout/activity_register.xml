@@ -73,10 +73,10 @@
 
 
         <EditText
-            android:id="@+id/etAge"
+            android:id="@+id/etBirth"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:hint="גיל (אופציונלי)"
+            android:hint="תאריך לידה"
             android:inputType="number"
             android:background="#FFFFFF"
             android:padding="12dp"
@@ -88,7 +88,7 @@
             android:id="@+id/etAddress"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:hint="כתובת (אופציונלי)"
+            android:hint="כתובת"
             android:background="#FFFFFF"
             android:padding="12dp"
             android:gravity="end"

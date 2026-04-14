@@ -61,8 +61,12 @@ public class CreateMechinaActivity extends BaseActivity {
         initMap();
         setupSpinner();
         setupListeners();
-    }
 
+    }
+    @Override
+    protected boolean requiresAuthentication() {
+        return true;
+    }
     private void initViews() {
         etMechinaName = findViewById(R.id.etMechinaName);
         etBranch = findViewById(R.id.etBranch);

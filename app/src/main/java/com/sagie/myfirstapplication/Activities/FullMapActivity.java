@@ -58,7 +58,10 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
             mapFragment.getMapAsync(this);
         }
     }
-
+    @Override
+    protected boolean requiresAuthentication() {
+        return true;
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

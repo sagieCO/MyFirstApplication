@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.sagie.myfirstapplication.FBRef;
 import com.sagie.myfirstapplication.R;
 
 public class OpenPageActivity extends AppCompatActivity {
@@ -24,6 +26,14 @@ public class OpenPageActivity extends AppCompatActivity {
 
 
         initView();
+
+        FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            // המשתמש מחובר
+            Intent intent = new Intent(OpenPageActivity.this,MainActivity.class);
+            startActivity(intent);
+        }
     }
     private void initView(){
         btnLogin=findViewById(R.id.btnLogin);

@@ -1,6 +1,8 @@
 package com.sagie.myfirstapplication.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference chatRef;
     private EditText etMessage;
     private RecyclerView rvChat;
+    private ImageButton btnBack;
     private MessageAdapter adapter; // תצטרך ליצור את המחלקה הזו (מפורטת למטה)
     private List<ChatMessage> messageList = new ArrayList<>();
 
@@ -52,7 +55,15 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new MessageAdapter(messageList);
         rvChat.setLayoutManager(new LinearLayoutManager(this));
         rvChat.setAdapter(adapter);
+        btnBack=findViewById(R.id.btnBack);
 
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ChatActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
         btnSend.setOnClickListener(v -> sendMessage());
     }
 
@@ -65,7 +76,6 @@ public class ChatActivity extends AppCompatActivity {
 
         String uid = user.getUid();
 
-        // שליפת השם של המשתמש מה-Database לפי ה-UID שלו
         FirebaseDatabase.getInstance().getReference("users")
                 .child(uid).child("name")
                 .addListenerForSingleValueEvent(new ValueEventListener() {

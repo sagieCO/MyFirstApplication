@@ -62,7 +62,10 @@ public class MonthlyCalendarActivity extends BaseActivity {
 
         updateUI();
     }
-
+    @Override
+    protected boolean requiresAuthentication() {
+        return true;
+    }
     private void updateUI() {
         // שינוי שם החודש לעברית באמצעות SimpleDateFormat עם Locale עברי
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM yyyy", new Locale("he", "IL"));
