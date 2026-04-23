@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp" />
 
+
     <Button
         android:id="@+id/btnManualEntry"
         android:layout_width="wrap_content"
@@ -48,7 +49,11 @@
         android:textColor="#0000EE"
         android:textSize="12sp"
         android:stateListAnimator="@null" />
-
+    <Button
+        android:id="@+id/btnPickTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="בחר שעה" />
     <Button android:id="@+id/btnPickDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

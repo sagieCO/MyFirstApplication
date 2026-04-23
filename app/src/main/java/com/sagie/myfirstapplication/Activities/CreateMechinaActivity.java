@@ -47,7 +47,8 @@ public class CreateMechinaActivity extends BaseActivity {
     private String selectedDate = "";
     private GoogleMap mMap;
     private Spinner spMechinot, spBranches;
-
+    private Button btnPickTime;
+    private String selectedTime = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,7 @@ public class CreateMechinaActivity extends BaseActivity {
         etBranch = findViewById(R.id.etBranch);
         etAddress = findViewById(R.id.etAddress);
         btnDialog = findViewById(R.id.btnManualEntry);
+        btnPickTime = findViewById(R.id.btnPickTime);
         // הגדרת כיווניות עברית לשדות הראשיים
         etMechinaName.setTextDirection(View.TEXT_DIRECTION_RTL);
         etBranch.setTextDirection(View.TEXT_DIRECTION_RTL);
@@ -82,7 +84,7 @@ public class CreateMechinaActivity extends BaseActivity {
 
         btnPickDate = findViewById(R.id.btnPickDate);
         btnSave = findViewById(R.id.btnSave);
-
+        btnPickTime.setOnClickListener(v -> showTimePicker());
     }
 
     private void initMap() {
@@ -308,8 +310,9 @@ public class CreateMechinaActivity extends BaseActivity {
         String branch = etBranch.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
 
-        if (name.isEmpty() || selectedDate.isEmpty() || address.isEmpty()) {
-            Toast.makeText(this, "אנא מלא את כל השדות", Toast.LENGTH_SHORT).show();
+        // בדיקה שכל השדות מלאים, כולל שעה ותאריך
+        if (name.isEmpty() || selectedDate.isEmpty() || selectedTime.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "אנא בחר תאריך ושעה", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -318,11 +321,21 @@ public class CreateMechinaActivity extends BaseActivity {
             public void onFinished(GeoPoint point) {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("my_events");
                 String id = ref.push().getKey();
-                MechinaEvent event = new MechinaEvent(id, name, branch, selectedDate, address, point.latitude, point.longitude);
-                ref.child(id).setValue(event).addOnSuccessListener(aVoid -> finish());
+
+                // יצירת האובייקט עם 10 פרמטרים (כולל selectedTime)
+                MechinaEvent event = new MechinaEvent(id, name, branch, selectedDate, selectedTime, address, point.latitude, point.longitude, "", "");
+
+                if (id != null) {
+                    ref.child(id).setValue(event).addOnSuccessListener(aVoid -> {
+                        Toast.makeText(CreateMechinaActivity.this, "האירוע נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
+                        finish(); // חזרה למסך הקודם
+                    });
+                }
             }
             @Override
-            public void onFailure(String err) { Toast.makeText(CreateMechinaActivity.this, err, Toast.LENGTH_SHORT).show(); }
+            public void onFailure(String err) {
+                Toast.makeText(CreateMechinaActivity.this, "שגיאה במיקום: " + err, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -418,20 +431,35 @@ public class CreateMechinaActivity extends BaseActivity {
                 .show();
     }
 
+    private void showTimePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
 
+        android.app.TimePickerDialog timePickerDialog = new android.app.TimePickerDialog(this,
+                (view, hourOfDay, minuteOfHour) -> {
+                    // פורמט של 00:00
+                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
+                    btnPickTime.setText("שעה: " + selectedTime);
+                }, hour, minute, true); // true עבור פורמט 24 שעות
+        timePickerDialog.show();
+    }
     private void saveManualEventToFirebase(String name, String branch, String address, GeoPoint point) {
+        // FBRef.mechinotRef הוא הנתיב הכללי של המכינות באפליקציה
         DatabaseReference newMechinaRef = FBRef.mechinotRef.push();
         String uniqueKey = newMechinaRef.getKey();
 
-        MechinaEvent event = new MechinaEvent(uniqueKey, name, branch, "", address, point.latitude, point.longitude);
+        // כאן אנחנו שומרים את השעה שנבחרה בדיאלוג
+        // שים לב: עבור מכינה כללית במאגר, השעה משמשת כברירת מחדל או נשארת ריקה אם תרצה
+        MechinaEvent event = new MechinaEvent(uniqueKey, name, branch, "", selectedTime, address, point.latitude, point.longitude, "", "");
 
         if (uniqueKey != null) {
             newMechinaRef.setValue(event)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(CreateMechinaActivity.this, "המכינה נוספה למאגר הכללי בהצלחה!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateMechinaActivity.this, "המכינה נוספה למאגר בהצלחה!", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(e -> {
-                        Toast.makeText(CreateMechinaActivity.this, "שגיאה בשמירה: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.e("FIREBASE", "Error saving", e);
                     });
         }
     }
