@@ -1,40 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- קבוצה ראשונה: Main -->
+    <item android:title="ראשי">
+        <menu>
+            <group android:id="@+id/group_main">
+                <item
+                    android:id="@+id/btnHome"
+                    android:icon="@drawable/ic_home"
+                    android:title="דף ראשי" />
+                <item
+                    android:id="@+id/btnCalender"
+                    android:icon="@android:drawable/ic_menu_my_calendar"
+                    android:title="יומן אירועים" />
+            </group>
+        </menu>
+    </item>
 
+    <!-- קבוצה שנייה: Personal -->
+    <item android:title="אישי">
+        <menu>
+            <group android:id="@+id/group_personal">
+                <item
+                    android:id="@+id/btnFullMap"
+                    android:icon="@android:drawable/ic_dialog_map"
+                    android:title="כל המכינות שלי" />
+                <item
+                    android:id="@+id/btnCreateEvent"
+                    android:icon="@android:drawable/ic_menu_add"
+                    android:title="הוספת אירוע" />
+            </group>
+        </menu>
+    </item>
 
-
-    <item
-        android:id="@+id/btnHome"
-        android:title="דף ראשי" />
-
-    <item
-        android:id="@+id/btnLogin"
-        android:title="התחברות" />
-
-    <item
-        android:id="@+id/btnRegister"
-        android:title="הרשמה" />
-    <item
-        android:id="@+id/btnCreateEvent"
-        android:title="להוספת אירוע" />
-    <item
-        android:id="@+id/btnCalender"
-        android:title="יומן" />
-
-    <item
-        android:id="@+id/btnFullMap"
-        android:title="כל המכינות שלי" />
-
-
-
-    <item
-        android:id="@+id/btnSetting"
-        android:title="הגדרות" />
-
-    <item
-        android:id="@+id/btnLogout"
-        android:title="התנתקות" />
-
+    <!-- קבוצה שלישית: Others -->
+    <item android:title="אחר">
+        <menu>
+            <group android:id="@+id/group_others">
+                <item
+                    android:id="@+id/btnLogin"
+                    android:icon="@android:drawable/ic_menu_set_as"
+                    android:title="התחברות" />
+                <item
+                    android:id="@+id/btnRegister"
+                    android:icon="@android:drawable/ic_menu_edit"
+                    android:title="הרשמה" />
+                <item
+                    android:id="@+id/btnSetting"
+                    android:icon="@android:drawable/ic_menu_preferences"
+                    android:title="הגדרות" />
+                <item
+                    android:id="@+id/btnLogout"
+                    android:icon="@android:drawable/ic_lock_power_off"
+                    android:title="התנתקות" />
+            </group>
+        </menu>
+    </item>
 
 </menu>

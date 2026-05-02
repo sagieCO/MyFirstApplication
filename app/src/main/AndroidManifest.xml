@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- הרשאות קיימות -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- הוספת הרשאה ל-Alarm מדויק (חובה לאנדרואיד 12+) -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -17,47 +21,37 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApplication"
         tools:targetApi="31">
-        <activity
-            android:name=".Activities.ChatActivity"
+
+        <!-- הוספת ה-Receiver שיקבל את ההתראות -->
+        <receiver android:name=".models.AlarmReciever"
+            android:enabled="true"
             android:exported="false" />
-        <activity
-            android:name=".Activities.FullMapActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.SettingsActivity"
-            android:exported="false" />
+
+        <!-- שאר האקטיביטיז שלך... -->
+        <activity android:name=".Activities.ChatActivity" android:exported="false" />
+        <activity android:name=".Activities.FullMapActivity" android:exported="false" />
+        <activity android:name=".Activities.SettingsActivity" android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${mapsApiKey}" />
 
-        <activity
-            android:name=".Activities.CreateMechinaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.MonthlyCalendarActivity"
-            android:exported="false" />
+        <activity android:name=".Activities.CreateMechinaActivity" android:exported="false" />
+        <activity android:name=".Activities.MonthlyCalendarActivity" android:exported="false" />
+
         <activity
             android:name=".Activities.OpenPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SharedPreferencesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activities.MainActivity"
-            android:exported="false" />
+
+        <activity android:name=".Activities.RegisterActivity" android:exported="false" />
+        <activity android:name=".Activities.LoginActivity" android:exported="false" />
+        <activity android:name=".SharedPreferencesActivity" android:exported="false" />
+        <activity android:name=".Activities.MainActivity" android:exported="false" />
     </application>
 
 </manifest>

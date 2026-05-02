@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -5,6 +6,7 @@
     android:padding="16dp"
     android:layoutDirection="rtl">
 
+    <!-- שדות נסתרים לעדכון אוטומטי מה-Spinner -->
     <EditText android:id="@+id/etMechinaName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
     <EditText android:id="@+id/etBranch" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
     <EditText android:id="@+id/etAddress" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
@@ -34,7 +36,6 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp" />
 
-
     <Button
         android:id="@+id/btnManualEntry"
         android:layout_width="wrap_content"
@@ -49,19 +50,36 @@
         android:textColor="#0000EE"
         android:textSize="12sp"
         android:stateListAnimator="@null" />
+
     <Button
         android:id="@+id/btnPickTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="בחר שעה" />
+
     <Button android:id="@+id/btnPickDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="בחר תאריך" />
 
+    <!-- בחירת צבע לאירוע -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="בחר צבע לאירוע ביומן:"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"/>
+
+    <Spinner
+        android:id="@+id/spColorPicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp" />
+
     <Button android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="שמור אירוע"
         android:backgroundTint="@color/design_default_color_primary" />
 
@@ -72,4 +90,5 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="10dp" />
+
 </LinearLayout>

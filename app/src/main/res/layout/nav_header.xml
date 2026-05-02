@@ -4,7 +4,7 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="160dp"
-    android:background="#FC4C02"
+    android:background="#4E7AC7"
     android:gravity="bottom">
 
     <!-- תמונת פרופיל -->

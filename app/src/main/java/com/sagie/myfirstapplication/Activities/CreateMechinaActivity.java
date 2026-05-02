@@ -1,6 +1,7 @@
 package com.sagie.myfirstapplication.Activities;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -24,6 +25,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.sagie.myfirstapplication.FBRef;
 import com.sagie.myfirstapplication.models.GeoPoint;
 import com.sagie.myfirstapplication.IGeocodeCallback;
@@ -43,48 +47,53 @@ import java.util.Locale;
 public class CreateMechinaActivity extends BaseActivity {
 
     private EditText etMechinaName, etBranch, etAddress;
-    private Button btnPickDate, btnSave,btnDialog;
+    private Button btnPickDate, btnSave, btnManualEntry, btnPickTime;
+    private Spinner spMechinot, spBranches, spColorPicker;
+
     private String selectedDate = "";
-    private GoogleMap mMap;
-    private Spinner spMechinot, spBranches;
-    private Button btnPickTime;
     private String selectedTime = "";
+    private String selectedColor = "#3F51B5"; // ברירת מחדל
+    private GoogleMap mMap;
+    private List<MechinaEvent> allMechinotEvents = new ArrayList<>();
+
+    // נתוני צבעים קבועים
+    private final String[] colorNames = {"כחול", "ירוק", "אדום", "כתום"};
+    private final String[] colorHex = {"#3F51B5", "#4CAF50", "#F44336", "#FF9800"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupMenu();
         setContentLayout(R.layout.activity_create_mechina);
-
-        // הגדרת כיווניות RTL לכל המסך
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         initViews();
         initMap();
-        setupSpinner();
+        setupSpinners();
         setupListeners();
-
     }
+
     @Override
     protected boolean requiresAuthentication() {
         return true;
     }
+
     private void initViews() {
         etMechinaName = findViewById(R.id.etMechinaName);
         etBranch = findViewById(R.id.etBranch);
         etAddress = findViewById(R.id.etAddress);
-        btnDialog = findViewById(R.id.btnManualEntry);
+        btnManualEntry = findViewById(R.id.btnManualEntry);
         btnPickTime = findViewById(R.id.btnPickTime);
-        // הגדרת כיווניות עברית לשדות הראשיים
+        btnPickDate = findViewById(R.id.btnPickDate);
+        btnSave = findViewById(R.id.btnSave);
+        spMechinot = findViewById(R.id.spMechinot);
+        spBranches = findViewById(R.id.spBranches);
+        spColorPicker = findViewById(R.id.spColorPicker);
+
+        // הגדרת כיווניות עברית
         etMechinaName.setTextDirection(View.TEXT_DIRECTION_RTL);
         etBranch.setTextDirection(View.TEXT_DIRECTION_RTL);
         etAddress.setTextDirection(View.TEXT_DIRECTION_RTL);
-
-        spMechinot = findViewById(R.id.spMechinot);
-        spBranches = findViewById(R.id.spBranches);
-
-        btnPickDate = findViewById(R.id.btnPickDate);
-        btnSave = findViewById(R.id.btnSave);
-        btnPickTime.setOnClickListener(v -> showTimePicker());
     }
 
     private void initMap() {
@@ -95,23 +104,29 @@ public class CreateMechinaActivity extends BaseActivity {
         }
     }
 
-    private List<MechinaEvent> allMechinotEvents = new ArrayList<>();
-    private void setupSpinner() {
-        allMechinotEvents.clear(); // ניקוי הרשימה לפני טעינה
+    private void setupSpinners() {
+        // 1. הגדרת Spinner צבעים
+        ArrayAdapter<String> colorAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, colorNames);
+        colorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spColorPicker.setAdapter(colorAdapter);
 
-        // 1. שלב ראשון: טעינה מה-JSON
+        // 2. טעינת רשימת המכינות
+        loadAllMechinotData();
+    }
+
+    private void loadAllMechinotData() {
+        allMechinotEvents.clear();
+
+        // טעינה מה-JSON
         try {
             String jsonString = loadJSONFromAsset();
             if (jsonString != null) {
                 JSONObject root = new JSONObject(jsonString);
                 JSONArray mechinotArray = root.getJSONArray("mechinot");
-
                 for (int i = 0; i < mechinotArray.length(); i++) {
                     JSONObject obj = mechinotArray.getJSONObject(i);
-                    // יוצרים אובייקט זמני עבור ה-Spinner (שם בלבד)
                     MechinaEvent m = new MechinaEvent();
                     m.setName(obj.getString("name"));
-                    // כאן ב-JSON יש מערך של שלוחות, אז נשמור רק את השם לצורך ה-Spinner הראשי
                     allMechinotEvents.add(m);
                 }
             }
@@ -119,64 +134,61 @@ public class CreateMechinaActivity extends BaseActivity {
             Log.e("JSON_ERROR", "Error loading JSON", e);
         }
 
-        // 2. שלב שני: טעינה מה-Firebase (המכינות הידניות)
-        loadManualMechinotFromFirebase();
-    }
-    private void loadManualMechinotFromFirebase() {
-        // מאזין לענף mechinot ב-Firebase
-        FBRef.mechinotRef.addValueEventListener(new com.google.firebase.database.ValueEventListener() {
+        // טעינה מה-Firebase (הוספה לרשימה הקיימת)
+        FBRef.mechinotRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                // כדי למנוע כפילויות בכל פעם שהנתונים משתנים, ננקה את מה שהוספנו מה-Firebase
-                // (הדרך הפשוטה ביותר היא לרענן את כל הרשימה מחדש או לבצע ניהול רשימות)
-
-                // נשמור רק את אלו מה-JSON כבסיס
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int jsonSize = getJSONMechinotCount();
                 if (allMechinotEvents.size() > jsonSize) {
                     allMechinotEvents.subList(jsonSize, allMechinotEvents.size()).clear();
                 }
 
-                for (com.google.firebase.database.DataSnapshot ds : snapshot.getChildren()) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
                     MechinaEvent manualMechina = ds.getValue(MechinaEvent.class);
                     if (manualMechina != null) {
                         allMechinotEvents.add(manualMechina);
                     }
                 }
-
-                // עדכון ה-Adapter של ה-Spinner
                 updateMainSpinnerAdapter();
             }
-            private void updateMainSpinnerAdapter() {
-                List<String> displayNames = new ArrayList<>();
-                for (MechinaEvent m : allMechinotEvents) {
-                    displayNames.add(m.getName());
-                }
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(CreateMechinaActivity.this, android.R.layout.simple_spinner_item, displayNames);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spMechinot.setAdapter(adapter);
-            }
-            private int getJSONMechinotCount() {
-                try {
-                    JSONObject root = new JSONObject(loadJSONFromAsset());
-                    return root.getJSONArray("mechinot").length();
-                } catch (Exception e) { return 0; }
-            }
             @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("FIREBASE_ERROR", error.getMessage());
             }
         });
     }
 
+    private void updateMainSpinnerAdapter() {
+        List<String> displayNames = new ArrayList<>();
+        for (MechinaEvent m : allMechinotEvents) {
+            displayNames.add(m.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, displayNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spMechinot.setAdapter(adapter);
+    }
+
     private void setupListeners() {
+        btnPickTime.setOnClickListener(v -> showTimePicker());
+        btnPickDate.setOnClickListener(v -> showDatePicker());
+        btnSave.setOnClickListener(v -> saveEventToFirebase());
+        btnManualEntry.setOnClickListener(v -> showManualEntryDialog());
+
+        spColorPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedColor = colorHex[position];
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
         spMechinot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 loadBranchesForMechina(position);
             }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         spBranches.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -184,18 +196,8 @@ public class CreateMechinaActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 updateUIFromSelectedBranch(spMechinot.getSelectedItemPosition(), position);
             }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
-        btnDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showManualEntryDialog();
-            }
-        });
-
-        btnPickDate.setOnClickListener(v -> showDatePicker());
-        btnSave.setOnClickListener(v -> saveEventToFirebase());
     }
 
     private void loadBranchesForMechina(int mechinaPos) {
@@ -205,39 +207,28 @@ public class CreateMechinaActivity extends BaseActivity {
         List<String> branchNames = new ArrayList<>();
 
         if (mechinaPos < jsonSize) {
-            // מקרה א': המכינה מגיעה מה-JSON - טוענים את כל השלוחות שלה מהקובץ
             try {
                 JSONObject root = new JSONObject(loadJSONFromAsset());
                 JSONArray branchesArray = root.getJSONArray("mechinot")
                         .getJSONObject(mechinaPos)
                         .getJSONArray("branches");
-
                 for (int i = 0; i < branchesArray.length(); i++) {
                     branchNames.add(branchesArray.getJSONObject(i).getString("branchName"));
                 }
             } catch (Exception e) { e.printStackTrace(); }
         } else {
-            // מקרה ב': המכינה מ-Firebase - היא בעצמה מייצגת שלוחה ספציפית
             MechinaEvent selectedMechina = allMechinotEvents.get(mechinaPos);
-            String branchName = selectedMechina.getBranch();
-
-            if (branchName == null || branchName.isEmpty()) {
-                branchNames.add("שלוחה ראשית"); // ברירת מחדל אם לא הוזן שם שלוחה
-            } else {
-                branchNames.add(branchName);
-            }
+            branchNames.add(selectedMechina.getBranch() != null ? selectedMechina.getBranch() : "שלוחה ראשית");
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, branchNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, branchNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spBranches.setAdapter(adapter);
     }
+
     private void updateUIFromSelectedBranch(int mechinaPos, int branchPos) {
         int jsonSize = getJSONMechinotCount();
-
         if (mechinaPos < jsonSize) {
-            // נתונים מה-JSON (הקוד הקיים שלך)
             try {
                 JSONObject root = new JSONObject(loadJSONFromAsset());
                 JSONObject mechinaObj = root.getJSONArray("mechinot").getJSONObject(mechinaPos);
@@ -246,60 +237,15 @@ public class CreateMechinaActivity extends BaseActivity {
                 etMechinaName.setText(mechinaObj.getString("name"));
                 etBranch.setText(branchObj.getString("branchName"));
                 etAddress.setText(branchObj.getString("location"));
-
                 showLocationOnMap(new GeoPoint(branchObj.getDouble("lat"), branchObj.getDouble("lng")));
             } catch (Exception e) { Log.e("MAP_UPDATE", "Error", e); }
         } else {
-            // נתונים מ-Firebase
             MechinaEvent selected = allMechinotEvents.get(mechinaPos);
             etMechinaName.setText(selected.getName());
             etBranch.setText(selected.getBranch());
             etAddress.setText(selected.getAddress());
-
             showLocationOnMap(new GeoPoint(selected.getLat(), selected.getLng()));
         }
-    }
-    private int getJSONMechinotCount() {
-        try {
-            String json = loadJSONFromAsset();
-            if (json == null) return 0;
-            JSONObject root = new JSONObject(json);
-            return root.getJSONArray("mechinot").length();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-    private void showLocationOnMap(GeoPoint geoPoint) {
-        if (mMap == null || geoPoint == null || !geoPoint.isValid()) return;
-        LatLng location = new LatLng(geoPoint.latitude, geoPoint.longitude);
-        mMap.clear();
-
-        String title = etMechinaName.getText().toString() + " - " + etBranch.getText().toString();
-        mMap.addMarker(new MarkerOptions().position(location).title(title));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("mechinot.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return json;
-    }
-
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
-            btnPickDate.setText(selectedDate);
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void saveEventToFirebase() {
@@ -310,9 +256,8 @@ public class CreateMechinaActivity extends BaseActivity {
         String branch = etBranch.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
 
-        // בדיקה שכל השדות מלאים, כולל שעה ותאריך
         if (name.isEmpty() || selectedDate.isEmpty() || selectedTime.isEmpty() || address.isEmpty()) {
-            Toast.makeText(this, "אנא בחר תאריך ושעה", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "אנא מלא את כל הפרטים ובחר תאריך ושעה", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -322,21 +267,70 @@ public class CreateMechinaActivity extends BaseActivity {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(uid).child("my_events");
                 String id = ref.push().getKey();
 
-                // יצירת האובייקט עם 10 פרמטרים (כולל selectedTime)
-                MechinaEvent event = new MechinaEvent(id, name, branch, selectedDate, selectedTime, address, point.latitude, point.longitude, "", "");
+                // יצירת האירוע עם השדה החדש של הצבע (11 פרמטרים)
+                MechinaEvent event = new MechinaEvent(id, name, branch, selectedDate, selectedTime,
+                        address, point.latitude, point.longitude, "", "", selectedColor);
 
                 if (id != null) {
                     ref.child(id).setValue(event).addOnSuccessListener(aVoid -> {
                         Toast.makeText(CreateMechinaActivity.this, "האירוע נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
-                        finish(); // חזרה למסך הקודם
+                        finish();
                     });
                 }
             }
             @Override
             public void onFailure(String err) {
-                Toast.makeText(CreateMechinaActivity.this, "שגיאה במיקום: " + err, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreateMechinaActivity.this, "שגיאת מיקום: " + err, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // --- פונקציות עזר קיימות ---
+
+    private void showLocationOnMap(GeoPoint geoPoint) {
+        if (mMap == null || geoPoint == null || !geoPoint.isValid()) return;
+        LatLng location = new LatLng(geoPoint.latitude, geoPoint.longitude);
+        mMap.clear();
+        String title = etMechinaName.getText().toString() + " - " + etBranch.getText().toString();
+        mMap.addMarker(new MarkerOptions().position(location).title(title));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f));
+    }
+
+    public String loadJSONFromAsset() {
+        try {
+            InputStream is = getAssets().open("mechinot.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            return new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    private int getJSONMechinotCount() {
+        try {
+            JSONObject root = new JSONObject(loadJSONFromAsset());
+            return root.getJSONArray("mechinot").length();
+        } catch (Exception e) { return 0; }
+    }
+
+    private void showTimePicker() {
+        Calendar c = Calendar.getInstance();
+        new TimePickerDialog(this, (view, hour, minute) -> {
+            selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
+            btnPickTime.setText("שעה: " + selectedTime);
+        }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true).show();
+    }
+
+    private void showDatePicker() {
+        Calendar c = Calendar.getInstance();
+        new DatePickerDialog(this, (view, y, m, d) -> {
+            selectedDate = d + "/" + (m + 1) + "/" + y;
+            btnPickDate.setText(selectedDate);
+        }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void getCoordinatesFromAddress(String addressString, IGeocodeCallback callback) {
@@ -364,33 +358,15 @@ public class CreateMechinaActivity extends BaseActivity {
 
         final EditText inputName = new EditText(this);
         inputName.setHint("שם המכינה");
-        inputName.setTextDirection(View.TEXT_DIRECTION_RTL);
-        inputName.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         layout.addView(inputName);
 
         final EditText inputBranch = new EditText(this);
         inputBranch.setHint("שלוחה");
-        inputBranch.setTextDirection(View.TEXT_DIRECTION_RTL);
-        inputBranch.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         layout.addView(inputBranch);
 
         final EditText inputAddress = new EditText(this);
         inputAddress.setHint("כתובת (רחוב מספר, עיר)");
-        inputAddress.setTextDirection(View.TEXT_DIRECTION_RTL);
-        inputAddress.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
         layout.addView(inputAddress);
-
-        final Button btnDateInDialog = new Button(this);
-        btnDateInDialog.setText("בחר תאריך למכינה");
-        btnDateInDialog.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            new DatePickerDialog(this, (view, year, month, day) -> {
-                selectedDate = day + "/" + (month + 1) + "/" + year;
-                btnDateInDialog.setText("תאריך: " + selectedDate);
-                btnPickDate.setText(selectedDate);
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
-        layout.addView(btnDateInDialog);
 
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("הוספת מכינה ידנית")
@@ -400,30 +376,19 @@ public class CreateMechinaActivity extends BaseActivity {
                     String branch = inputBranch.getText().toString().trim();
                     String address = inputAddress.getText().toString().trim();
 
-                    if (selectedDate.isEmpty()) {
-                        Toast.makeText(this, "אנא בחר תאריך", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
                     if (name.isEmpty() || address.isEmpty()) {
                         Toast.makeText(this, "חובה למלא שם וכתובת", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    etMechinaName.setText(name);
-                    etBranch.setText(branch);
-                    etAddress.setText(address);
-
                     getCoordinatesFromAddress(address, new IGeocodeCallback() {
                         @Override
                         public void onFinished(GeoPoint point) {
-                            showLocationOnMap(point);
-                            saveManualEventToFirebase(name, branch, address, point);
+                            saveManualMechinaToRepo(name, branch, address, point);
                         }
                         @Override
                         public void onFailure(String errorMessage) {
-                            Toast.makeText(CreateMechinaActivity.this, "לא מצאנו את הכתובת, נשמר ללא מיקום", Toast.LENGTH_SHORT).show();
-                            saveManualEventToFirebase(name, branch, address, new GeoPoint(0,0));
+                            saveManualMechinaToRepo(name, branch, address, new GeoPoint(0,0));
                         }
                     });
                 })
@@ -431,36 +396,14 @@ public class CreateMechinaActivity extends BaseActivity {
                 .show();
     }
 
-    private void showTimePicker() {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        android.app.TimePickerDialog timePickerDialog = new android.app.TimePickerDialog(this,
-                (view, hourOfDay, minuteOfHour) -> {
-                    // פורמט של 00:00
-                    selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minuteOfHour);
-                    btnPickTime.setText("שעה: " + selectedTime);
-                }, hour, minute, true); // true עבור פורמט 24 שעות
-        timePickerDialog.show();
-    }
-    private void saveManualEventToFirebase(String name, String branch, String address, GeoPoint point) {
-        // FBRef.mechinotRef הוא הנתיב הכללי של המכינות באפליקציה
+    private void saveManualMechinaToRepo(String name, String branch, String address, GeoPoint point) {
         DatabaseReference newMechinaRef = FBRef.mechinotRef.push();
         String uniqueKey = newMechinaRef.getKey();
-
-        // כאן אנחנו שומרים את השעה שנבחרה בדיאלוג
-        // שים לב: עבור מכינה כללית במאגר, השעה משמשת כברירת מחדל או נשארת ריקה אם תרצה
-        MechinaEvent event = new MechinaEvent(uniqueKey, name, branch, "", selectedTime, address, point.latitude, point.longitude, "", "");
-
+        // שמירת מכינה במאגר הכללי (ללא תאריך, אך עם צבע ברירת מחדל אם נדרש)
+        MechinaEvent event = new MechinaEvent(uniqueKey, name, branch, "", "", address, point.latitude, point.longitude, "", "", selectedColor);
         if (uniqueKey != null) {
-            newMechinaRef.setValue(event)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(CreateMechinaActivity.this, "המכינה נוספה למאגר בהצלחה!", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e("FIREBASE", "Error saving", e);
-                    });
+            newMechinaRef.setValue(event).addOnSuccessListener(aVoid ->
+                    Toast.makeText(CreateMechinaActivity.this, "המכינה נוספה למאגר!", Toast.LENGTH_SHORT).show());
         }
     }
 }

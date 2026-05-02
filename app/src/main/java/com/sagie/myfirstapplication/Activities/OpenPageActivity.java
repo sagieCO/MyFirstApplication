@@ -1,12 +1,17 @@
 package com.sagie.myfirstapplication.Activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.sagie.myfirstapplication.FBRef;
@@ -24,6 +29,7 @@ public class OpenPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_open_page);
 
 
+        requestPermissionsIfNeeded(); // 🔥 פה שמים את זה
 
         initView();
 
@@ -33,6 +39,21 @@ public class OpenPageActivity extends AppCompatActivity {
             // המשתמש מחובר
             Intent intent = new Intent(OpenPageActivity.this,MainActivity.class);
             startActivity(intent);
+            finish();
+        }
+    }
+    private void requestPermissionsIfNeeded() {
+
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        1001);
+            }
         }
     }
     private void initView(){
