@@ -27,24 +27,22 @@ public class OpenPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_open_page);
+        checkUserLoginStatus();
 
-
-        requestPermissionsIfNeeded(); // 🔥 פה שמים את זה
+        requestPermissionsIfNeeded();
 
         initView();
 
+    }
+    private void checkUserLoginStatus() {
         FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
-
         if (currentUser != null) {
-            // המשתמש מחובר
-            Intent intent = new Intent(OpenPageActivity.this,MainActivity.class);
+            Intent intent = new Intent(OpenPageActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
     }
     private void requestPermissionsIfNeeded() {
-
-        
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.POST_NOTIFICATIONS)

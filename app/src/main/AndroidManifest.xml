@@ -28,16 +28,29 @@
             android:exported="false" />
 
         <!-- שאר האקטיביטיז שלך... -->
-        <activity android:name=".Activities.ChatActivity" android:exported="false" />
-        <activity android:name=".Activities.FullMapActivity" android:exported="false" />
-        <activity android:name=".Activities.SettingsActivity" android:exported="false" />
+        <activity
+            android:name=".Activities.ChatActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.FullMapActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.SettingsActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${mapsApiKey}" />
 
-        <activity android:name=".Activities.CreateMechinaActivity" android:exported="false" />
-        <activity android:name=".Activities.MonthlyCalendarActivity" android:exported="false" />
+        <activity
+            android:name=".Activities.CreateMechinaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.MonthlyCalendarActivity"
+            android:exported="false" />
 
         <activity
             android:name=".Activities.OpenPageActivity"
@@ -48,10 +61,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Activities.RegisterActivity" android:exported="false" />
-        <activity android:name=".Activities.LoginActivity" android:exported="false" />
-        <activity android:name=".SharedPreferencesActivity" android:exported="false" />
-        <activity android:name=".Activities.MainActivity" android:exported="false" />
+        <activity
+            android:name=".Activities.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Activities.MainActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

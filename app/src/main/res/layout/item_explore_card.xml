@@ -32,16 +32,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:tint="#3A5F7D" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReadMore"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="פרטים"
-                android:textSize="12sp"
-                app:cornerRadius="20dp"
-                app:strokeColor="#3A5F7D"
-                app:strokeWidth="1dp" />
+
         </LinearLayout>
 
         <LinearLayout

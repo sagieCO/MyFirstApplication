@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,10 +27,8 @@ import com.sagie.myfirstapplication.models.MechinaEvent;
 import com.sagie.myfirstapplication.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +49,6 @@ public class MainActivity extends BaseActivity {
     private ValueEventListener eventsListener, userNameListener, manualMechinotListener;
 
     private TextView tvNextMechinaName, tvNextDate, tv_welcome;
-    private Button btnShowAllStations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +73,16 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         tvNextMechinaName = findViewById(R.id.tv_next_mechina_name);
         tvNextDate = findViewById(R.id.tv_next_date);
-        btnShowAllStations = findViewById(R.id.btnShowAllStations);
         tv_welcome = findViewById(R.id.tv_welcome);
         ImageButton btnGoToCalendarIcon = findViewById(R.id.btnGoToCalendarIcon);
+        Button btnShowAllStations = findViewById(R.id.btnShowAllStations);
 
-        // שינוי כאן: btnOpenChat לא נמצא פה, הוא ב-Adapter!
+        View.OnClickListener goToCalendar = v -> {
+            startActivity(new Intent(MainActivity.this, MonthlyCalendarActivity.class));
+        };
 
-        btnGoToCalendarIcon.setOnClickListener(v -> startActivity(new Intent(this, MonthlyCalendarActivity.class)));
-        btnShowAllStations.setOnClickListener(v -> startActivity(new Intent(this, MonthlyCalendarActivity.class)));
+        btnGoToCalendarIcon.setOnClickListener(goToCalendar);
+        btnShowAllStations.setOnClickListener(goToCalendar);
     }
 
     private void setupRecyclerView() {
@@ -92,8 +90,8 @@ public class MainActivity extends BaseActivity {
         rvExplore.setLayoutManager(new LinearLayoutManager(this));
         rvExplore.setNestedScrollingEnabled(false);
 
-        // האדפטר כבר מטפל בלחיצות על הצ'אט בפנים
-        exploreAdapter = new ExploreAdapter(allExploreList, this::showMechinaDialog);
+        // שליחת null כמאזין כי הורדנו את הדיאלוג והקישור
+        exploreAdapter = new ExploreAdapter(allExploreList, null);
         rvExplore.setAdapter(exploreAdapter);
     }
 
@@ -138,6 +136,39 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    private List<MechinaEvent> getMechinotFromJson() {
+        List<MechinaEvent> list = new ArrayList<>();
+        try {
+            InputStream is = getAssets().open("mechinot.json");
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, "UTF-8");
+            JSONObject mainObject = new JSONObject(json);
+            JSONArray mechinotArray = mainObject.getJSONArray("mechinot");
+
+            for (int i = 0; i < mechinotArray.length(); i++) {
+                JSONObject mechinaJson = mechinotArray.getJSONObject(i);
+                String name = mechinaJson.getString("name");
+
+                JSONArray branches = mechinaJson.getJSONArray("branches");
+                for (int j = 0; j < branches.length(); j++) {
+                    JSONObject branchObj = branches.getJSONObject(j);
+                    MechinaEvent event = new MechinaEvent();
+                    event.mechinaName = name;
+                    event.branch = branchObj.getString("branchName");
+                    event.address = branchObj.getString("location");
+                    event.region = branchObj.optString("region", "");
+                    event.religiousType = branchObj.optString("religiousType", "");
+                    list.add(event);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("JSON", "Error parsing mechinot", e);
+        }
+        return list;
+    }
+
     private void applyFilters() {
         if (currentRegionFilter == null || currentRegionFilter.equals("הכל")) {
             exploreAdapter.updateList(new ArrayList<>(allExploreList));
@@ -146,8 +177,6 @@ public class MainActivity extends BaseActivity {
         filteredExploreList.clear();
         for (MechinaEvent event : allExploreList) {
             if (event.region != null && event.region.trim().equals(currentRegionFilter.trim())) {
-                filteredExploreList.add(event);
-            } else if (event.region == null || event.region.isEmpty()) {
                 filteredExploreList.add(event);
             }
         }
@@ -168,35 +197,6 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private List<MechinaEvent> getMechinotFromJson() {
-        List<MechinaEvent> list = new ArrayList<>();
-        try {
-            InputStream is = getAssets().open("mechinot.json");
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            JSONObject mainObject = new JSONObject(json);
-            JSONArray mechinotArray = mainObject.getJSONArray("mechinot");
-            for (int i = 0; i < mechinotArray.length(); i++) {
-                JSONObject mechinaJson = mechinotArray.getJSONObject(i);
-                String name = mechinaJson.getString("name");
-                JSONArray branches = mechinaJson.getJSONArray("branches");
-                for (int j = 0; j < branches.length(); j++) {
-                    JSONObject branchObj = branches.getJSONObject(j);
-                    MechinaEvent event = new MechinaEvent();
-                    event.mechinaName = name;
-                    event.branch = branchObj.getString("branchName");
-                    event.address = branchObj.getString("location");
-                    event.region = branchObj.optString("region", "");
-                    event.religiousType = branchObj.optString("religiousType", "");
-                    list.add(event);
-                }
-            }
-        } catch (Exception e) { Log.e("JSON", "Error", e); }
-        return list;
-    }
-
     private void startListeningForNextEvent() {
         String uid = mAuth.getCurrentUser().getUid();
         eventsRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("my_events");
@@ -215,8 +215,7 @@ public class MainActivity extends BaseActivity {
                                 Date d = sdf.parse(e.date);
                                 if (d != null && d.after(today)) {
                                     if (minDate == null || d.before(minDate)) {
-                                        minDate = d;
-                                        closest = e;
+                                        minDate = d; closest = e;
                                     }
                                 }
                             } catch (Exception ignored) {}
@@ -234,22 +233,16 @@ public class MainActivity extends BaseActivity {
         eventsRef.addValueEventListener(eventsListener);
     }
 
-    private void showMechinaDialog(MechinaEvent mechinaEvent) {
-        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_mechina_details, null);
-        builder.setView(dialogView);
-        TextView tvMechinaName = dialogView.findViewById(R.id.tvMechinaNameDialog);
-        TextView tvBranchInfo = dialogView.findViewById(R.id.tvBranchInfoDialog);
-        tvMechinaName.setText(mechinaEvent.mechinaName + " - " + mechinaEvent.branch);
-        tvBranchInfo.setText("סוג: " + mechinaEvent.religiousType + "\nאזור: " + mechinaEvent.region);
-        builder.create().show();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (eventsRef != null && eventsListener != null) eventsRef.removeEventListener(eventsListener);
-        if (FBRef.mechinotRef != null && manualMechinotListener != null) FBRef.mechinotRef.removeEventListener(manualMechinotListener);
-        if (userNameRef != null && userNameListener != null) userNameRef.removeEventListener(userNameListener);
+        if (eventsRef != null && eventsListener != null)
+            eventsRef.removeEventListener(eventsListener);
+
+        if (FBRef.mechinotRef != null && manualMechinotListener != null)
+            FBRef.mechinotRef.removeEventListener(manualMechinotListener);
+
+        if (userNameRef != null && userNameListener != null)
+            userNameRef.removeEventListener(userNameListener);
     }
 }

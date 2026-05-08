@@ -10,7 +10,6 @@ public class GeoPoint {
     }
 
     public boolean isValid() {
-        //  בודק שהקואורדינטות לא 0
         return latitude != 0.0 && longitude != 0.0;
     }
 }

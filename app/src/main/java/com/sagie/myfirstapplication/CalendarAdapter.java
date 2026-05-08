@@ -1,39 +1,30 @@
 package com.sagie.myfirstapplication;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.sagie.myfirstapplication.Activities.MonthlyCalendarActivity;
-import com.sagie.myfirstapplication.models.AlarmReciever;
 import com.sagie.myfirstapplication.models.Day;
 import com.sagie.myfirstapplication.models.MechinaEvent;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayViewHolder> {
@@ -53,9 +44,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
 
     @Override
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
-        Day day = days.get(position);
+        final Day day = days.get(position);
 
-        // ניקוי הקונטיינר למניעת כפילויות של אירועים במיחזור של ה-ViewHolder
+        // ניקוי הקונטיינר למניעת כפילויות של אירועים
         holder.eventsContainer.removeAllViews();
 
         if (day.dayNumber == 0) {
@@ -64,7 +55,14 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
             holder.container.setOnClickListener(null);
         } else {
             holder.tvDayNumber.setText(String.valueOf(day.dayNumber));
-            holder.container.setBackgroundColor(day.isCurrentMonth ? Color.WHITE : Color.parseColor("#EEEEEE"));
+
+            int bgColor;
+            if (day.isCurrentMonth) {
+                bgColor = Color.WHITE;
+            } else {
+                bgColor = Color.parseColor("#EEEEEE");
+            }
+            holder.container.setBackgroundColor(bgColor);
 
             // סימון היום הנוכחי
             if (day.isToday) {
@@ -75,25 +73,33 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 holder.tvDayNumber.setTextColor(Color.BLACK);
             }
 
-            // --- 1. מיון האירועים לפי שעה (מהמוקדם למאוחר) ---
+            // 1. מיון האירועים לפי שעה (ללא למבדה)
             if (day.dayEvents != null && day.dayEvents.size() > 1) {
                 Collections.sort(day.dayEvents, new Comparator<MechinaEvent>() {
                     @Override
                     public int compare(MechinaEvent e1, MechinaEvent e2) {
-                        String t1 = (e1.time == null || e1.time.isEmpty()) ? "23:59" : e1.time;
-                        String t2 = (e2.time == null || e2.time.isEmpty()) ? "23:59" : e2.time;
+                        String t1, t2;
+                        if (e1.time == null || e1.time.isEmpty()) t1 = "23:59"; else t1 = e1.time;
+                        if (e2.time == null || e2.time.isEmpty()) t2 = "23:59"; else t2 = e2.time;
                         return t1.compareTo(t2);
                     }
                 });
             }
 
-            // --- 2. הצגת אירועים בתצוגה מקוצרת במשבצת ---
+            // 2. הצגת אירועים בתצוגה מקוצרת (שימוש ב-Iterator)
             if (day.dayEvents != null && !day.dayEvents.isEmpty()) {
-                for (MechinaEvent event : day.dayEvents) {
+                Iterator<MechinaEvent> iterator = day.dayEvents.iterator();
+                while (iterator.hasNext()) {
+                    MechinaEvent event = iterator.next();
                     TextView tvEvent = new TextView(holder.itemView.getContext());
 
-                    // פורמט תצוגה: "שעה שם המכינה"
-                    String display = (event.time != null && !event.time.isEmpty() ? event.time + " " : "") + event.mechinaName;
+                    String display;
+                    if (event.time != null && !event.time.isEmpty()) {
+                        display = event.time + " " + event.mechinaName;
+                    } else {
+                        display = event.mechinaName;
+                    }
+
                     tvEvent.setText(display);
                     tvEvent.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
                     tvEvent.setTextColor(Color.WHITE);
@@ -101,45 +107,45 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                     tvEvent.setLines(1);
                     tvEvent.setEllipsize(TextUtils.TruncateAt.END);
 
-                    // --- עדכון הצבע הדינמי ---
-                    // יצירת רקע עם פינות מעוגלות וצבע מה-DB
-                    android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
-                    shape.setCornerRadius(8f); // רדיוס הפינות
+                    // עיצוב רקע דינמי
+                    GradientDrawable shape = new GradientDrawable();
+                    shape.setCornerRadius(8f);
 
-                    // שימוש בצבע מה-Database, אם לא קיים נשתמש בצבע ברירת מחדל
                     int eventColor;
                     try {
                         if (event.eventColor != null && !event.eventColor.isEmpty()) {
                             eventColor = Color.parseColor(event.eventColor);
                         } else {
-                            eventColor = Color.parseColor("#3F51B5"); // כחול ברירת מחדל
+                            eventColor = Color.parseColor("#3F51B5");
                         }
                     } catch (Exception e) {
-                        eventColor = Color.GRAY; // הגנה במקרה של פורמט לא תקין
+                        eventColor = Color.GRAY;
                     }
                     shape.setColor(eventColor);
                     tvEvent.setBackground(shape);
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    params.setMargins(2, 1, 2, 1); // רווח קטן בין אירועים
+                    params.setMargins(2, 1, 2, 1);
 
                     holder.eventsContainer.addView(tvEvent, params);
                 }
             }
 
-            // --- 3. הגדרת לחיצה על כל שטח המשבצת ---
-            holder.container.setOnClickListener(v -> {
-                showDayDetailsDialog(holder.itemView.getContext(), day);
+            // 3. הגדרת לחיצה על המשבצת (ללא למבדה)
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDayDetailsDialog(v.getContext(), day);
+                }
             });
         }
     }
 
-    private void showDayDetailsDialog(Context context, Day day) {
+    private void showDayDetailsDialog(final Context context, Day day) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("אירועים לתאריך " + day.dayNumber);
 
-        // קונטיינר ראשי עם ריווח
         LinearLayout rootLayout = new LinearLayout(context);
         rootLayout.setOrientation(LinearLayout.VERTICAL);
         rootLayout.setPadding(50, 40, 50, 40);
@@ -150,15 +156,18 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
             emptyTv.setGravity(Gravity.CENTER);
             rootLayout.addView(emptyTv);
         } else {
-            for (MechinaEvent event : day.dayEvents) {
-                // Layout לכל שורה של אירוע
+            Iterator<MechinaEvent> iterator = day.dayEvents.iterator();
+            while (iterator.hasNext()) {
+                final MechinaEvent event = iterator.next();
+
                 LinearLayout row = new LinearLayout(context);
-                row.setOrientation(LinearLayout.VERTICAL); // שיניתי לורטיקלי כדי שהכפתור יהיה מתחת או לצד בצורה מסודרת
+                row.setOrientation(LinearLayout.VERTICAL);
                 row.setPadding(0, 20, 0, 20);
 
-                // טקסט פרטי האירוע
                 TextView tvInfo = new TextView(context);
-                String info = "🕒 " + (event.time != null ? event.time : "--:--") + " - " + event.mechinaName;
+                String timeStr;
+                if (event.time != null) timeStr = event.time; else timeStr = "--:--";
+                String info = "🕒 " + timeStr + " - " + event.mechinaName;
                 if (event.branch != null && !event.branch.isEmpty()) {
                     info += "\nשלוחה: " + event.branch;
                 }
@@ -167,38 +176,39 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 tvInfo.setTextSize(16);
                 row.addView(tvInfo);
 
-                // יצירת כפתור מחיקה אמיתי
-                android.widget.Button btnDelete = new android.widget.Button(context);
+                Button btnDelete = new Button(context);
                 btnDelete.setText("מחיקת אירוע");
-                btnDelete.setBackgroundColor(Color.parseColor("#FF5252")); // צבע אדום
+                btnDelete.setBackgroundColor(Color.parseColor("#FF5252"));
                 btnDelete.setTextColor(Color.WHITE);
 
-                // הגדרת מרחק לכפתור
                 LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
                 buttonParams.setMargins(0, 10, 0, 10);
                 btnDelete.setLayoutParams(buttonParams);
 
-                // לחיצה על כפתור המחיקה
-                btnDelete.setOnClickListener(v -> {
-                    if (context instanceof MonthlyCalendarActivity) {
-                        // הצגת דיאלוג אישור לפני מחיקה (מומלץ)
-                        new AlertDialog.Builder(context)
-                                .setTitle("אישור מחיקה")
-                                .setMessage("האם אתה בטוח שברצונך למחוק את " + event.mechinaName + "?")
-                                .setPositiveButton("כן, מחק", (d, which) -> {
+                btnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (context instanceof MonthlyCalendarActivity) {
+                            AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(context);
+                            confirmBuilder.setTitle("אישור מחיקה");
+                            confirmBuilder.setMessage("האם אתה בטוח שברצונך למחוק את " + event.mechinaName + "?");
+                            confirmBuilder.setPositiveButton("כן, מחק", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
                                     ((MonthlyCalendarActivity) context).deleteEvent(event);
-                                })
-                                .setNegativeButton("ביטול", null)
-                                .show();
+                                }
+                            });
+                            confirmBuilder.setNegativeButton("ביטול", null);
+                            confirmBuilder.show();
+                        }
                     }
                 });
 
                 row.addView(btnDelete);
                 rootLayout.addView(row);
 
-                // קו מפריד בין אירועים
                 View divider = new View(context);
                 divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
                 divider.setBackgroundColor(Color.LTGRAY);
@@ -207,19 +217,27 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
         }
 
         builder.setView(rootLayout);
-        builder.setPositiveButton("סגור", (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton("סגור", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         builder.show();
     }
 
-
     @Override
-    public int getItemCount() { return days.size(); }
+    public int getItemCount() {
+        return days.size();
+    }
 
     static class DayViewHolder extends RecyclerView.ViewHolder {
         TextView tvDayNumber;
         LinearLayout eventsContainer, container;
+
         public DayViewHolder(@NonNull View itemView) {
             super(itemView);
+            // ללא Casting מפורש בסוגריים כפי שביקשת
             tvDayNumber = itemView.findViewById(R.id.tvDayNumber);
             eventsContainer = itemView.findViewById(R.id.eventsContainer);
             container = itemView.findViewById(R.id.linearLayoutContainer);

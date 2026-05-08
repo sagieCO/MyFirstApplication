@@ -18,7 +18,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sagie.myfirstapplication.models.MechinaEvent;
 import com.sagie.myfirstapplication.R;
+
+import java.util.Iterator;
 
 public class FullMapActivity extends BaseActivity implements OnMapReadyCallback {
 
@@ -41,10 +45,10 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
         setupMenu();
         setContentLayout(R.layout.activity_full_map);
 
-        // הגדרת כיווניות RTL (דרישת הנדסת אנוש)
+        // הגדרת כיווניות RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        // אתחול שירות המיקום (חובה עבור סעיף 9 במחוון)
+        // אתחול שירות המיקום
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         String uid = FirebaseAuth.getInstance().getUid();
@@ -58,10 +62,12 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
             mapFragment.getMapAsync(this);
         }
     }
+
     @Override
     protected boolean requiresAuthentication() {
         return true;
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -69,7 +75,7 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
         // 1. הגדרת מרכז ישראל
         LatLng israelCenter = new LatLng(31.4117, 35.0818);
 
-        // 2. הצבת המצלמה על ישראל באופן מיידי (בלי אנימציה כדי שזה יהיה ה-Default)
+        // 2. הצבת המצלמה על ישראל באופן מיידי
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(israelCenter, 7.5f));
 
         // 3. הגדרות UI
@@ -78,20 +84,23 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
         // 4. טעינת המרקרים מהפיירבייס
         loadMarkersFromFirebase();
 
-        // 5. ניסיון להפעיל מיקום משתמש - רק אם הוא מאושר
+        // 5. ניסיון להפעיל מיקום משתמש
         enableUserLocation();
 
-        mMap.setOnInfoWindowClickListener(marker -> {
-            openGoogleMapsNavigation(marker.getPosition().latitude, marker.getPosition().longitude);
+        // 6. האזנה ללחיצה על חלונית המידע (ללא למבדה)
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(@NonNull Marker marker) {
+                LatLng position = marker.getPosition();
+                openGoogleMapsNavigation(position.latitude, position.longitude);
+            }
         });
     }
 
     private void enableUserLocation() {
-        // בדיקת הרשאות זמן-ריצה (דרישת חובה סעיף 5 במחוון)
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            // הצגת המיקום הנוכחי של המשתמש על המפה
             mMap.setMyLocationEnabled(true);
             zoomToUserLocation();
         }
@@ -99,38 +108,53 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
 
     private void zoomToUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-                if (location != null) {
-                    LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
+                @Override
+                public void onSuccess(android.location.Location location) {
+                    if (location != null) {
+                        LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                    // בדיקה אופציונלית: האם המשתמש בישראל (טווח קווי רוחב של ישראל)
-                    if (userLatLng.latitude > 29.0 && userLatLng.latitude < 33.5) {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
-                    } else {
-                        // אם המשתמש לא בישראל (או שזה סימולטור), אל תזיז את המצלמה מהמרכז שקבענו
-                        Toast.makeText(this, "מיקומך נמצא מחוץ לטווח התצוגה", Toast.LENGTH_SHORT).show();
+                        // בדיקה אם המשתמש בטווח קווי הרוחב של ישראל
+                        if (userLatLng.latitude > 29.0 && userLatLng.latitude < 33.5) {
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
+                        } else {
+                            Toast.makeText(FullMapActivity.this, "מיקומך נמצא מחוץ לטווח התצוגה", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
         }
     }
+
     private void loadMarkersFromFirebase() {
-        if (userEventsRef == null) return;
+        if (userEventsRef == null) {
+            return;
+        }
+
         userEventsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mMap.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                // שימוש ב-Iterator במקום לולאת for-each (:)
+                Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
+
+                while (iterator.hasNext()) {
+                    DataSnapshot ds = iterator.next();
                     MechinaEvent event = ds.getValue(MechinaEvent.class);
+
                     if (event != null && event.getLat() != 0) {
                         LatLng pos = new LatLng(event.getLat(), event.getLng());
-                        mMap.addMarker(new MarkerOptions()
-                                .position(pos)
-                                .title(event.getName())
-                                .snippet("שלוחה: " + event.getBranch() + "\nלחץ כאן לניווט ב-Google Maps"));
+                        MarkerOptions options = new MarkerOptions();
+                        options.position(pos);
+                        options.title(event.getName());
+                        options.snippet("שלוחה: " + event.getBranch() + "\nלחץ כאן לניווט ב-Google Maps");
+
+                        mMap.addMarker(options);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(FullMapActivity.this, "שגיאה בטעינת נתונים", Toast.LENGTH_SHORT).show();
@@ -138,17 +162,13 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
         });
     }
 
-    /**
-     * פונקציה לפתיחת ניווט ב-Google Maps בלבד
-     */
     private void openGoogleMapsNavigation(double lat, double lng) {
-        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + lat + "," + lng);
+        String uriString = "google.navigation:q=" + lat + "," + lng;
+        Uri gmmIntentUri = Uri.parse(uriString);
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
 
-        // הגדרה שזה יפתח רק את אפליקציית גוגל מפות
         mapIntent.setPackage("com.google.android.apps.maps");
 
-        // בדיקה שהאפליקציה קיימת במכשיר למניעת קריסה (טיפול בשגיאות - סעיף 10)
         if (mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
         } else {

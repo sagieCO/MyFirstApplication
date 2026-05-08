@@ -38,7 +38,6 @@ public class RegisterActivity extends BaseActivity {
 
         initView();
 
-        btnRegister.setOnClickListener(v -> performRegistration());
     }
 
     private void initView() {
@@ -49,6 +48,13 @@ public class RegisterActivity extends BaseActivity {
         etBirth = findViewById(R.id.etBirth); // שדה תאריך הלידה
         etAddress = findViewById(R.id.etAddress);
         btnRegister = findViewById(R.id.btnCreateAccount);
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performRegistration();
+            }
+        });
     }
 
     private void performRegistration() {

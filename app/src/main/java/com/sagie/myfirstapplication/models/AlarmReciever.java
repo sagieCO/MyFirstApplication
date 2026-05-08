@@ -13,46 +13,66 @@ import androidx.core.app.NotificationCompat;
 import com.sagie.myfirstapplication.R;
 
 public class AlarmReciever extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Log.d("ALARM_DEBUG", "Receiver triggered!");
 
+        // שליפת נתונים מה-Intent
         String eventName = intent.getStringExtra("eventName");
         boolean is24hBefore = intent.getBooleanExtra("is24hBefore", false);
 
-        NotificationManager manager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // קבלת שירות ההתראות עם Casting מפורש
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String channelId = "mechina_events";
 
+        // יצירת ערוץ התראות עבור אנדרואיד 8 ומעלה
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId,
                     "מכינות",
                     NotificationManager.IMPORTANCE_HIGH
             );
-            manager.createNotificationChannel(channel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
 
-        String title = is24hBefore ?
-                "תזכורת: מחר אירוע!" :
-                "תזכורת: האירוע מתחיל עכשיו";
+        // קביעת כותרת ותוכן ההודעה באמצעות if/else במקום ? :
+        String title;
+        String content;
 
-        String content = is24hBefore ?
-                "האירוע " + eventName + " מחר!" :
-                "האירוע " + eventName + " מתחיל עכשיו!";
+        if (is24hBefore) {
+            title = "תזכורת: מחר אירוע!";
+            content = "האירוע " + eventName + " יתקיים מחר!";
+        } else {
+            title = "תזכורת: האירוע מתחיל עכשיו";
+            content = "האירוע " + eventName + " מתחיל עכשיו!";
+        }
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.ic_event)
-                        .setContentTitle(title)
-                        .setContentText(content)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setAutoCancel(true);
+        // בניית ההתראה
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
+        builder.setSmallIcon(R.drawable.ic_event); // וודא שהאייקון קיים ב-drawable
+        builder.setContentTitle(title);
+        builder.setContentText(content);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setAutoCancel(true);
 
-        int id = (eventName + (is24hBefore ? "24" : "now")).hashCode();
+        // יצירת ID ייחודי להתראה
+        String uniqueKey;
+        if (is24hBefore) {
+            uniqueKey = eventName + "24";
+        } else {
+            uniqueKey = eventName + "now";
+        }
 
-        manager.notify(id, builder.build());
+        int id = uniqueKey.hashCode();
+
+        // שליחת ההתראה
+        if (manager != null) {
+            manager.notify(id, builder.build());
+        }
     }
 }

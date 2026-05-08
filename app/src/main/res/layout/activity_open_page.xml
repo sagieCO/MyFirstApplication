@@ -5,15 +5,15 @@
     android:id="@+id/main"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#A7B6AC"
+    android:background="#4E7AC7"
     android:padding="24dp">
 
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="!ברוכים הבאים למכינה"
-        android:textColor="#000000"
+        android:text="ברוכים הבאים למכיניסט"
+        android:textColor="#FFFFFF"
         android:textSize="28sp"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"
@@ -31,6 +31,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/rounded_container"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="4dp"
         android:padding="20dp">
 
         <Button
@@ -38,8 +40,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="התחבר"
-            android:backgroundTint="#3A5F7D"
+            android:backgroundTint="#4E7AC7"
             android:textColor="#FFFFFF"
+            android:textStyle="bold"
             android:padding="12dp"/>
 
         <LinearLayout
@@ -53,20 +56,20 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#B19494"/>
+                android:background="#E0E0E0"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="או"
-                android:textColor="#000000"
+                android:textColor="#757575"
                 android:layout_marginHorizontal="8dp"/>
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#B19494"/>
+                android:background="#E0E0E0"/>
         </LinearLayout>
 
         <Button
@@ -74,8 +77,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="הרשם"
-            android:backgroundTint="#4DB6AC"
-            android:textColor="#000000"
+            android:backgroundTint="#F5F5F5"
+            android:textColor="#4E7AC7"
+            android:textStyle="bold"
             android:padding="12dp"/>
 
         <Button
@@ -83,9 +87,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="המשך כאורח"
-            android:backgroundTint="#B0BEC5"
-            android:textColor="#000000"
+            android:backgroundTint="#E8EAF6"
+            android:textColor="#4E7AC7"
+            android:textStyle="bold"
             android:layout_marginTop="12dp"
+            android:stateListAnimator="@null"
             android:padding="12dp"/>
 
     </LinearLayout>

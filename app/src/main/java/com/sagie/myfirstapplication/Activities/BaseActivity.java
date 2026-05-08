@@ -45,7 +45,6 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        // השארתי את הקריאות שלך בדיוק כפי שביקשת
         setContentView(R.layout.base_layout);
         setupMenu();
     }

@@ -6,16 +6,25 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.sagie.myfirstapplication.ChatMessage;
 import com.sagie.myfirstapplication.MessageAdapter;
 import com.sagie.myfirstapplication.R;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,98 +35,126 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference chatRef;
     private EditText etMessage;
     private RecyclerView rvChat;
-    private ImageButton btnBack;
-    private MessageAdapter adapter; // תצטרך ליצור את המחלקה הזו (מפורטת למטה)
-    private List<ChatMessage> messageList = new ArrayList<>();
+    private ImageButton btnBack, btnSend;
+    private MessageAdapter adapter;
+    private List<ChatMessage> messageList = new ArrayList<ChatMessage>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        String mechina = getIntent().getStringExtra("MECHINA_NAME");
-        String branch = getIntent().getStringExtra("BRANCH_NAME");
+        Intent intent = getIntent();
+        String mechina = intent.getStringExtra("MECHINA_NAME");
+        String branch = intent.getStringExtra("BRANCH_NAME");
 
-        // הגדרת הנתיב: chats -> שם מכינה -> שלוחה
-        chatRef = FirebaseDatabase.getInstance().getReference("chats")
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        chatRef = database.getReference("chats")
                 .child(mechina)
                 .child(branch);
 
         initViews();
-        listenForMessages(); // הפעלת המאזין לקבלת הודעות
+        listenForMessages();
     }
 
     private void initViews() {
+        // מציאת הרכיבים ללא סוגריים (Casting) לפני ה-findViewById
         etMessage = findViewById(R.id.etMessage);
-        ImageButton btnSend = findViewById(R.id.btnSend);
+        btnSend = findViewById(R.id.btnSend);
         rvChat = findViewById(R.id.rvChat);
+        btnBack = findViewById(R.id.btnBack);
 
         adapter = new MessageAdapter(messageList);
-        rvChat.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvChat.setLayoutManager(layoutManager);
         rvChat.setAdapter(adapter);
-        btnBack=findViewById(R.id.btnBack);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChatActivity.this, MainActivity.class);
-                startActivity(intent);
+                Intent backIntent = new Intent(ChatActivity.this, MainActivity.class);
+                startActivity(backIntent);
+                finish();
             }
         });
-        btnSend.setOnClickListener(v -> sendMessage());
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
     }
 
     private void sendMessage() {
-        String text = etMessage.getText().toString().trim();
-        if (text.isEmpty()) return;
+        final String text = etMessage.getText().toString().trim();
+        if (text.isEmpty()) {
+            return;
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) return;
+        if (user == null) {
+            return;
+        }
 
         String uid = user.getUid();
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(uid).child("name");
 
-        FirebaseDatabase.getInstance().getReference("users")
-                .child(uid).child("name")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String fullName = "משתמש";
+                if (snapshot.exists()) {
+                    fullName = snapshot.getValue(String.class);
+                }
+
+                Map<String, Object> msgMap = new HashMap<String, Object>();
+                msgMap.put("text", text);
+                msgMap.put("senderName", fullName);
+                msgMap.put("timestamp", ServerValue.TIMESTAMP);
+
+                chatRef.push().setValue(msgMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        // אם השם קיים במסד, ניקח אותו. אם לא, נרשום "משתמש"
-                        String fullName = snapshot.exists() ? snapshot.getValue(String.class) : "משתמש";
-
-                        // יצירת אובייקט הודעה עם השם האמיתי וזמן שרת
-                        Map<String, Object> msgMap = new HashMap<>();
-                        msgMap.put("text", text);
-                        msgMap.put("senderName", fullName);
-                        msgMap.put("timestamp", ServerValue.TIMESTAMP); // חשוב: זמן שרת מדויק
-
-                        chatRef.push().setValue(msgMap).addOnSuccessListener(aVoid -> {
-                            etMessage.setText(""); // ניקוי התיבה
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(ChatActivity.this, "שגיאה בשליפת שם המשתמש", Toast.LENGTH_SHORT).show();
+                    public void onSuccess(Void aVoid) {
+                        etMessage.setText("");
                     }
                 });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ChatActivity.this, "שגיאה בשליפת שם המשתמש", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
     private void listenForMessages() {
         chatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 messageList.clear();
-                for (DataSnapshot ds : snapshot.getChildren()) {
+
+                java.util.Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
+
+                while (iterator.hasNext()) {
+                    DataSnapshot ds = iterator.next();
                     ChatMessage chatMessage = ds.getValue(ChatMessage.class);
                     if (chatMessage != null) {
                         messageList.add(chatMessage);
                     }
                 }
+
                 adapter.notifyDataSetChanged();
-                rvChat.scrollToPosition(messageList.size() - 1); // גלילה לסוף
+
+                if (messageList.size() > 0) {
+                    rvChat.scrollToPosition(messageList.size() - 1);
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                // טיפול בשגיאה במידת הצורך
+            }
         });
     }
 }
