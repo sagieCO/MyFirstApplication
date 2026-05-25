@@ -19,16 +19,13 @@ public class AlarmReciever extends BroadcastReceiver {
 
         Log.d("ALARM_DEBUG", "Receiver triggered!");
 
-        // שליפת נתונים מה-Intent
         String eventName = intent.getStringExtra("eventName");
         boolean is24hBefore = intent.getBooleanExtra("is24hBefore", false);
 
-        // קבלת שירות ההתראות עם Casting מפורש
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         String channelId = "mechina_events";
 
-        // יצירת ערוץ התראות עבור אנדרואיד 8 ומעלה
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId,
@@ -40,7 +37,6 @@ public class AlarmReciever extends BroadcastReceiver {
             }
         }
 
-        // קביעת כותרת ותוכן ההודעה באמצעות if/else במקום ? :
         String title;
         String content;
 
@@ -52,15 +48,13 @@ public class AlarmReciever extends BroadcastReceiver {
             content = "האירוע " + eventName + " מתחיל עכשיו!";
         }
 
-        // בניית ההתראה
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
-        builder.setSmallIcon(R.drawable.ic_event); // וודא שהאייקון קיים ב-drawable
+        builder.setSmallIcon(R.drawable.ic_event);
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
         builder.setAutoCancel(true);
 
-        // יצירת ID ייחודי להתראה
         String uniqueKey;
         if (is24hBefore) {
             uniqueKey = eventName + "24";
@@ -70,7 +64,6 @@ public class AlarmReciever extends BroadcastReceiver {
 
         int id = uniqueKey.hashCode();
 
-        // שליחת ההתראה
         if (manager != null) {
             manager.notify(id, builder.build());
         }

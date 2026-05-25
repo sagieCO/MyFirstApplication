@@ -6,7 +6,7 @@ import java.util.List;
 public class Day {
     public int dayNumber;
     public boolean isCurrentMonth;
-    public boolean isToday; // הוסף את זה
+    public boolean isToday;
     public List<MechinaEvent> dayEvents = new ArrayList<>();
 
     public Day(int dayNumber, boolean isCurrentMonth) {

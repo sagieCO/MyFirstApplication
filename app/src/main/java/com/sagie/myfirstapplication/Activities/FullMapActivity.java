@@ -3,6 +3,8 @@ package com.sagie.myfirstapplication.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,10 +30,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sagie.myfirstapplication.IGeocodeCallback;
+import com.sagie.myfirstapplication.models.GeoPoint;
 import com.sagie.myfirstapplication.models.MechinaEvent;
 import com.sagie.myfirstapplication.R;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class FullMapActivity extends BaseActivity implements OnMapReadyCallback {
 
@@ -38,14 +44,12 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
     private DatabaseReference userEventsRef;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupMenu();
         setContentLayout(R.layout.activity_full_map);
 
-        // הגדרת כיווניות RTL
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
         // אתחול שירות המיקום
@@ -105,7 +109,81 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
             zoomToUserLocation();
         }
     }
+    private void getCoordinatesFromAddress(String address, IGeocodeCallback callback) {
+        Geocoder geocoder = new Geocoder(this);
 
+        new Thread(() -> {
+            try {
+                List<Address> addresses = geocoder.getFromLocationName(address + ", ישראל", 1);
+                if (addresses != null && !addresses.isEmpty()) {
+                    Address a = addresses.get(0);
+                    runOnUiThread(() ->
+                            callback.onFinished(new GeoPoint(a.getLatitude(), a.getLongitude())));
+                }
+
+                else {
+                    runOnUiThread(() ->
+                            callback.onFailure("לא נמצאה כתובת"));
+                }
+
+            }
+            catch (Exception e) {
+                runOnUiThread(() ->
+                        callback.onFailure(e.getMessage()));
+
+            }
+
+        }).start();
+
+    }
+    private void loadHomeMarker() {
+
+        String uid = FirebaseAuth.getInstance().getUid();
+
+        if (uid == null)
+            return;
+
+        FirebaseDatabase.getInstance().getReference("users").child(uid).child("address").get().addOnSuccessListener(snapshot -> {
+
+                    String address = snapshot.getValue(String.class);
+                    if (address == null || address.trim().isEmpty()) {
+                        return;
+                    }
+
+                    getCoordinatesFromAddress(address, new IGeocodeCallback() {
+                                @Override
+                                public void onFinished(
+                                        GeoPoint point
+                                ) {
+
+                                    LatLng home =
+                                            new LatLng(
+                                                    point.latitude,
+                                                    point.longitude
+                                            );
+
+                                    mMap.addMarker(new MarkerOptions().position(home).title("הבית שלי").snippet(address).icon(
+                                                            com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker(
+                                                                    BitmapDescriptorFactory.HUE_BLUE
+                                                            )
+                                                    )
+                                    );
+
+                                }
+
+                                @Override
+                                public void onFailure(
+                                        String errorMessage
+                                ) {
+
+                                }
+
+                            }
+                    );
+
+                });
+
+    }
     private void zoomToUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<android.location.Location>() {
@@ -115,7 +193,7 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
                         LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                         // בדיקה אם המשתמש בטווח קווי הרוחב של ישראל
-                        if (userLatLng.latitude > 29.0 && userLatLng.latitude < 33.5) {
+                        if (userLatLng.latitude>=29 && userLatLng.latitude<=34 && userLatLng.longitude>=34 && userLatLng.longitude<=36) {
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
                         } else {
                             Toast.makeText(FullMapActivity.this, "מיקומך נמצא מחוץ לטווח התצוגה", Toast.LENGTH_SHORT).show();
@@ -135,8 +213,7 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mMap.clear();
-
-                // שימוש ב-Iterator במקום לולאת for-each (:)
+                loadHomeMarker();
                 Iterator<DataSnapshot> iterator = snapshot.getChildren().iterator();
 
                 while (iterator.hasNext()) {

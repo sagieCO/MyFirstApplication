@@ -35,7 +35,6 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
-        // הבדיקה חייבת לקרות לפני טעינת ה-Layout כדי למנוע הצגה של מידע חסום
         if (requiresAuthentication() && FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(this, "עליך להתחבר כדי לגשת לדף זה", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, OpenPageActivity.class);
@@ -49,7 +48,6 @@ public class BaseActivity extends AppCompatActivity {
         setupMenu();
     }
 
-    // הפונקציה שחסרה לך וגורמת לשגיאה ב-Adapter
     public void startActivityProtected(Intent intent) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(this, "פעולה זו דורשת התחברות", Toast.LENGTH_SHORT).show();

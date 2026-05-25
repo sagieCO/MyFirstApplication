@@ -118,7 +118,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Remind Me Later"
+                android:text="עדכון בהמשך"
                 android:backgroundTint="#9E9E9E"
                 android:textColor="#FFFFFF"/>
         </LinearLayout>

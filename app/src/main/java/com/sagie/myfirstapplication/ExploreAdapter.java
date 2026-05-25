@@ -44,8 +44,6 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ViewHold
         holder.tvBranchName.setText("(" + item.branch + ")");
         holder.tvLocation.setText(item.address);
 
-
-
         // כפתור הצ'אט
         holder.btnOpenChat.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);

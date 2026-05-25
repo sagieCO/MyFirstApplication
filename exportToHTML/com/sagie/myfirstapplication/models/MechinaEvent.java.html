@@ -1,0 +1,68 @@
+<html>
+<head>
+<title>MechinaEvent.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MechinaEvent.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">sagie</span><span class="s2">.</span><span class="s1">myfirstapplication</span><span class="s2">.</span><span class="s1">models</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">MechinaEvent </span><span class="s2">{</span>
+    <span class="s0">public </span><span class="s1">String eventId</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String mechinaName</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String branch</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String date</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String time</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String address</span><span class="s2">;</span>
+    <span class="s0">public double </span><span class="s1">lat</span><span class="s2">;</span>
+    <span class="s0">public double </span><span class="s1">lng</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">String region</span><span class="s2">;        </span><span class="s3">// השדה שהיה חסר</span>
+    <span class="s0">public </span><span class="s1">String religiousType</span><span class="s2">; </span><span class="s3">// השדה שהיה חסר</span>
+    <span class="s0">public  </span><span class="s1">String eventColor</span><span class="s2">;</span>
+
+
+    <span class="s3">// בנאי ריק חובה עבור Firebase</span>
+    <span class="s0">public </span><span class="s1">MechinaEvent</span><span class="s2">() {</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// בנאי מלא - שים לב לסדר הפרמטרים!</span>
+    <span class="s0">public </span><span class="s1">MechinaEvent</span><span class="s2">(</span><span class="s1">String eventId</span><span class="s2">, </span><span class="s1">String mechinaName</span><span class="s2">, </span><span class="s1">String branch</span><span class="s2">, </span><span class="s1">String date</span><span class="s2">, </span><span class="s1">String time</span><span class="s2">, </span><span class="s1">String address</span><span class="s2">, </span><span class="s0">double </span><span class="s1">lat</span><span class="s2">, </span><span class="s0">double </span><span class="s1">lng</span><span class="s2">, </span><span class="s1">String region</span><span class="s2">, </span><span class="s1">String religiousType</span><span class="s2">,</span><span class="s1">String eventColor</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">eventId </span><span class="s2">= </span><span class="s1">eventId</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">mechinaName </span><span class="s2">= </span><span class="s1">mechinaName</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">branch </span><span class="s2">= </span><span class="s1">branch</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">date </span><span class="s2">= </span><span class="s1">date</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">time </span><span class="s2">= </span><span class="s1">time</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">address </span><span class="s2">= </span><span class="s1">address</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">lat </span><span class="s2">= </span><span class="s1">lat</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">lng </span><span class="s2">= </span><span class="s1">lng</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">region </span><span class="s2">= </span><span class="s1">region</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">religiousType </span><span class="s2">= </span><span class="s1">religiousType</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">eventColor</span><span class="s2">=</span><span class="s1">eventColor</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Getters</span>
+    <span class="s0">public </span><span class="s1">String getName</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">mechinaName</span><span class="s2">; }</span>
+    <span class="s0">public void </span><span class="s1">setName</span><span class="s2">(</span><span class="s1">String name</span><span class="s2">) { </span><span class="s0">this</span><span class="s2">.</span><span class="s1">mechinaName </span><span class="s2">= </span><span class="s1">name</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getBranch</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">branch</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getAddress</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">address</span><span class="s2">; }</span>
+    <span class="s0">public double </span><span class="s1">getLat</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">lat</span><span class="s2">; }</span>
+    <span class="s0">public double </span><span class="s1">getLng</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">lng</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getEventColor</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">eventColor </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">? </span><span class="s1">eventColor </span><span class="s2">: </span><span class="s4">&quot;#3F51B5&quot;</span><span class="s2">; }</span>
+    <span class="s0">public void </span><span class="s1">setEventColor</span><span class="s2">(</span><span class="s1">String eventColor</span><span class="s2">) { </span><span class="s0">this</span><span class="s2">.</span><span class="s1">eventColor </span><span class="s2">= </span><span class="s1">eventColor</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getTime</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">time</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getRegion</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">region</span><span class="s2">; }</span>
+    <span class="s0">public </span><span class="s1">String getReligiousType</span><span class="s2">() { </span><span class="s0">return </span><span class="s1">religiousType</span><span class="s2">; }</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

@@ -6,7 +6,6 @@
     android:padding="16dp"
     android:layoutDirection="rtl">
 
-    <!-- שדות נסתרים לעדכון אוטומטי מה-Spinner -->
     <EditText android:id="@+id/etMechinaName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
     <EditText android:id="@+id/etBranch" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
     <EditText android:id="@+id/etAddress" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />
