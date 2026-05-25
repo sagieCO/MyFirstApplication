@@ -6,10 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <!-- הוספת הרשאה ל-Alarm מדויק (חובה לאנדרואיד 12+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- הוספת הרשאה ל-Alarm מדויק (חובה לאנדרואיד 12+) -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -21,21 +20,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFirstApplication"
         tools:targetApi="31">
-
-        <!-- הוספת ה-Receiver שיקבל את ההתראות -->
-        <receiver android:name=".models.AlarmReciever"
+        <receiver
+            android:name=".models.NetworkChangeReceiver"
             android:enabled="true"
-            android:exported="false" />
-
-        <!-- שאר האקטיביטיז שלך... -->
+            android:exported="true"></receiver>
+        <!-- הוספת ה-Receiver שיקבל את ההתראות -->
+        <receiver
+            android:name=".models.AlarmReciever"
+            android:enabled="true"
+            android:exported="false" /> <!-- שאר האקטיביטיז שלך... -->
         <activity
             android:name=".Activities.ChatActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.FullMapActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.SettingsActivity"
             android:exported="false" />
@@ -47,32 +46,27 @@
         <activity
             android:name=".Activities.CreateMechinaActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.MonthlyCalendarActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.OpenPageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Activities.RegisterActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".Activities.MainActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

@@ -3,7 +3,9 @@ package com.sagie.myfirstapplication.Activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,10 +18,14 @@ import androidx.core.content.ContextCompat;
 import com.google.firebase.auth.FirebaseUser;
 import com.sagie.myfirstapplication.FBRef;
 import com.sagie.myfirstapplication.R;
+import com.sagie.myfirstapplication.models.NetworkChangeReceiver;
 
 public class OpenPageActivity extends AppCompatActivity {
 
     Button btnLogin,btnRegister,btnGuest;
+
+    // הגדרת המשתנה של הרסיבר שלנו
+    private NetworkChangeReceiver networkReceiver;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,7 +39,19 @@ public class OpenPageActivity extends AppCompatActivity {
 
         initView();
 
+        // אתחול הרסיבר
+        networkReceiver = new NetworkChangeReceiver();
+
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // רישום הרסיבר להאזנה לשינויי רשת ברגע שהמסך עולה
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkReceiver, filter);
+    }
+
     private void checkUserLoginStatus() {
         FirebaseUser currentUser = FBRef.refAuth.getCurrentUser();
         if (currentUser != null) {
@@ -80,5 +98,14 @@ public class OpenPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // חובה לבטל את הרישום כשהמסך נסגר כדי למנוע זליגת זיכרון (Memory Leak)
+        if (networkReceiver != null) {
+            unregisterReceiver(networkReceiver);
+        }
     }
 }

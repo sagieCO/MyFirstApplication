@@ -17,7 +17,6 @@ public class AlarmReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d("ALARM_DEBUG", "Receiver triggered!");
 
         String eventName = intent.getStringExtra("eventName");
         boolean is24hBefore = intent.getBooleanExtra("is24hBefore", false);
@@ -27,11 +26,7 @@ public class AlarmReciever extends BroadcastReceiver {
         String channelId = "mechina_events";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    channelId,
-                    "מכינות",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
+            NotificationChannel channel = new NotificationChannel(channelId, "מכינות", NotificationManager.IMPORTANCE_HIGH);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
             }
