@@ -22,9 +22,8 @@ import com.sagie.myfirstapplication.models.NetworkChangeReceiver;
 
 public class OpenPageActivity extends AppCompatActivity {
 
-    Button btnLogin,btnRegister,btnGuest;
+   private Button btnLogin,btnRegister,btnGuest;
 
-    // הגדרת המשתנה של הרסיבר שלנו
     private NetworkChangeReceiver networkReceiver;
 
     @SuppressLint("MissingInflatedId")
@@ -39,15 +38,12 @@ public class OpenPageActivity extends AppCompatActivity {
 
         initView();
 
-        // אתחול הרסיבר
-        networkReceiver = new NetworkChangeReceiver();
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // רישום הרסיבר להאזנה לשינויי רשת ברגע שהמסך עולה
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkReceiver, filter);
     }
@@ -76,6 +72,8 @@ public class OpenPageActivity extends AppCompatActivity {
         btnLogin=findViewById(R.id.btnLogin);
         btnRegister=findViewById(R.id.btnRegister);
         btnGuest=findViewById(R.id.btnGuest);
+        networkReceiver = new NetworkChangeReceiver();
+
         btnGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,7 +101,6 @@ public class OpenPageActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // חובה לבטל את הרישום כשהמסך נסגר כדי למנוע זליגת זיכרון (Memory Leak)
         if (networkReceiver != null) {
             unregisterReceiver(networkReceiver);
         }

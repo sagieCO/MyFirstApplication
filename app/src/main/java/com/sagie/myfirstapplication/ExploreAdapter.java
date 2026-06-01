@@ -44,16 +44,18 @@ public class ExploreAdapter extends RecyclerView.Adapter<ExploreAdapter.ViewHold
         holder.tvBranchName.setText("(" + item.branch + ")");
         holder.tvLocation.setText(item.address);
 
-        // כפתור הצ'אט
-        holder.btnOpenChat.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("MECHINA_NAME", item.mechinaName);
-            intent.putExtra("BRANCH_NAME", item.branch);
+        holder.btnOpenChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("MECHINA_NAME", item.mechinaName);
+                intent.putExtra("BRANCH_NAME", item.branch);
 
-            if (context instanceof BaseActivity) {
-                ((BaseActivity) context).startActivityProtected(intent);
-            } else {
-                context.startActivity(intent);
+                if (context instanceof BaseActivity) {
+                    ((BaseActivity) context).startActivityProtected(intent);
+                } else {
+                    context.startActivity(intent);
+                }
             }
         });
     }

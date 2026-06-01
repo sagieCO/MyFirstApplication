@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- כותרת -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,9 +31,9 @@
             android:background="#FFFFFF"
             android:padding="12dp"
             android:gravity="end"
-            android:enabled="true"  android:layout_marginBottom="16dp"
+            android:enabled="true"
+            android:layout_marginBottom="16dp"
             android:textDirection="rtl"/>
-        <!-- אימייל -->
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
@@ -46,7 +45,6 @@
             android:layout_marginBottom="16dp"
             android:textDirection="rtl"/>
 
-        <!-- סיסמה -->
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
@@ -58,7 +56,6 @@
             android:gravity="end"
             android:layout_marginBottom="24dp"/>
 
-        <!-- צור חשבון -->
         <Button
             android:id="@+id/btnCreateAccount"
             android:layout_width="match_parent"
@@ -69,7 +66,6 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="32dp"/>
 
-        <!-- פרטים אישיים (אופציונליים) -->
 
 
         <EditText
@@ -95,7 +91,6 @@
             android:enabled="false"
             android:layout_marginBottom="24dp"/>
 
-        <!-- כפתורים תחתונים -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -123,7 +118,6 @@
                 android:textColor="#FFFFFF"/>
         </LinearLayout>
 
-        <!-- הודעות -->
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

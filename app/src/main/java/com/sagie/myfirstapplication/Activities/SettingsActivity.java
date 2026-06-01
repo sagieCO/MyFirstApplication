@@ -94,7 +94,6 @@ public class SettingsActivity extends BaseActivity {
     }
 
     private void setupLaunchers() {
-        // בחירת תמונה מהגלריה
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -107,7 +106,6 @@ public class SettingsActivity extends BaseActivity {
                 }
         );
 
-        // צילום תמונה מהמצלמה
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {

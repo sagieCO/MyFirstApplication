@@ -21,7 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.sagie.myfirstapplication.ChatMessage;
+import com.sagie.myfirstapplication.models.ChatMessage;
 import com.sagie.myfirstapplication.MessageAdapter;
 import com.sagie.myfirstapplication.R;
 
@@ -49,16 +49,13 @@ public class ChatActivity extends AppCompatActivity {
         String branch = intent.getStringExtra("BRANCH_NAME");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        chatRef = database.getReference("chats")
-                .child(mechina)
-                .child(branch);
+        chatRef = database.getReference("chats").child(mechina).child(branch);
 
         initViews();
         listenForMessages();
     }
 
     private void initViews() {
-        // מציאת הרכיבים ללא סוגריים (Casting) לפני ה-findViewById
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);
         rvChat = findViewById(R.id.rvChat);
@@ -153,7 +150,6 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // טיפול בשגיאה במידת הצורך
             }
         });
     }

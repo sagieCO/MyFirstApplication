@@ -46,7 +46,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
     public void onBindViewHolder(@NonNull DayViewHolder holder, int position) {
         final Day day = days.get(position);
 
-        // ניקוי הקונטיינר למניעת כפילויות של אירועים
         holder.eventsContainer.removeAllViews();
 
         if (day.dayNumber == 0) {
@@ -64,7 +63,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
             }
             holder.container.setBackgroundColor(bgColor);
 
-            // סימון היום הנוכחי
             if (day.isToday) {
                 holder.tvDayNumber.setBackgroundResource(R.drawable.today_circle);
                 holder.tvDayNumber.setTextColor(Color.WHITE);
@@ -73,7 +71,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 holder.tvDayNumber.setTextColor(Color.BLACK);
             }
 
-            // 1. מיון האירועים לפי שעה (ללא למבדה)
             if (day.dayEvents != null && day.dayEvents.size() > 1) {
                 Collections.sort(day.dayEvents, new Comparator<MechinaEvent>() {
                     @Override
@@ -86,7 +83,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 });
             }
 
-            // 2. הצגת אירועים בתצוגה מקוצרת (שימוש ב-Iterator)
             if (day.dayEvents != null && !day.dayEvents.isEmpty()) {
                 Iterator<MechinaEvent> iterator = day.dayEvents.iterator();
                 while (iterator.hasNext()) {
@@ -132,7 +128,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 }
             }
 
-            // 3. הגדרת לחיצה על המשבצת (ללא למבדה)
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -237,7 +232,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
 
         public DayViewHolder(@NonNull View itemView) {
             super(itemView);
-            // ללא Casting מפורש בסוגריים כפי שביקשת
             tvDayNumber = itemView.findViewById(R.id.tvDayNumber);
             eventsContainer = itemView.findViewById(R.id.eventsContainer);
             container = itemView.findViewById(R.id.linearLayoutContainer);

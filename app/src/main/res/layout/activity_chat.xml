@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="כתוב הודעה או טיפ..."
+            android:hint="כתוב הודעה או טיפ"
             android:minHeight="48dp"
             android:padding="10dp"
             android:textDirection="rtl" />

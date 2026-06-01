@@ -13,7 +13,6 @@
     android:background="#F2F6F7"
     tools:context=".Activities.LoginActivity">
 
-    <!-- כותרת -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -24,7 +23,6 @@
         android:textColor="#2C3E50"
         android:layout_marginBottom="32dp"/>
 
-    <!-- שדה אימייל -->
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
@@ -39,7 +37,6 @@
         android:layout_marginBottom="16dp"
         android:textDirection="rtl" />
 
-    <!-- שדה סיסמה -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
@@ -54,7 +51,6 @@
         android:layout_marginBottom="24dp"
         android:gravity="end"/>
 
-    <!-- כפתור התחברות -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
@@ -65,7 +61,6 @@
         android:backgroundTint="#3A5F7D"
         android:layout_marginBottom="12dp"/>
 
-    <!-- כפתור איפוס -->
     <Button
         android:id="@+id/btnReset"
         android:layout_width="match_parent"
@@ -78,7 +73,6 @@
 
 
 
-    <!-- הרשמה -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,7 +99,6 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
-    <!-- הודעת שגיאה -->
     <TextView
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"

@@ -77,8 +77,11 @@ public class MainActivity extends BaseActivity {
         ImageButton btnGoToCalendarIcon = findViewById(R.id.btnGoToCalendarIcon);
         Button btnShowAllStations = findViewById(R.id.btnShowAllStations);
 
-        View.OnClickListener goToCalendar = v -> {
-            startActivity(new Intent(MainActivity.this, MonthlyCalendarActivity.class));
+        View.OnClickListener goToCalendar = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MonthlyCalendarActivity.class));
+            }
         };
 
         btnGoToCalendarIcon.setOnClickListener(goToCalendar);
@@ -90,7 +93,6 @@ public class MainActivity extends BaseActivity {
         rvExplore.setLayoutManager(new LinearLayoutManager(this));
         rvExplore.setNestedScrollingEnabled(false);
 
-        // שליחת null כמאזין כי הורדנו את הדיאלוג והקישור
         exploreAdapter = new ExploreAdapter(allExploreList, null);
         rvExplore.setAdapter(exploreAdapter);
     }

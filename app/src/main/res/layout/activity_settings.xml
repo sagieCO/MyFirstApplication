@@ -66,7 +66,9 @@
             android:padding="12dp"
             android:textDirection="rtl"
             android:textSize="16sp"/>
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+        <View android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"/>
 
         <EditText
             android:id="@+id/birthDateText"
@@ -78,7 +80,9 @@
             android:inputType="date"
             android:textDirection="rtl"
             android:textSize="16sp"/>
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+        <View android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"/>
 
         <EditText
             android:id="@+id/addressText"
@@ -89,7 +93,9 @@
             android:padding="12dp"
             android:textDirection="rtl"
             android:textSize="16sp"/>
-        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE"/>
+        <View android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"/>
 
         <Button
             android:id="@+id/saveInfo"

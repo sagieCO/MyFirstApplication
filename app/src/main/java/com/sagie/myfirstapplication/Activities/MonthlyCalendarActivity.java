@@ -59,7 +59,6 @@ public class MonthlyCalendarActivity extends BaseActivity {
         adapter = new CalendarAdapter(days);
         recyclerView.setAdapter(adapter);
 
-        // החלפת למבדה במאזין לחיצה מפורש
         findViewById(R.id.btnPreviousMonth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +158,6 @@ public class MonthlyCalendarActivity extends BaseActivity {
                             int eventYear = Integer.parseInt(parts[2]);
 
                             if (eventMonth == currentMonthInt && eventYear == currentYearInt) {
-                                // חיפוש היום המתאים ברשימת הימים (ללא לולאת נקודותיים)
                                 for (int i = 0; i < days.size(); i++) {
                                     Day d = days.get(i);
                                     if (d.isCurrentMonth && d.dayNumber == eventDay) {

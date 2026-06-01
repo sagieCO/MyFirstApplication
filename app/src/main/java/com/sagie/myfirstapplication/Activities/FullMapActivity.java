@@ -52,7 +52,6 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
 
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-        // אתחול שירות המיקום
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         String uid = FirebaseAuth.getInstance().getUid();
@@ -76,22 +75,16 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // 1. הגדרת מרכז ישראל
         LatLng israelCenter = new LatLng(31.4117, 35.0818);
 
-        // 2. הצבת המצלמה על ישראל באופן מיידי
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(israelCenter, 7.5f));
 
-        // 3. הגדרות UI
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
-        // 4. טעינת המרקרים מהפיירבייס
         loadMarkersFromFirebase();
 
-        // 5. ניסיון להפעיל מיקום משתמש
         enableUserLocation();
 
-        // 6. האזנה ללחיצה על חלונית המידע (ללא למבדה)
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(@NonNull Marker marker) {
@@ -192,7 +185,6 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
                     if (location != null) {
                         LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                        // בדיקה אם המשתמש בטווח קווי הרוחב של ישראל
                         if (userLatLng.latitude>=29 && userLatLng.latitude<=34 && userLatLng.longitude>=34 && userLatLng.longitude<=36) {
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 12f));
                         } else {

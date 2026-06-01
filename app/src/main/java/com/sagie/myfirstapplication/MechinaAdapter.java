@@ -13,12 +13,13 @@ public class MechinaAdapter extends RecyclerView.Adapter<MechinaAdapter.ViewHold
 
     private List<String> data;
 
-    public MechinaAdapter(List<String> data) { this.data = data; }
+    public MechinaAdapter(List<String> data) {
+        this.data = data;
+    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // וודא שיצרת את item_mechina_card.xml
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_mechina_card, parent, false);
         return new ViewHolder(v);
     }

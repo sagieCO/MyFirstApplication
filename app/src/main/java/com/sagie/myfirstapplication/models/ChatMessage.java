@@ -1,11 +1,11 @@
-package com.sagie.myfirstapplication;
+package com.sagie.myfirstapplication.models;
 
 public class ChatMessage {
     public String text;
     public String senderName;
     public long timestamp;
 
-    public ChatMessage() {} // חובה עבור פיירבייס
+    public ChatMessage() {}
 
     public ChatMessage(String text, String senderName, long timestamp) {
         this.text = text;
