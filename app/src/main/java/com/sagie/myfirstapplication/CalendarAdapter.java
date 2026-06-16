@@ -103,7 +103,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                     tvEvent.setLines(1);
                     tvEvent.setEllipsize(TextUtils.TruncateAt.END);
 
-                    // עיצוב רקע דינמי
                     GradientDrawable shape = new GradientDrawable();
                     shape.setCornerRadius(8f);
 
@@ -170,7 +169,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.DayVie
                 tvInfo.setTextColor(Color.BLACK);
                 tvInfo.setTextSize(16);
                 row.addView(tvInfo);
-
+                //add btn feedback
                 Button btnDelete = new Button(context);
                 btnDelete.setText("מחיקת אירוע");
                 btnDelete.setBackgroundColor(Color.parseColor("#FF5252"));

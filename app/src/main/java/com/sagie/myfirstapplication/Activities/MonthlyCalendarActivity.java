@@ -133,7 +133,6 @@ public class MonthlyCalendarActivity extends BaseActivity {
         eventsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // שימוש ב-Iterator כדי לנקות אירועים
                 Iterator<Day> dayIterator = days.iterator();
                 while (dayIterator.hasNext()) {
                     dayIterator.next().dayEvents.clear();

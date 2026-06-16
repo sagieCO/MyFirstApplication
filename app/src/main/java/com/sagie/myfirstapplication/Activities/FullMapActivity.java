@@ -218,7 +218,7 @@ public class FullMapActivity extends BaseActivity implements OnMapReadyCallback 
                         options.position(pos);
                         options.title(event.getName());
                         options.snippet("שלוחה: " + event.getBranch() + "\nלחץ כאן לניווט ב-Google Maps");
-
+                        //add marker feedback about branch
                         mMap.addMarker(options);
                     }
                 }
